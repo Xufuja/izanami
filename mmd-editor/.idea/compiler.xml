@@ -6,9 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="mmd-editor" />
-        <module name="mmd-core" />
+        <module name="mmd-tools" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mmd-editor" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
