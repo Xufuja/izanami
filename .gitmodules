@@ -1,3 +1,6 @@
 [submodule "mmd-core"]
 	path = mmd-core
 	url = https://github.com/Xufuja/mmd-core
+[submodule "vendor"]
+	path = vendor
+	url = https://github.com/SpaiR/imgui-java.git
