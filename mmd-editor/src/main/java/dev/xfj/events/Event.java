@@ -4,10 +4,13 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public abstract class Event {
+    private final EnumSet<Event.EventCategory> eventCategories;
     private boolean handled;
 
-    protected Event() {
-        handled = false;
+    protected Event(EnumSet<EventCategory> eventCategories) {
+        //He sets the type via a macro but cannot do that in Java
+        this.eventCategories = eventCategories;
+        this.handled = false;
     }
 
     public enum EventType {
@@ -60,14 +63,19 @@ public abstract class Event {
         return getCategoryFlags().contains(eventCategory);
     }
 
+    public String getName() {
+        return getEventType().name();
+    }
+
+    public EnumSet<Event.EventCategory> getCategoryFlags() {
+        return eventCategories;
+    }
+
+    //Cannot be marked as abstract, but functionally is
     public static EventType getStaticEventType() {
         return EventType.None;
     }
 
     public abstract EventType getEventType();
-
-    public abstract String getName();
-
-    public abstract EnumSet<EventCategory> getCategoryFlags();
 
 }

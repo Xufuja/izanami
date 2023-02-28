@@ -16,9 +16,11 @@ public class Application {
         WindowResizeEvent event = new WindowResizeEvent(1280, 720);
         if (event.isInCategory(Event.EventCategory.EventCategoryApplication)) {
             logger.info("EventCategoryApplication {}", Event.EventCategory.EventCategoryApplication.getCategoryValue());
+            System.out.println(event.getName());
         }
         if (event.isInCategory(Event.EventCategory.EventCategoryInput)) {
             logger.info("EventCategoryInput {}", Event.EventCategory.EventCategoryInput.getCategoryValue());
+            System.out.println(event.getName());
         }
     }
 
