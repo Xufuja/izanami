@@ -67,6 +67,14 @@ public abstract class Event {
         return getEventType().name();
     }
 
+    public boolean isHandled() {
+        return handled;
+    }
+
+    public void setHandled(boolean handled) {
+        this.handled = handled;
+    }
+
     public EnumSet<Event.EventCategory> getCategoryFlags() {
         return eventCategories;
     }

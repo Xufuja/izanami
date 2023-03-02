@@ -18,7 +18,7 @@
 
     <profiles>
         <profile>
-            <id>lwjgl-natives-windows-amd64</id>
+                <id>lwjgl-natives-windows-amd64</id>
             <activation>
                 <os>
                     <family>windows</family>
@@ -94,15 +94,11 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-shaderc</artifactId>
+            <artifactId>lwjgl-opengl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-stb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-vulkan</artifactId>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
@@ -126,7 +122,7 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-shaderc</artifactId>
+            <artifactId>lwjgl-opengl</artifactId>
             <classifier>${lwjgl.natives}</classifier>
         </dependency>
         <dependency>
