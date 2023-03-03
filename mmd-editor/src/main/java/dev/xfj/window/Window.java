@@ -1,18 +1,20 @@
 package dev.xfj.window;
 
-import dev.xfj.events.Event;
+import dev.xfj.events.application.WindowCloseEvent;
 import dev.xfj.events.application.WindowResizeEvent;
+import dev.xfj.events.key.KeyPressedEvent;
+import dev.xfj.events.key.KeyReleasedEvent;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWWindowCloseCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
     public static boolean glfwInitialized = false;
-
-    public long getWindow() {
-        return window;
-    }
 
     private long window;
     private WindowData windowData;
@@ -37,23 +39,69 @@ public class Window {
             if (!success) {
                 throw new RuntimeException("Could not initialize GLFW!");
             } else {
+                GLFWErrorCallback.createPrint(System.err).set();
                 glfwInitialized = true;
             }
         }
         window = glfwCreateWindow(windowProps.width, windowProps.height, windowProps.title, NULL, NULL);
 
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> { //From https://www.lwjgl.org/guide
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-        });
-
         glfwMakeContextCurrent(window);
-        //glfwSetWindowUserPointer();
+        GL.createCapabilities(); //Special method since the C++ version works differently
+        //glfwSetWindowUserPointer(window, windowData);
         setVSync(true);
 
+
+        glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                windowData.width = width;
+                windowData.height = height;
+                WindowResizeEvent event = new WindowResizeEvent(width, height);
+                windowData.eventCallback.handle(event);
+            }
+        });
+        glfwSetWindowCloseCallback(window, new GLFWWindowCloseCallback() {
+            @Override
+            public void invoke(long window) {
+                WindowCloseEvent event = new WindowCloseEvent();
+                windowData.eventCallback.handle(event);
+            }
+        });
+        glfwSetKeyCallback(window, new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scanCode, int action, int mods) {
+                glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
+                    @Override
+                    public void invoke(long window, int width, int height) {
+                        windowData.width = width;
+                        windowData.height = height;
+                        WindowResizeEvent event = new WindowResizeEvent(width, height);
+                        windowData.eventCallback.handle(event);
+                    }
+                });
+                glfwSetWindowCloseCallback(window, new GLFWWindowCloseCallback() {
+                    @Override
+                    public void invoke(long window) {
+                        WindowCloseEvent event = new WindowCloseEvent();
+                        windowData.eventCallback.handle(event);
+                    }
+                });
+                glfwSetKeyCallback(window, new GLFWKeyCallback() {
+                    @Override
+                    public void invoke(long window, int key, int scanCode, int action, int mods) {
+                    }
+                });
+
+            }
+        });
+        //glfwSetMouseButtonCallback
+        //glfwSetScrollCallback
+        //glfwSetCursorPosCallback
     }
 
-
+    public void shutdown() {
+        glfwDestroyWindow(window);
+    }
 
     public void onUpdate() {
         glfwPollEvents();
@@ -83,5 +131,13 @@ public class Window {
 
     public boolean isVSync() {
         return windowData.vSync;
+    }
+
+    public long getWindow() {
+        return window;
+    }
+
+    public WindowData getWindowData() {
+        return windowData;
     }
 }

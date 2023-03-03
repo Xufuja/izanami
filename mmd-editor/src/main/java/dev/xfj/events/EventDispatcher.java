@@ -5,31 +5,22 @@ import java.lang.reflect.Method;
 import java.util.function.Function;
 
 public class EventDispatcher {
-    private Event event;
+    private final Event event;
 
     public EventDispatcher(Event event) {
         this.event = event;
     }
 
-    public <T extends Event> boolean dispatch(Function<T, Boolean> handler) {
-        Class<?> eventType = event.getClass();
-        while (eventType != null) {
-            try {
-                Method method = eventType.getDeclaredMethod("getStaticEventType");
-                @SuppressWarnings("unchecked")
-                Class<T> castedEventType = (Class<T>) method.invoke(null);
-                if (castedEventType.isAssignableFrom(eventType)) {
-                    T castedEvent = castedEventType.cast(event);
-                    handler.apply(castedEvent);
-                    event.setHandled(true);
-                    return event.isHandled();
-                }
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
-                     InvocationTargetException e) {
-                eventType = eventType.getSuperclass();
+    public <T extends Event> boolean dispatch(Class<T> eventType, Function<T, Boolean> func) {
+        try {
+            Method getStaticEventType = eventType.getDeclaredMethod("getStaticType");
+            if (event.getEventType() == getStaticEventType.invoke(null)) {
+                event.handled = func.apply((T) event);
+                return true;
             }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            // handle exception
         }
         return false;
     }
-
 }

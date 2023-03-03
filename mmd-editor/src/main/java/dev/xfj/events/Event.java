@@ -5,7 +5,7 @@ import java.util.Set;
 
 public abstract class Event {
     private final EnumSet<Event.EventCategory> eventCategories;
-    private boolean handled;
+    protected boolean handled;
 
     protected Event(EnumSet<EventCategory> eventCategories) {
         //He sets the type via a macro but cannot do that in Java
