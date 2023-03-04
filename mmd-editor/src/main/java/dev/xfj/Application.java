@@ -6,17 +6,13 @@ import dev.xfj.events.application.WindowCloseEvent;
 import dev.xfj.window.Window;
 import org.slf4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.function.Function;
-
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.*;
-
 
 public class Application {
     public static final Logger logger = Log.init(Application.class.getSimpleName());
     private boolean running;
-    private Window window;
+    private final Window window;
 
     public Application() {
         running = true;
@@ -30,15 +26,20 @@ public class Application {
             glClear(GL_COLOR_BUFFER_BIT);
             window.onUpdate();
         }
-
-
         // Terminate GLFW and free the error callback
         glfwTerminate();
     }
 
     public void onEvent(Event event) {
         EventDispatcher eventDispatcher = new EventDispatcher(event);
-        eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);
+        boolean result = false;
+        if (event instanceof WindowCloseEvent) {
+            result = eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);
+        }
+        if (result) {
+            logger.debug("Dispatched: " + event.getClass().getSimpleName());
+        }
+        logger.trace(event.toString());
     }
 
     private boolean onWindowClose(WindowCloseEvent windowCloseEvent) {

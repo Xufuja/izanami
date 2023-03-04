@@ -17,7 +17,7 @@ public class KeyPressedEvent extends KeyEvent {
     }
 
     public String toString() {
-        return String.format("KeyPressedEvent: %1$d (%1$d repeats)", getKeyCode(), repeatCount);
+        return String.format("KeyPressedEvent: %1$d (%2$d repeats)", getKeyCode(), repeatCount);
     }
 
     public static Event.EventType getStaticType() {

@@ -1,10 +1,15 @@
 package dev.xfj.events;
 
+import dev.xfj.Log;
+import dev.xfj.window.Window;
+import org.slf4j.Logger;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
 public class EventDispatcher {
+    public static final Logger logger = Log.init(Window.class.getSimpleName());
     private final Event event;
 
     public EventDispatcher(Event event) {
@@ -19,7 +24,7 @@ public class EventDispatcher {
                 return true;
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            // handle exception
+            logger.error(e.getMessage());
         }
         return false;
     }

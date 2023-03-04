@@ -11,7 +11,7 @@ public class KeyReleasedEvent extends KeyEvent {
     }
 
     public String toString() {
-        return String.format("KeyReleasedEvent: %1$d (%1$d repeats)", getKeyCode());
+        return String.format("KeyReleasedEvent: %1$d", getKeyCode());
     }
 
     public static Event.EventType getStaticType() {

@@ -9,7 +9,6 @@ import ch.qos.logback.core.ConsoleAppender;
 import org.slf4j.LoggerFactory;
 
 public class Log {
-
     private Log() {
         //https://stackoverflow.com/questions/16910955/programmatically-configure-logback-appender
     }
@@ -29,7 +28,7 @@ public class Log {
 
         Logger logger = (Logger) LoggerFactory.getLogger(name);
         logger.addAppender(consoleAppender);
-        logger.setLevel(Level.DEBUG);
+        logger.setLevel(Level.TRACE);
         logger.setAdditive(false);
 
         return logger;
