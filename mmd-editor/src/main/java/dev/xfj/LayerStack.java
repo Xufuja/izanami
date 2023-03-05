@@ -16,6 +16,7 @@ public class LayerStack {
 
     public void pushLayer(Layer layer) {
         layerInsert.add(layer);
+        layerInsert.previous();
     }
 
     public void pushOverlay(Layer overlay) {
