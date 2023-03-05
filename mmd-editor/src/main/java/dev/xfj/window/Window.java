@@ -56,7 +56,7 @@ public class Window {
         window = glfwCreateWindow(windowProps.width, windowProps.height, windowProps.title, NULL, NULL);
 
         glfwMakeContextCurrent(window);
-        GL.createCapabilities(); //Special method since the C++ version works differently
+        GL.createCapabilities(); //No need for glad, this kind of does the same as gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         //glfwSetWindowUserPointer(window, windowData);
         setVSync(true);
 

@@ -6,17 +6,21 @@ import dev.xfj.events.application.WindowCloseEvent;
 import dev.xfj.window.Window;
 import org.slf4j.Logger;
 
+import java.util.ListIterator;
+
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Application {
     public static final Logger logger = Log.init(Application.class.getSimpleName());
-    private boolean running;
     private final Window window;
+    private boolean running;
+    private final LayerStack layerStack;
 
     public Application() {
-        running = true;
         window = Window.create();
+        running = true;
+        layerStack = new LayerStack();
         window.setEventCallback(this::onEvent);
     }
 
@@ -24,9 +28,12 @@ public class Application {
         while (running) {
             glClearColor(1, 0, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
+            for (Layer layer : layerStack.getLayers()) {
+                layer.onUpdate();
+            }
             window.onUpdate();
         }
-        // Terminate GLFW and free the error callback
+        window.shutdown();
         glfwTerminate();
     }
 
@@ -40,6 +47,22 @@ public class Application {
             logger.debug("Dispatched: " + event.getClass().getSimpleName());
         }
         logger.trace(event.toString());
+        ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
+        while (it.hasPrevious()) {
+            Layer layer = it.previous();
+            layer.onEvent(event);
+            if (event.isHandled()) {
+                break;
+            }
+        }
+    }
+
+    public void pushLayer(Layer layer) {
+        layerStack.pushLayer(layer);
+    }
+
+    public void pushOverlay(Layer layer) {
+        layerStack.pushOverlay(layer);
     }
 
     private boolean onWindowClose(WindowCloseEvent windowCloseEvent) {

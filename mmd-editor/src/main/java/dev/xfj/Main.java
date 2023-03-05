@@ -8,6 +8,7 @@ public class Main {
     public static void main(String[] args) {
         logger.info("Starting application");
         Application application = new Application();
+        application.pushLayer(new ExampleLayer());
         application.run();
     }
 }

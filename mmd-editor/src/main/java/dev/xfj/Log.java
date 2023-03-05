@@ -28,7 +28,7 @@ public class Log {
 
         Logger logger = (Logger) LoggerFactory.getLogger(name);
         logger.addAppender(consoleAppender);
-        logger.setLevel(Level.TRACE);
+        logger.setLevel(Level.DEBUG);
         logger.setAdditive(false);
 
         return logger;
