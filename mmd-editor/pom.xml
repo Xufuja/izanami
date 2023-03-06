@@ -18,7 +18,7 @@
 
     <profiles>
         <profile>
-                <id>lwjgl-natives-windows-amd64</id>
+            <id>lwjgl-natives-windows-amd64</id>
             <activation>
                 <os>
                     <family>windows</family>
@@ -75,6 +75,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.spair</groupId>
+            <artifactId>imgui-java-binding</artifactId>
+            <version>1.86.9</version>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
