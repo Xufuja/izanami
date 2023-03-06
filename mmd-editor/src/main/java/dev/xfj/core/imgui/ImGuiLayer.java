@@ -2,16 +2,19 @@ package dev.xfj.core.imgui;
 
 import dev.xfj.core.Application;
 import dev.xfj.core.Layer;
+import dev.xfj.core.Log;
 import dev.xfj.core.events.Event;
 import dev.xfj.platform.opengl.ImGuiOpenGLRenderer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiBackendFlags;
 import imgui.flag.ImGuiKey;
+import org.slf4j.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class ImGuiLayer extends Layer {
+    public static final Logger logger = Log.init(ImGuiLayer.class.getSimpleName());
 
     private final ImGuiOpenGLRenderer imGuiGl3 = new ImGuiOpenGLRenderer();
     private float time;
@@ -20,6 +23,7 @@ public class ImGuiLayer extends Layer {
         super("ImGuiLayer");
         time = 0.0f;
     }
+
     @Override
     public void onAttach() {
         ImGui.createContext();
@@ -69,7 +73,7 @@ public class ImGuiLayer extends Layer {
         Application application = Application.getApplication();
         io.setDisplaySize(application.getWindow().getWidth(), application.getWindow().getHeight());
 
-        float time  = (float)glfwGetTime();
+        float time = (float) glfwGetTime();
         io.setDeltaTime(this.time > 0.0f ? (time - this.time) : (1.0f / 60.0f));
         this.time = time;
 
@@ -85,6 +89,6 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void onEvent(Event event) {
-
+        logger.debug(event.toString());
     }
 }
