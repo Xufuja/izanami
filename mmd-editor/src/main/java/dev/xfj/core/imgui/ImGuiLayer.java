@@ -4,11 +4,21 @@ import dev.xfj.core.Application;
 import dev.xfj.core.Layer;
 import dev.xfj.core.Log;
 import dev.xfj.core.events.Event;
+import dev.xfj.core.events.EventDispatcher;
+import dev.xfj.core.events.application.WindowResizeEvent;
+import dev.xfj.core.events.key.KeyPressedEvent;
+import dev.xfj.core.events.key.KeyReleasedEvent;
+import dev.xfj.core.events.key.KeyTypedEvent;
+import dev.xfj.core.events.mouse.MouseButtonPressedEvent;
+import dev.xfj.core.events.mouse.MouseButtonReleasedEvent;
+import dev.xfj.core.events.mouse.MouseMovedEvent;
+import dev.xfj.core.events.mouse.MouseScrolledEvent;
 import dev.xfj.platform.opengl.ImGuiOpenGLRenderer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiBackendFlags;
 import imgui.flag.ImGuiKey;
+import org.lwjgl.opengl.GL41;
 import org.slf4j.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -89,6 +99,72 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void onEvent(Event event) {
-        logger.debug(event.toString());
+        EventDispatcher eventDispatcher = new EventDispatcher(event);
+        eventDispatcher.dispatch(MouseButtonPressedEvent.class, this::onMouseButtonPressedEvent);
+        eventDispatcher.dispatch(MouseButtonReleasedEvent.class, this::onMouseButtonReleasedEvent);
+        eventDispatcher.dispatch(MouseMovedEvent.class, this::onMouseMovedEvent);
+        eventDispatcher.dispatch(MouseScrolledEvent.class, this::onMouseScrolledEvent);
+        eventDispatcher.dispatch(KeyPressedEvent.class, this::onKeyPressedEvent);
+        eventDispatcher.dispatch(KeyReleasedEvent.class, this::onKeyReleasedEvent);
+        eventDispatcher.dispatch(KeyTypedEvent.class, this::onKeyTypedEvent);
+        eventDispatcher.dispatch(WindowResizeEvent.class, this::onWindowResizeEvent);
+    }
+
+    private boolean onMouseButtonPressedEvent(MouseButtonPressedEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        io.setMouseDown(event.getButton(), true);
+        return false;
+    }
+
+    private boolean onMouseButtonReleasedEvent(MouseButtonReleasedEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        io.setMouseDown(event.getButton(), false);
+        return false;
+    }
+
+    private boolean onMouseMovedEvent(MouseMovedEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        io.setMousePos(event.getX(), event.getY());
+        return false;
+    }
+
+    private boolean onMouseScrolledEvent(MouseScrolledEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        io.setMouseWheelH(io.getMouseWheelH() + event.getxOffset());
+        io.setMouseWheel(io.getMouseWheel() + event.getyOffset());
+        return false;
+    }
+
+    private boolean onKeyPressedEvent(KeyPressedEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        io.setKeysDown(event.getKeyCode(), true);
+        io.setKeyCtrl(io.getKeysDown(GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW_KEY_RIGHT_CONTROL));
+        io.setKeyShift(io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT));
+        io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
+        io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
+        return false;
+    }
+
+    private boolean onKeyReleasedEvent(KeyReleasedEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        io.setKeysDown(event.getKeyCode(), false);
+        return false;
+    }
+
+    private boolean onKeyTypedEvent(KeyTypedEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        int keyCode = event.getKeyCode();
+        if (keyCode > 0 && keyCode < 0x10000) {
+            io.addInputCharacter(keyCode);
+        }
+        return false;
+    }
+
+    private boolean onWindowResizeEvent(WindowResizeEvent event) {
+        final ImGuiIO io = ImGui.getIO();
+        io.setDisplaySize(event.getWidth(), event.getHeight());
+        io.setDisplayFramebufferScale(1.0f, 1.0f);
+        GL41.glViewport(0, 0, event.getWidth(), event.getHeight());
+        return false;
     }
 }

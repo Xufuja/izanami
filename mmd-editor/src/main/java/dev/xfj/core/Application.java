@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import java.util.ListIterator;
 
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL41.*;
 
 public class Application {
     public static final Logger logger = Log.init(Application.class.getSimpleName());

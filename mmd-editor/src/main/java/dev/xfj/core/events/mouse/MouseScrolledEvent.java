@@ -14,6 +14,15 @@ public class MouseScrolledEvent extends Event {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
     }
+
+    public float getxOffset() {
+        return xOffset;
+    }
+
+    public float getyOffset() {
+        return yOffset;
+    }
+
     public String toString() {
         return String.format("MouseScrolledEvent: %1$f, %2$f", xOffset, yOffset);
     }

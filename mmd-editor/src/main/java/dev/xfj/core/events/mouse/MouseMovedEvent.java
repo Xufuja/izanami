@@ -14,6 +14,15 @@ public class MouseMovedEvent extends Event {
         this.x = x;
         this.y = y;
     }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
     public String toString() {
         return String.format("MouseMovedEvent: %1$f, %2$f", x, y);
     }

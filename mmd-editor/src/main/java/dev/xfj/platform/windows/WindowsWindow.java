@@ -5,6 +5,7 @@ import dev.xfj.core.events.application.WindowCloseEvent;
 import dev.xfj.core.events.application.WindowResizeEvent;
 import dev.xfj.core.events.key.KeyPressedEvent;
 import dev.xfj.core.events.key.KeyReleasedEvent;
+import dev.xfj.core.events.key.KeyTypedEvent;
 import dev.xfj.core.events.mouse.MouseButtonPressedEvent;
 import dev.xfj.core.events.mouse.MouseButtonReleasedEvent;
 import dev.xfj.core.events.mouse.MouseMovedEvent;
@@ -100,6 +101,13 @@ public class WindowsWindow implements Window {
                         windowData.eventCallback.handle(event);
                     }
                 }
+            }
+        });
+        glfwSetCharCallback(window, new GLFWCharCallback() {
+            @Override
+            public void invoke(long window, int keyCode) {
+                KeyTypedEvent event = new KeyTypedEvent(keyCode);
+                windowData.eventCallback.handle(event);
             }
         });
         glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback() {
