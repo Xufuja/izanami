@@ -82,6 +82,12 @@
             <version>1.86.9</version>
         </dependency>
         <dependency>
+            <groupId>io.github.spair</groupId>
+            <artifactId>imgui-java-natives-windows-ft</artifactId>
+            <version>1.86.9</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
         </dependency>

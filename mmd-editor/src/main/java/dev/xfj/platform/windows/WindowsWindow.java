@@ -175,7 +175,7 @@ public class WindowsWindow implements Window {
         return windowData.vSync;
     }
 
-    public long getWindow() {
+    public long getNativeWindow() {
         return window;
     }
 

@@ -4,9 +4,11 @@ import dev.xfj.core.events.Event;
 import dev.xfj.core.events.EventDispatcher;
 import dev.xfj.core.events.application.WindowCloseEvent;
 import dev.xfj.core.window.Window;
+import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
 import org.slf4j.Logger;
 
+import java.util.AbstractMap;
 import java.util.ListIterator;
 
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
@@ -14,10 +16,16 @@ import static org.lwjgl.opengl.GL41.*;
 
 public class Application {
     public static final Logger logger = Log.init(Application.class.getSimpleName());
-    private static Application application = null;
+    private static Application application;
     private final Window window;
     private boolean running;
     private final LayerStack layerStack;
+
+    static {
+        //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
+        //It seems to do the same thing as using this static block, but not sure how that is being called
+        Input.setInput(new WindowsInput());
+    }
 
     public Application() {
         if (application == null) {
@@ -38,6 +46,8 @@ public class Application {
             for (Layer layer : layerStack.getLayers()) {
                 layer.onUpdate();
             }
+            AbstractMap.SimpleEntry<Float, Float> mousePosition = Input.getMousePosition();
+            logger.debug(String.format("Current mouse position: (%1$f, %2$f)", mousePosition.getKey(), mousePosition.getValue()));
             window.onUpdate();
         }
         window.shutdown();

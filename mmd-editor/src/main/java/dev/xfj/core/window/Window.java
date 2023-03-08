@@ -8,4 +8,5 @@ public interface Window {
     void setVSync(boolean enabled);
     boolean isVSync();
     void shutdown();
+    long getNativeWindow();
 }
