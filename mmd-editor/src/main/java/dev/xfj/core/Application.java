@@ -46,8 +46,6 @@ public class Application {
             for (Layer layer : layerStack.getLayers()) {
                 layer.onUpdate();
             }
-            AbstractMap.SimpleEntry<Float, Float> mousePosition = Input.getMousePosition();
-            logger.debug(String.format("Current mouse position: (%1$f, %2$f)", mousePosition.getKey(), mousePosition.getValue()));
             window.onUpdate();
         }
         window.shutdown();
