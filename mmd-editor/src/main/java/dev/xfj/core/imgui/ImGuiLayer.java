@@ -109,16 +109,14 @@ public class ImGuiLayer extends Layer {
     }
 
     public void begin() {
-        final ImGuiIO io = ImGui.getIO();
-        Application application = Application.getApplication();
-        io.setDisplaySize(application.getWindow().getWidth(), application.getWindow().getHeight());
         imGuiGlfw.newFrame();
         ImGui.newFrame();
     }
 
     public void end() {
         final ImGuiIO io = ImGui.getIO();
-
+        Application application = Application.getApplication();
+        io.setDisplaySize(application.getWindow().getWidth(), application.getWindow().getHeight());
         ImGui.render();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
         if (io.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
