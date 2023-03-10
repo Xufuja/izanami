@@ -32,11 +32,11 @@ public class ImGuiLayer extends Layer {
 
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
-    private float time;
+    //private float time;
 
     public ImGuiLayer() {
         super("ImGuiLayer");
-        time = 0.0f;
+        //time = 0.0f;
     }
 
     @Override

@@ -1,12 +1,9 @@
 package dev.xfj.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
+import java.util.*;
 
 public class LayerStack {
-    private List<Layer> layers;
+    private final List<Layer> layers;
     private int layerInsertIndex;
 
     public LayerStack() {
@@ -15,28 +12,37 @@ public class LayerStack {
     }
 
     public void pushLayer(Layer layer) {
-        layers.add(layer);
+        layers.add(layerInsertIndex, layer);
         layerInsertIndex++;
+        layer.onAttach();
     }
 
     public void pushOverlay(Layer overlay) {
         layers.add(overlay);
+        overlay.onAttach();
     }
 
     public void popLayer(Layer layer) {
-        layers.remove(layer);
-        layerInsertIndex--;
+        Optional<Integer> index = findIndex(layer);
+        index.ifPresent(i -> {
+            layers.remove((int) i);
+            layerInsertIndex--;
+        });
+        layer.onDetach();
     }
 
     public void popOverlay(Layer overlay) {
-        layers.remove(overlay);
+        Optional<Integer> index = findIndex(overlay);
+        index.ifPresent(i -> layers.remove((int) i));
+        overlay.onDetach();
     }
 
     public List<Layer> getLayers() {
         return layers;
     }
 
-    public int getLayerInsertIndex() {
-        return layerInsertIndex;
+    private Optional<Integer> findIndex(Layer layer) {
+        int index = layers.indexOf(layer);
+        return (index != -1) ? Optional.of(index) : Optional.empty();
     }
 }

@@ -83,12 +83,10 @@ public class Application {
 
     public void pushLayer(Layer layer) {
         layerStack.pushLayer(layer);
-        layer.onAttach();
     }
 
     public void pushOverlay(Layer layer) {
         layerStack.pushOverlay(layer);
-        layer.onAttach();
     }
 
     private boolean onWindowClose(WindowCloseEvent windowCloseEvent) {
