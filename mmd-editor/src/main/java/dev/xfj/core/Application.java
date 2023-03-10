@@ -3,6 +3,7 @@ package dev.xfj.core;
 import dev.xfj.core.events.Event;
 import dev.xfj.core.events.EventDispatcher;
 import dev.xfj.core.events.application.WindowCloseEvent;
+import dev.xfj.core.imgui.ImGuiLayer;
 import dev.xfj.core.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
@@ -18,6 +19,7 @@ public class Application {
     public static final Logger logger = Log.init(Application.class.getSimpleName());
     private static Application application;
     private final Window window;
+    private ImGuiLayer imGuiLayer;
     private boolean running;
     private final LayerStack layerStack;
 
@@ -37,6 +39,8 @@ public class Application {
         running = true;
         layerStack = new LayerStack();
         window.setEventCallback(this::onEvent);
+        imGuiLayer = new ImGuiLayer();
+        pushOverlay(imGuiLayer);
     }
 
     public void run() {
@@ -46,6 +50,11 @@ public class Application {
             for (Layer layer : layerStack.getLayers()) {
                 layer.onUpdate();
             }
+            imGuiLayer.begin();
+            for (Layer layer : layerStack.getLayers()) {
+                layer.onImGuiRender();
+            }
+            imGuiLayer.end();
             window.onUpdate();
         }
         window.shutdown();

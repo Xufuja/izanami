@@ -13,11 +13,15 @@ import dev.xfj.core.events.mouse.MouseButtonPressedEvent;
 import dev.xfj.core.events.mouse.MouseButtonReleasedEvent;
 import dev.xfj.core.events.mouse.MouseMovedEvent;
 import dev.xfj.core.events.mouse.MouseScrolledEvent;
-import dev.xfj.platform.opengl.ImGuiOpenGLRenderer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
+import imgui.ImGuiStyle;
 import imgui.flag.ImGuiBackendFlags;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiKey;
+import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.opengl.GL41;
 import org.slf4j.Logger;
 
@@ -26,7 +30,8 @@ import static org.lwjgl.glfw.GLFW.*;
 public class ImGuiLayer extends Layer {
     public static final Logger logger = Log.init(ImGuiLayer.class.getSimpleName());
 
-    private final ImGuiOpenGLRenderer imGuiGl3 = new ImGuiOpenGLRenderer();
+    private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
+    private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private float time;
 
     public ImGuiLayer() {
@@ -37,6 +42,30 @@ public class ImGuiLayer extends Layer {
     @Override
     public void onAttach() {
         ImGui.createContext();
+        final ImGuiIO io = ImGui.getIO();
+        io.setIniFilename(null);
+        io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
+        //io.addConfigFlags(ImGuiConfigFlags.NavEnableGamepad);
+        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
+        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+        // io.setConfigViewportsNoTaskBarIcon(true);
+        //io.setConfigViewportsNoAutoMerge(true);
+        ImGui.styleColorsDark();
+
+        ImGuiStyle imGuiStyle = ImGui.getStyle();
+        if (io.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            imGuiStyle.setWindowRounding(0.0f);
+            float[][] colors = imGuiStyle.getColors();
+            colors[ImGuiCol.WindowBg][3] = 1.0f;
+            imGuiStyle.setColors(colors);
+        }
+
+        Application application = Application.getApplication();
+        long window = application.getWindow().getNativeWindow();
+        imGuiGlfw.init(window, true);
+        imGuiGl3.init("#version 410");
+
+        /*ImGui.createContext();
         ImGui.styleColorsDark();
 
         final ImGuiIO io = ImGui.getIO();
@@ -69,17 +98,45 @@ public class ImGuiLayer extends Layer {
 
         io.setKeyMap(keyMap);
 
-        imGuiGl3.init("#version 410");
+        imGuiGl3.init("#version 410");*/
     }
 
     @Override
     public void onDetach() {
+        imGuiGl3.dispose();
+        imGuiGlfw.dispose();
+        ImGui.destroyContext();
+    }
 
+    public void begin() {
+        final ImGuiIO io = ImGui.getIO();
+        Application application = Application.getApplication();
+        io.setDisplaySize(application.getWindow().getWidth(), application.getWindow().getHeight());
+        imGuiGlfw.newFrame();
+        ImGui.newFrame();
+    }
+
+    public void end() {
+        final ImGuiIO io = ImGui.getIO();
+
+        ImGui.render();
+        imGuiGl3.renderDrawData(ImGui.getDrawData());
+        if (io.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            long backupCurrentContext = glfwGetCurrentContext();
+            ImGui.updatePlatformWindows();
+            ImGui.renderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backupCurrentContext);
+        }
+    }
+
+    @Override
+    public void onImGuiRender() {
+        ImGui.showDemoWindow();
     }
 
     @Override
     public void onUpdate() {
-        final ImGuiIO io = ImGui.getIO();
+        /*final ImGuiIO io = ImGui.getIO();
         Application application = Application.getApplication();
         io.setDisplaySize(application.getWindow().getWidth(), application.getWindow().getHeight());
 
@@ -94,12 +151,12 @@ public class ImGuiLayer extends Layer {
 
         ImGui.showDemoWindow();
         ImGui.render();
-        imGuiGl3.renderDrawData(ImGui.getDrawData());
-    }
+        imGuiGl3.renderDrawData(ImGui.getDrawData());*/
+}
 
     @Override
     public void onEvent(Event event) {
-        EventDispatcher eventDispatcher = new EventDispatcher(event);
+        /*EventDispatcher eventDispatcher = new EventDispatcher(event);
         eventDispatcher.dispatch(MouseButtonPressedEvent.class, this::onMouseButtonPressedEvent);
         eventDispatcher.dispatch(MouseButtonReleasedEvent.class, this::onMouseButtonReleasedEvent);
         eventDispatcher.dispatch(MouseMovedEvent.class, this::onMouseMovedEvent);
@@ -107,10 +164,10 @@ public class ImGuiLayer extends Layer {
         eventDispatcher.dispatch(KeyPressedEvent.class, this::onKeyPressedEvent);
         eventDispatcher.dispatch(KeyReleasedEvent.class, this::onKeyReleasedEvent);
         eventDispatcher.dispatch(KeyTypedEvent.class, this::onKeyTypedEvent);
-        eventDispatcher.dispatch(WindowResizeEvent.class, this::onWindowResizeEvent);
+        eventDispatcher.dispatch(WindowResizeEvent.class, this::onWindowResizeEvent);*/
     }
 
-    private boolean onMouseButtonPressedEvent(MouseButtonPressedEvent event) {
+    /*private boolean onMouseButtonPressedEvent(MouseButtonPressedEvent event) {
         final ImGuiIO io = ImGui.getIO();
         io.setMouseDown(event.getButton(), true);
         return false;
@@ -166,5 +223,6 @@ public class ImGuiLayer extends Layer {
         io.setDisplayFramebufferScale(1.0f, 1.0f);
         GL41.glViewport(0, 0, event.getWidth(), event.getHeight());
         return false;
-    }
+    }*/
 }
+

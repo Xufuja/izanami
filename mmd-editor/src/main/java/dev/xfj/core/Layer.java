@@ -14,6 +14,7 @@ public abstract class Layer {
     public abstract void onAttach();
     public abstract void onDetach();
     public abstract void onUpdate();
+    public abstract void onImGuiRender();
     public abstract void onEvent(Event event);
 
     public String getDebugName() {

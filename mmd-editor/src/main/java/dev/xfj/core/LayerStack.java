@@ -7,16 +7,16 @@ import java.util.Objects;
 
 public class LayerStack {
     private List<Layer> layers;
-    private ListIterator<Layer> layerInsert;
+    private int layerInsertIndex;
 
     public LayerStack() {
         layers = new ArrayList<>();
-        layerInsert = layers.listIterator();
+        layerInsertIndex = 0;
     }
 
     public void pushLayer(Layer layer) {
-        layerInsert.add(layer);
-        layerInsert.previous();
+        layers.add(layer);
+        layerInsertIndex++;
     }
 
     public void pushOverlay(Layer overlay) {
@@ -24,13 +24,11 @@ public class LayerStack {
     }
 
     public void popLayer(Layer layer) {
-        Objects.requireNonNull(layer);
         layers.remove(layer);
-        layerInsert.previous();
+        layerInsertIndex--;
     }
 
     public void popOverlay(Layer overlay) {
-        Objects.requireNonNull(overlay);
         layers.remove(overlay);
     }
 
@@ -38,7 +36,7 @@ public class LayerStack {
         return layers;
     }
 
-    public ListIterator<Layer> getLayerInsert() {
-        return layerInsert;
+    public int getLayerInsertIndex() {
+        return layerInsertIndex;
     }
 }
