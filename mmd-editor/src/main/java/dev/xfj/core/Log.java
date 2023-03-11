@@ -9,15 +9,41 @@ import ch.qos.logback.core.ConsoleAppender;
 import org.slf4j.LoggerFactory;
 
 public class Log {
+    private static Logger coreLogger;
+
     private Log() {
         //https://stackoverflow.com/questions/16910955/programmatically-configure-logback-appender
     }
 
-    public static Logger init(String name) {
+    public static void init() {
+        coreLogger = Log.createLogger("Core");
+    }
+    
+    public static void error(String line) {
+        coreLogger.error(line);
+    }
+
+    public static void warn(String line) {
+        coreLogger.warn(line);
+    }
+
+    public static void info(String line) {
+        coreLogger.info(line);
+    }
+
+    public static void debug(String line) {
+        coreLogger.debug(line);
+    }
+
+    public static void trace(String line) {
+        coreLogger.trace(line);
+    }
+
+    public static Logger createLogger(String name) {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         PatternLayoutEncoder patternLayoutEncoder = new PatternLayoutEncoder();
-        patternLayoutEncoder.setPattern("%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n");
+        patternLayoutEncoder.setPattern("%d{HH:mm:ss} [%thread] %-5level %logger{36}: %msg%n");
         patternLayoutEncoder.setContext(loggerContext);
         patternLayoutEncoder.start();
 

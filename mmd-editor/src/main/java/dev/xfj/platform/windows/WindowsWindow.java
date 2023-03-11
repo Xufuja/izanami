@@ -10,21 +10,21 @@ import dev.xfj.core.events.mouse.MouseButtonPressedEvent;
 import dev.xfj.core.events.mouse.MouseButtonReleasedEvent;
 import dev.xfj.core.events.mouse.MouseMovedEvent;
 import dev.xfj.core.events.mouse.MouseScrolledEvent;
+import dev.xfj.core.renderer.GraphicsContext;
 import dev.xfj.core.window.EventCallBack;
 import dev.xfj.core.window.Window;
 import dev.xfj.core.window.WindowData;
 import dev.xfj.core.window.WindowProps;
+import dev.xfj.platform.opengl.OpenGLContext;
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.GL;
-import org.slf4j.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class WindowsWindow implements Window {
-    public static final Logger logger = Log.init(WindowsWindow.class.getSimpleName());
     public static boolean glfwInitialized = false;
     private long window;
+    private GraphicsContext context;
     private final WindowData windowData;
 
     public static Window create() {
@@ -42,7 +42,7 @@ public class WindowsWindow implements Window {
         windowData.width = windowProps.width;
         windowData.height = windowProps.height;
 
-        logger.info(String.format("Creating new window %1$s (%2$d, %3$d)", windowProps.title, windowProps.width, windowProps.height));
+        Log.info(String.format("Creating new window %1$s (%2$d, %3$d)", windowProps.title, windowProps.width, windowProps.height));
 
         if (!glfwInitialized) {
             boolean success = glfwInit();
@@ -52,16 +52,15 @@ public class WindowsWindow implements Window {
                 glfwSetErrorCallback(new GLFWErrorCallback() {
                     @Override
                     public void invoke(int error, long description) {
-                        logger.error(String.format("GLFW error (%1$d): %2$d", error, description));
+                        Log.error(String.format("GLFW error (%1$d): %2$d", error, description));
                     }
                 });
                 glfwInitialized = true;
             }
         }
         window = glfwCreateWindow(windowProps.width, windowProps.height, windowProps.title, NULL, NULL);
-
-        glfwMakeContextCurrent(window);
-        GL.createCapabilities(); //No need for glad, this kind of does the same as gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        context = new OpenGLContext(window);
+        context.init();
         //glfwSetWindowUserPointer(window, windowData);
         setVSync(true);
 
@@ -147,7 +146,7 @@ public class WindowsWindow implements Window {
 
     public void onUpdate() {
         glfwPollEvents();
-        glfwSwapBuffers(window);
+        context.swapBuffers();
     }
 
     public int getWidth() {

@@ -7,8 +7,8 @@ import java.util.EnumSet;
 public class MouseScrolledEvent extends Event {
     private static final Event.EventType eventType = EventType.MouseScrolled;
 
-    private float xOffset;
-    private float yOffset;
+    private final float xOffset;
+    private final float yOffset;
     public MouseScrolledEvent(float xOffset, float yOffset) {
         super(EnumSet.of(Event.EventCategory.EventCategoryMouse, Event.EventCategory.EventCategoryInput));
         this.xOffset = xOffset;

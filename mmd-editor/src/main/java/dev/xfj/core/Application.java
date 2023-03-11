@@ -7,21 +7,26 @@ import dev.xfj.core.imgui.ImGuiLayer;
 import dev.xfj.core.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
-import org.slf4j.Logger;
+import org.lwjgl.opengl.GL41;
 
-import java.util.AbstractMap;
 import java.util.ListIterator;
 
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL41.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Application {
-    public static final Logger logger = Log.init(Application.class.getSimpleName());
     private static Application application;
+
     private final Window window;
-    private ImGuiLayer imGuiLayer;
+    private final ImGuiLayer imGuiLayer;
     private boolean running;
     private final LayerStack layerStack;
+
+    public int vertexArray;
+    public int vertexBuffer;
+    public int indexBuffer;
+
 
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
@@ -33,7 +38,7 @@ public class Application {
         if (application == null) {
             application = this;
         } else {
-            logger.error("Application already exists!");
+            Log.error("Application already exists!");
         }
         window = WindowsWindow.create();
         running = true;
@@ -41,12 +46,35 @@ public class Application {
         window.setEventCallback(this::onEvent);
         imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
+
+        vertexArray = GL41.glGenVertexArrays();
+        GL41.glBindVertexArray(vertexArray);
+
+        vertexBuffer = GL41.glGenBuffers();
+        GL41.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+
+        float[] vertices = {
+                -0.5f, -0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+                0.0f, 0.5f, 0.0f
+        };
+
+        GL41.glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+        GL41.glEnableVertexAttribArray(0);
+        GL41.glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, NULL);
+
+        indexBuffer = GL41.glGenBuffers();
+        GL41.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+        int[] indices = { 0, 1, 2 };
+        GL41.glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
     }
 
     public void run() {
         while (running) {
-            glClearColor(1, 0, 1, 1);
-            glClear(GL_COLOR_BUFFER_BIT);
+            GL41.glClearColor(0.1f, 0.1f, 0.1f, 1);
+            GL41.glClear(GL_COLOR_BUFFER_BIT);
+            GL41.glBindVertexArray(vertexArray);
+            GL41.glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
             for (Layer layer : layerStack.getLayers()) {
                 layer.onUpdate();
             }
@@ -68,9 +96,9 @@ public class Application {
             result = eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);
         }
         if (result) {
-            logger.debug("Dispatched: " + event.getClass().getSimpleName());
+            Log.debug("Dispatched: " + event.getClass().getSimpleName());
         }
-        logger.trace(event.toString());
+        Log.trace(event.toString());
         ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
         while (it.hasPrevious()) {
             Layer layer = it.previous();

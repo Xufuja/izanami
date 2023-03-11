@@ -3,12 +3,11 @@ package dev.xfj;
 import dev.xfj.core.Application;
 import dev.xfj.core.ExampleLayer;
 import dev.xfj.core.Log;
-import org.slf4j.Logger;
 
 public class Editor extends Application {
-    public static final Logger logger = Log.init(Editor.class.getSimpleName());
 
     public Editor() {
         pushLayer(new ExampleLayer());
+        Log.info("Layer pushed!");
     }
 }

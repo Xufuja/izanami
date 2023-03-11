@@ -4,7 +4,7 @@ import dev.xfj.core.events.Event;
 
 public class KeyPressedEvent extends KeyEvent {
     private static final EventType eventType = EventType.KeyPressed;
-    private int repeatCount;
+    private final int repeatCount;
 
     public KeyPressedEvent(int keyCode, int repeatCount) {
         super(keyCode);
