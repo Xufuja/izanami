@@ -27,16 +27,12 @@ public class BufferElement {
 
     public static int shaderDataTypeSize(ShaderDataType type) {
         return switch (type) {
-            case Float -> 4;
-            case Float2 -> 4 * 2;
-            case Float3 -> 4 * 3;
-            case Float4 -> 4 * 4;
+            case Float, Int -> 4;
+            case Float2, Int2 -> 4 * 2;
+            case Float3, Int3 -> 4 * 3;
+            case Float4, Int4 -> 4 * 4;
             case Mat3 -> 4 * 3 * 3;
             case Mat4 -> 4 * 4 * 4;
-            case Int -> 4;
-            case Int2 -> 4 * 2;
-            case Int3 -> 4 * 3;
-            case Int4 -> 4 * 4;
             case Bool -> 1;
             default -> {
                 Log.error("Unknown ShaderDataType!");
@@ -47,17 +43,12 @@ public class BufferElement {
 
     public int getComponent() {
         return switch (type) {
-            case Float -> 1;
-            case Float2 -> 2;
-            case Float3 -> 3;
-            case Float4 -> 4;
+            case Float, Int, Bool -> 1;
+            case Float2, Int2 -> 2;
+            case Float3, Int3 -> 3;
+            case Float4, Int4 -> 4;
             case Mat3 -> 3 * 3;
             case Mat4 -> 4 * 4;
-            case Int -> 1;
-            case Int2 -> 2;
-            case Int3 -> 3;
-            case Int4 -> 4;
-            case Bool -> 1;
             default -> {
                 Log.error("Unknown ShaderDataType!");
                 yield 0;

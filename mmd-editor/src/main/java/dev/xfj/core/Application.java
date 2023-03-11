@@ -18,7 +18,6 @@ import java.util.ListIterator;
 
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL41.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Application {
     private static Application application;
@@ -41,16 +40,8 @@ public class Application {
 
     public static int shaderDataTypeToOpenGLBaseType(BufferElement.ShaderDataType type) {
         return switch (type) {
-            case Float -> GL_FLOAT;
-            case Float2 -> GL_FLOAT;
-            case Float3 -> GL_FLOAT;
-            case Float4 -> GL_FLOAT;
-            case Mat3 -> GL_FLOAT;
-            case Mat4 -> GL_FLOAT;
-            case Int -> GL_INT;
-            case Int2 -> GL_INT;
-            case Int3 -> GL_INT;
-            case Int4 -> GL_INT;
+            case Float, Float3, Float2, Mat3, Mat4, Float4 -> GL_FLOAT;
+            case Int, Int2, Int3, Int4 -> GL_INT;
             case Bool -> GL_BOOL;
             default -> {
                 Log.error("Unknown ShaderDataType!");

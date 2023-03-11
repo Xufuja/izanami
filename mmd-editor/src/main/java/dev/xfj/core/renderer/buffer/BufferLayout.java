@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class BufferLayout implements Iterable<BufferElement> {
+
     private final List<BufferElement> elements;
     private int stride;
 

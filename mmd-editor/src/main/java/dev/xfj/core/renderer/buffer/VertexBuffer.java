@@ -6,17 +6,17 @@ import dev.xfj.platform.opengl.OpenGLVertexBuffer;
 
 public interface VertexBuffer {
     static VertexBuffer create(float[] vertices) {
-        switch (Renderer.getAPI()) {
+        return switch (Renderer.getAPI()) {
             case None -> {
                 Log.error("RendererAPI None is not supported!");
-                return null;
+                yield null;
             }
-            case OpenGL -> {
-                return  new OpenGLVertexBuffer(vertices);
+            case OpenGL -> new OpenGLVertexBuffer(vertices);
+            default -> {
+                Log.error("Unknown RendererAPI!");
+                yield null;
             }
-        }
-        Log.error("Unknown RendererAPI!");
-        return null;
+        };
     }
 
     void bind();
@@ -24,5 +24,6 @@ public interface VertexBuffer {
     void unbind();
 
     BufferLayout getLayout();
+
     void setLayout(BufferLayout layout);
 }
