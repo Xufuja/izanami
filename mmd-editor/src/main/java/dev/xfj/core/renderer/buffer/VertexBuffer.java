@@ -22,4 +22,7 @@ public interface VertexBuffer {
     void bind();
 
     void unbind();
+
+    BufferLayout getLayout();
+    void setLayout(BufferLayout layout);
 }
