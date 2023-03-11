@@ -1,6 +1,6 @@
 package dev.xfj.core;
 
-import dev.xfj.core.events.Event;
+import dev.xfj.core.event.Event;
 
 public abstract class Layer {
     protected String debugName;

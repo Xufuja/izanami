@@ -1,13 +1,13 @@
-package dev.xfj.core.events.application;
+package dev.xfj.core.event.application;
 
-import dev.xfj.core.events.Event;
+import dev.xfj.core.event.Event;
 
 import java.util.EnumSet;
 
-public class AppRenderEvent extends Event {
-    private static final EventType eventType = EventType.AppRender;
+public class AppUpdateEvent extends Event {
+    private static final EventType eventType = EventType.AppUpdate;
 
-    public AppRenderEvent() {
+    public AppUpdateEvent() {
         super(EnumSet.of(Event.EventCategory.EventCategoryApplication));
     }
 

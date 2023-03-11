@@ -1,6 +1,6 @@
-package dev.xfj.core.events.application;
+package dev.xfj.core.event.application;
 
-import dev.xfj.core.events.Event;
+import dev.xfj.core.event.Event;
 
 import java.util.EnumSet;
 

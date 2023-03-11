@@ -1,4 +1,4 @@
-package dev.xfj.core.events;
+package dev.xfj.core.event;
 
 import java.util.EnumSet;
 import java.util.Set;

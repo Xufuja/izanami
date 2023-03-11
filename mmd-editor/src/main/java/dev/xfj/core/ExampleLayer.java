@@ -1,7 +1,7 @@
 package dev.xfj.core;
 
-import dev.xfj.core.events.Event;
-import dev.xfj.core.events.key.KeyPressedEvent;
+import dev.xfj.core.event.Event;
+import dev.xfj.core.event.key.KeyPressedEvent;
 import imgui.ImGui;
 
 import static dev.xfj.core.KeyCodes.MMD_KEY_TAB;

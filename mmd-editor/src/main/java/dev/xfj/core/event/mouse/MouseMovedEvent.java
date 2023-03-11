@@ -1,6 +1,6 @@
-package dev.xfj.core.events.mouse;
+package dev.xfj.core.event.mouse;
 
-import dev.xfj.core.events.Event;
+import dev.xfj.core.event.Event;
 
 import java.util.EnumSet;
 

@@ -1,10 +1,12 @@
 package dev.xfj.core;
 
-import dev.xfj.core.events.Event;
-import dev.xfj.core.events.EventDispatcher;
-import dev.xfj.core.events.application.WindowCloseEvent;
+import dev.xfj.core.event.Event;
+import dev.xfj.core.event.EventDispatcher;
+import dev.xfj.core.event.application.WindowCloseEvent;
 import dev.xfj.core.imgui.ImGuiLayer;
 import dev.xfj.core.renderer.Shader;
+import dev.xfj.core.renderer.buffer.IndexBuffer;
+import dev.xfj.core.renderer.buffer.VertexBuffer;
 import dev.xfj.core.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
@@ -25,9 +27,9 @@ public class Application {
     private final LayerStack layerStack;
 
     public int vertexArray;
-    public int vertexBuffer;
-    public int indexBuffer;
     public Shader shader;
+    public VertexBuffer vertexBuffer;
+    public IndexBuffer indexBuffer;
 
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
@@ -51,23 +53,19 @@ public class Application {
         vertexArray = GL41.glGenVertexArrays();
         GL41.glBindVertexArray(vertexArray);
 
-        vertexBuffer = GL41.glGenBuffers();
-        GL41.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-
         float[] vertices = {
                 -0.5f, -0.5f, 0.0f,
                 0.5f, -0.5f, 0.0f,
                 0.0f, 0.5f, 0.0f
         };
 
-        GL41.glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+        vertexBuffer = VertexBuffer.create(vertices);
+
         GL41.glEnableVertexAttribArray(0);
         GL41.glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, NULL);
 
-        indexBuffer = GL41.glGenBuffers();
-        GL41.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
         int[] indices = {0, 1, 2};
-        GL41.glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+        indexBuffer = IndexBuffer.create(indices, indices.length);
 
         String vertexSrc = """
                 #version 330 core
@@ -99,7 +97,7 @@ public class Application {
             GL41.glClear(GL_COLOR_BUFFER_BIT);
             shader.bind();
             GL41.glBindVertexArray(vertexArray);
-            GL41.glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+            GL41.glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, 0);
             for (Layer layer : layerStack.getLayers()) {
                 layer.onUpdate();
             }

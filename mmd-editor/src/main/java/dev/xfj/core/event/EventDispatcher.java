@@ -1,4 +1,4 @@
-package dev.xfj.core.events;
+package dev.xfj.core.event;
 
 import dev.xfj.core.Log;
 

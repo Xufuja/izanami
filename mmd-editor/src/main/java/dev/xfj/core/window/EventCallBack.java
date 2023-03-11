@@ -1,6 +1,6 @@
 package dev.xfj.core.window;
 
-import dev.xfj.core.events.Event;
+import dev.xfj.core.event.Event;
 
 public class EventCallBack {
     @FunctionalInterface

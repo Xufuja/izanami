@@ -2,7 +2,7 @@ package dev.xfj.core.imgui;
 
 import dev.xfj.core.Application;
 import dev.xfj.core.Layer;
-import dev.xfj.core.events.Event;
+import dev.xfj.core.event.Event;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiStyle;
