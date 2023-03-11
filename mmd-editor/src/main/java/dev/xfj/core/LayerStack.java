@@ -45,4 +45,5 @@ public class LayerStack {
         int index = layers.indexOf(layer);
         return (index != -1) ? Optional.of(index) : Optional.empty();
     }
+
 }

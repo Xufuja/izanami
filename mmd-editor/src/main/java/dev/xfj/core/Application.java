@@ -4,6 +4,7 @@ import dev.xfj.core.events.Event;
 import dev.xfj.core.events.EventDispatcher;
 import dev.xfj.core.events.application.WindowCloseEvent;
 import dev.xfj.core.imgui.ImGuiLayer;
+import dev.xfj.core.renderer.Shader;
 import dev.xfj.core.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
@@ -26,7 +27,7 @@ public class Application {
     public int vertexArray;
     public int vertexBuffer;
     public int indexBuffer;
-
+    public Shader shader;
 
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
@@ -65,14 +66,38 @@ public class Application {
 
         indexBuffer = GL41.glGenBuffers();
         GL41.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-        int[] indices = { 0, 1, 2 };
+        int[] indices = {0, 1, 2};
         GL41.glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
+        String vertexSrc = """
+                #version 330 core
+                layout(location = 0) in vec3 a_Position;
+                out vec3 v_Position;
+                void main()
+                {
+                    v_Position = a_Position;
+                    gl_Position = vec4(a_Position, 1.0);
+                }
+                """;
+
+        String fragmentSrc = """
+                #version 330 core
+                layout(location = 0) out vec4 color;
+                in vec3 v_Position;
+                void main()
+                {
+                    color = vec4(v_Position * 0.5 + 0.5, 1.0);
+                }
+                """;
+
+        shader = new Shader(vertexSrc, fragmentSrc);
     }
 
     public void run() {
         while (running) {
             GL41.glClearColor(0.1f, 0.1f, 0.1f, 1);
             GL41.glClear(GL_COLOR_BUFFER_BIT);
+            shader.bind();
             GL41.glBindVertexArray(vertexArray);
             GL41.glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
             for (Layer layer : layerStack.getLayers()) {

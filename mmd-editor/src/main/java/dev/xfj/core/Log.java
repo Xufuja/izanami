@@ -18,7 +18,7 @@ public class Log {
     public static void init() {
         coreLogger = Log.createLogger("Core");
     }
-    
+
     public static void error(String line) {
         coreLogger.error(line);
     }
