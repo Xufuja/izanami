@@ -5,6 +5,7 @@ import dev.xfj.core.event.EventDispatcher;
 import dev.xfj.core.event.application.WindowCloseEvent;
 import dev.xfj.core.imgui.ImGuiLayer;
 import dev.xfj.core.renderer.Shader;
+import dev.xfj.core.renderer.VertexArray;
 import dev.xfj.core.renderer.buffer.BufferElement;
 import dev.xfj.core.renderer.buffer.BufferLayout;
 import dev.xfj.core.renderer.buffer.IndexBuffer;
@@ -27,27 +28,16 @@ public class Application {
     private boolean running;
     private final LayerStack layerStack;
 
-    public int vertexArray;
     public Shader shader;
-    public VertexBuffer vertexBuffer;
-    public IndexBuffer indexBuffer;
+    public VertexArray vertexArray;
+
+    public Shader blueShader;
+    public VertexArray squareVA;
 
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
         //It seems to do the same thing as using this static block, but not sure how that is being called
         Input.setInput(new WindowsInput());
-    }
-
-    public static int shaderDataTypeToOpenGLBaseType(BufferElement.ShaderDataType type) {
-        return switch (type) {
-            case Float, Float3, Float2, Mat3, Mat4, Float4 -> GL_FLOAT;
-            case Int, Int2, Int3, Int4 -> GL_INT;
-            case Bool -> GL_BOOL;
-            default -> {
-                Log.error("Unknown ShaderDataType!");
-                yield 0;
-            }
-        };
     }
 
     public Application() {
@@ -63,8 +53,7 @@ public class Application {
         imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
 
-        vertexArray = GL41.glGenVertexArrays();
-        GL41.glBindVertexArray(vertexArray);
+        vertexArray = VertexArray.create();
 
         float[] vertices = {
                 -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -72,24 +61,35 @@ public class Application {
                 0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
 
-        vertexBuffer = VertexBuffer.create(vertices);
+        VertexBuffer vertexBuffer = VertexBuffer.create(vertices);
 
         BufferLayout bufferLayout = new BufferLayout(
                 new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position"),
                 new BufferElement(BufferElement.ShaderDataType.Float4, "a_Color")
         );
         vertexBuffer.setLayout(bufferLayout);
-
-        int index = 0;
-        BufferLayout layout = vertexBuffer.getLayout();
-        for (BufferElement element : layout) {
-            GL41.glEnableVertexAttribArray(index);
-            GL41.glVertexAttribPointer(index, element.getComponent(), shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), element.offset);
-            index++;
-        }
+        vertexArray.addVertexBuffer(vertexBuffer);
 
         int[] indices = {0, 1, 2};
-        indexBuffer = IndexBuffer.create(indices, indices.length);
+        IndexBuffer indexBuffer = IndexBuffer.create(indices, indices.length);
+        vertexArray.setIndexBuffer(indexBuffer);
+
+        squareVA = VertexArray.create();
+
+        float[] squareVertices = {
+                -0.75f, -0.75f, 0.0f,
+                0.75f, -0.75f, 0.0f,
+                0.75f, 0.75f, 0.0f,
+                -0.75f, 0.75f, 0.0f
+        };
+
+        VertexBuffer squareVB = VertexBuffer.create(squareVertices);
+        squareVB.setLayout(new BufferLayout(new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position")));
+        squareVA.addVertexBuffer(squareVB);
+
+        int[] squareIndices = { 0, 1, 2, 2, 3, 0 };
+        IndexBuffer squareIB = IndexBuffer.create(squareIndices, squareIndices.length);
+        squareVA.setIndexBuffer(squareIB);
 
         String vertexSrc = """
                 #version 330 core
@@ -118,15 +118,41 @@ public class Application {
                 """;
 
         shader = new Shader(vertexSrc, fragmentSrc);
+
+        String blueShaderVertexSrc = """
+                #version 330 core
+                layout(location = 0) in vec3 a_Position;
+                out vec3 v_Position;
+                void main()
+                {
+                    v_Position = a_Position;
+                    gl_Position = vec4(a_Position, 1.0);
+                }
+                """;
+                String blueShaderFragmentSrc = """
+                #version 330 core
+                layout(location = 0) out vec4 color;
+                in vec3 v_Position;
+                void main()
+                {
+                    color = vec4(0.2, 0.3, 0.8, 1.0);
+                }
+                """;
+                blueShader = new Shader(blueShaderVertexSrc, blueShaderFragmentSrc);
     }
 
     public void run() {
         while (running) {
             GL41.glClearColor(0.1f, 0.1f, 0.1f, 1);
             GL41.glClear(GL_COLOR_BUFFER_BIT);
+            blueShader.bind();
+            squareVA.bind();
+            GL41.glDrawElements(GL_TRIANGLES, squareVA.getIndexBuffer().getCount(), GL_UNSIGNED_INT, 0);
+
             shader.bind();
-            GL41.glBindVertexArray(vertexArray);
-            GL41.glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, 0);
+            vertexArray.bind();
+            GL41.glDrawElements(GL_TRIANGLES, vertexArray.getIndexBuffer().getCount(), GL_UNSIGNED_INT, 0);
+
             for (Layer layer : layerStack.getLayers()) {
                 layer.onUpdate();
             }

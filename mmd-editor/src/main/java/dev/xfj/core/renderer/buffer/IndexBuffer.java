@@ -6,17 +6,17 @@ import dev.xfj.platform.opengl.OpenGLIndexBuffer;
 
 public interface IndexBuffer {
     static IndexBuffer create(int[] indices, int count) {
-        switch (Renderer.getAPI()) {
+        return switch (Renderer.getAPI()) {
             case None -> {
                 Log.error("RendererAPI None is not supported!");
-                return null;
+                yield null;
             }
-            case OpenGL -> {
-                return new OpenGLIndexBuffer(indices, count);
+            case OpenGL -> new OpenGLIndexBuffer(indices, count);
+            default -> {
+                Log.error("Unknown RendererAPI!");
+                yield null;
             }
-        }
-        Log.error("Unknown RendererAPI!");
-        return null;
+        };
     }
 
     void bind();
