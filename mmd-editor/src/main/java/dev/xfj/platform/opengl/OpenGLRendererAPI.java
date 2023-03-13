@@ -5,10 +5,7 @@ import dev.xfj.core.renderer.VertexArray;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL41;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL41.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL41C.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL41.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class OpenGLRendererAPI extends RendererAPIBase {
