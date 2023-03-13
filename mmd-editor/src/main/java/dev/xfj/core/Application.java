@@ -4,6 +4,8 @@ import dev.xfj.core.event.Event;
 import dev.xfj.core.event.EventDispatcher;
 import dev.xfj.core.event.application.WindowCloseEvent;
 import dev.xfj.core.imgui.ImGuiLayer;
+import dev.xfj.core.renderer.RenderCommand;
+import dev.xfj.core.renderer.Renderer;
 import dev.xfj.core.renderer.Shader;
 import dev.xfj.core.renderer.VertexArray;
 import dev.xfj.core.renderer.buffer.BufferElement;
@@ -13,6 +15,7 @@ import dev.xfj.core.renderer.buffer.VertexBuffer;
 import dev.xfj.core.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL41;
 
 import java.util.ListIterator;
@@ -87,7 +90,7 @@ public class Application {
         squareVB.setLayout(new BufferLayout(new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position")));
         squareVA.addVertexBuffer(squareVB);
 
-        int[] squareIndices = { 0, 1, 2, 2, 3, 0 };
+        int[] squareIndices = {0, 1, 2, 2, 3, 0};
         IndexBuffer squareIB = IndexBuffer.create(squareIndices, squareIndices.length);
         squareVA.setIndexBuffer(squareIB);
 
@@ -129,7 +132,7 @@ public class Application {
                     gl_Position = vec4(a_Position, 1.0);
                 }
                 """;
-                String blueShaderFragmentSrc = """
+        String blueShaderFragmentSrc = """
                 #version 330 core
                 layout(location = 0) out vec4 color;
                 in vec3 v_Position;
@@ -138,20 +141,22 @@ public class Application {
                     color = vec4(0.2, 0.3, 0.8, 1.0);
                 }
                 """;
-                blueShader = new Shader(blueShaderVertexSrc, blueShaderFragmentSrc);
+        blueShader = new Shader(blueShaderVertexSrc, blueShaderFragmentSrc);
     }
 
     public void run() {
         while (running) {
-            GL41.glClearColor(0.1f, 0.1f, 0.1f, 1);
-            GL41.glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
+            RenderCommand.clear();
+            Renderer.beginScene();
+
             blueShader.bind();
-            squareVA.bind();
-            GL41.glDrawElements(GL_TRIANGLES, squareVA.getIndexBuffer().getCount(), GL_UNSIGNED_INT, 0);
+            Renderer.submit(squareVA);
 
             shader.bind();
-            vertexArray.bind();
-            GL41.glDrawElements(GL_TRIANGLES, vertexArray.getIndexBuffer().getCount(), GL_UNSIGNED_INT, 0);
+            Renderer.submit(vertexArray);
+
+            Renderer.endScene();
 
             for (Layer layer : layerStack.getLayers()) {
                 layer.onUpdate();

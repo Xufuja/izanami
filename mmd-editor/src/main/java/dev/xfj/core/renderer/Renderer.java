@@ -1,18 +1,21 @@
 package dev.xfj.core.renderer;
 
 public class Renderer {
-    private static final RendererAPI rendererAPI;
+    public static void beginScene() {
 
-    static {
-        rendererAPI = RendererAPI.OpenGL;
     }
 
-    public enum RendererAPI {
-        None,
-        OpenGL
+    public static void endScene() {
+
     }
 
-    public static RendererAPI getAPI() {
-        return rendererAPI;
+    public static void submit(VertexArray vertexArray) {
+        vertexArray.bind();
+        RenderCommand.drawIndexed(vertexArray);
+    }
+
+
+    public static RendererAPIBase.API getAPI() {
+        return RendererAPIBase.getAPI();
     }
 }

@@ -25,16 +25,19 @@ public class LayerStack {
     public void popLayer(Layer layer) {
         Optional<Integer> index = findIndex(layer);
         index.ifPresent(i -> {
+            layer.onDetach();
             layers.remove((int) i);
             layerInsertIndex--;
         });
-        layer.onDetach();
     }
 
     public void popOverlay(Layer overlay) {
         Optional<Integer> index = findIndex(overlay);
-        index.ifPresent(i -> layers.remove((int) i));
-        overlay.onDetach();
+        index.ifPresent(i -> {
+            overlay.onDetach();
+            layers.remove((int) i);
+        });
+
     }
 
     public List<Layer> getLayers() {
