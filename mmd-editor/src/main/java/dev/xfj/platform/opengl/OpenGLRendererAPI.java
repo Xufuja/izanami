@@ -1,7 +1,7 @@
 package dev.xfj.platform.opengl;
 
-import dev.xfj.core.renderer.RendererAPIBase;
-import dev.xfj.core.renderer.VertexArray;
+import dev.xfj.engine.renderer.RendererAPIBase;
+import dev.xfj.engine.renderer.VertexArray;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL41;
 

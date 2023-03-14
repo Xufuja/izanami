@@ -1,8 +1,8 @@
 package dev.xfj;
 
-import dev.xfj.core.Application;
-import dev.xfj.core.ExampleLayer;
-import dev.xfj.core.Log;
+import dev.xfj.engine.Application;
+import dev.xfj.engine.ExampleLayer;
+import dev.xfj.engine.Log;
 
 public class Editor extends Application {
 

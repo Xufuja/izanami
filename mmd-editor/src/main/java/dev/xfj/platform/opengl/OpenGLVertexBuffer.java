@@ -1,7 +1,7 @@
 package dev.xfj.platform.opengl;
 
-import dev.xfj.core.renderer.buffer.BufferLayout;
-import dev.xfj.core.renderer.buffer.VertexBuffer;
+import dev.xfj.engine.renderer.buffer.BufferLayout;
+import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import org.lwjgl.opengl.GL41;
 
 import static org.lwjgl.opengl.GL41.GL_STATIC_DRAW;

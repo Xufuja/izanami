@@ -1,6 +1,6 @@
 package dev.xfj.platform.opengl;
 
-import dev.xfj.core.renderer.buffer.IndexBuffer;
+import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import org.lwjgl.opengl.GL41;
 
 import static org.lwjgl.opengl.GL41.GL_STATIC_DRAW;

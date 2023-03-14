@@ -1,11 +1,11 @@
 package dev.xfj.platform.opengl;
 
-import dev.xfj.core.Log;
-import dev.xfj.core.renderer.VertexArray;
-import dev.xfj.core.renderer.buffer.BufferElement;
-import dev.xfj.core.renderer.buffer.BufferLayout;
-import dev.xfj.core.renderer.buffer.IndexBuffer;
-import dev.xfj.core.renderer.buffer.VertexBuffer;
+import dev.xfj.engine.Log;
+import dev.xfj.engine.renderer.VertexArray;
+import dev.xfj.engine.renderer.buffer.BufferElement;
+import dev.xfj.engine.renderer.buffer.BufferLayout;
+import dev.xfj.engine.renderer.buffer.IndexBuffer;
+import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import org.lwjgl.opengl.GL41;
 import org.lwjgl.opengl.GL45;
 

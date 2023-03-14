@@ -1,7 +1,7 @@
 package dev.xfj.platform.windows;
 
-import dev.xfj.core.Application;
-import dev.xfj.core.Input;
+import dev.xfj.engine.Application;
+import dev.xfj.engine.Input;
 import org.lwjgl.BufferUtils;
 
 import java.nio.DoubleBuffer;
