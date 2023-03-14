@@ -68,6 +68,6 @@ public class Shader {
 
     public void uploadUniformMat4(String name, Matrix4f matrix) {
         int location = GL41.glGetUniformLocation(renderId, name);
-        GL41.glUniformMatrix4fv(location, false,  matrix.get(new float[16]));
+        GL41.glUniformMatrix4fv(location, false, matrix.get(new float[16]));
     }
 }

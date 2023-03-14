@@ -14,12 +14,8 @@ import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL41;
 
 import java.util.ListIterator;
-
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.opengl.GL41.*;
 
 public class Application {
     private static Application application;
@@ -151,6 +147,7 @@ public class Application {
         while (running) {
             RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
             RenderCommand.clear();
+            
             camera.setPosition(new Vector3f(0.5f, 0.5f, 0.0f));
             camera.setRotation(45.0f);
 
@@ -172,7 +169,6 @@ public class Application {
             window.onUpdate();
         }
         window.shutdown();
-        glfwTerminate();
     }
 
     public void onEvent(Event event) {

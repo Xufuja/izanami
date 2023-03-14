@@ -142,6 +142,7 @@ public class WindowsWindow implements Window {
 
     public void shutdown() {
         glfwDestroyWindow(window);
+        glfwTerminate();
     }
 
     public void onUpdate() {
