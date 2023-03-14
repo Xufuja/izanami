@@ -1,15 +1,23 @@
 package dev.xfj.core.renderer;
 
 public class Renderer {
-    public static void beginScene() {
+    private static SceneData sceneData;
 
+    static {
+        Renderer.sceneData = new SceneData();
+    }
+
+    public static void beginScene(OrthographicCamera camera) {
+        sceneData.viewProjectionMatrix = camera.getViewProjectionMatrix();
     }
 
     public static void endScene() {
 
     }
 
-    public static void submit(VertexArray vertexArray) {
+    public static void submit(Shader shader, VertexArray vertexArray) {
+        shader.bind();
+        shader.uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
         vertexArray.bind();
         RenderCommand.drawIndexed(vertexArray);
     }

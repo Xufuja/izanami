@@ -4,10 +4,7 @@ import dev.xfj.core.event.Event;
 import dev.xfj.core.event.EventDispatcher;
 import dev.xfj.core.event.application.WindowCloseEvent;
 import dev.xfj.core.imgui.ImGuiLayer;
-import dev.xfj.core.renderer.RenderCommand;
-import dev.xfj.core.renderer.Renderer;
-import dev.xfj.core.renderer.Shader;
-import dev.xfj.core.renderer.VertexArray;
+import dev.xfj.core.renderer.*;
 import dev.xfj.core.renderer.buffer.BufferElement;
 import dev.xfj.core.renderer.buffer.BufferLayout;
 import dev.xfj.core.renderer.buffer.IndexBuffer;
@@ -15,6 +12,7 @@ import dev.xfj.core.renderer.buffer.VertexBuffer;
 import dev.xfj.core.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL41;
 
@@ -37,6 +35,8 @@ public class Application {
     public Shader blueShader;
     public VertexArray squareVA;
 
+    public OrthographicCamera camera;
+
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
         //It seems to do the same thing as using this static block, but not sure how that is being called
@@ -49,6 +49,7 @@ public class Application {
         } else {
             Log.error("Application already exists!");
         }
+        camera = new OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
         window = WindowsWindow.create();
         running = true;
         layerStack = new LayerStack();
@@ -98,13 +99,14 @@ public class Application {
                 #version 330 core
                 layout(location = 0) in vec3 a_Position;
                 layout(location = 1) in vec4 a_Color;
+                uniform mat4 u_ViewProjection;
                 out vec3 v_Position;
                 out vec4 v_Color;
                 void main()
                 {
                     v_Position = a_Position;
                     v_Color = a_Color;
-                    gl_Position = vec4(a_Position, 1.0);
+                    gl_Position =  u_ViewProjection * vec4(a_Position, 1.0);
                 }
                 """;
 
@@ -125,11 +127,12 @@ public class Application {
         String blueShaderVertexSrc = """
                 #version 330 core
                 layout(location = 0) in vec3 a_Position;
+                uniform mat4 u_ViewProjection;
                 out vec3 v_Position;
                 void main()
                 {
                     v_Position = a_Position;
-                    gl_Position = vec4(a_Position, 1.0);
+                    gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
                 }
                 """;
         String blueShaderFragmentSrc = """
@@ -148,13 +151,13 @@ public class Application {
         while (running) {
             RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
             RenderCommand.clear();
-            Renderer.beginScene();
+            camera.setPosition(new Vector3f(0.5f, 0.5f, 0.0f));
+            camera.setRotation(45.0f);
 
-            blueShader.bind();
-            Renderer.submit(squareVA);
+            Renderer.beginScene(camera);
 
-            shader.bind();
-            Renderer.submit(vertexArray);
+            Renderer.submit(blueShader, squareVA);
+            Renderer.submit(shader, vertexArray);
 
             Renderer.endScene();
 

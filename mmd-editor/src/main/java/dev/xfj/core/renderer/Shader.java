@@ -1,6 +1,7 @@
 package dev.xfj.core.renderer;
 
 import dev.xfj.core.Log;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL41;
 
 import static org.lwjgl.opengl.GL41.*;
@@ -65,4 +66,8 @@ public class Shader {
         GL41.glUseProgram(0);
     }
 
+    public void uploadUniformMat4(String name, Matrix4f matrix) {
+        int location = GL41.glGetUniformLocation(renderId, name);
+        GL41.glUniformMatrix4fv(location, false,  matrix.get(new float[16]));
+    }
 }
