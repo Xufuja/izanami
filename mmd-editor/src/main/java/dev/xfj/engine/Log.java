@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class Log {
     private static Logger coreLogger;
+    private static Logger clientLogger;
 
     private Log() {
         //https://stackoverflow.com/questions/16910955/programmatically-configure-logback-appender
@@ -17,6 +18,7 @@ public class Log {
 
     public static void init() {
         coreLogger = Log.createLogger("Core");
+        clientLogger = Log.createLogger("Client");
     }
 
     public static void error(String line) {
@@ -37,6 +39,10 @@ public class Log {
 
     public static void trace(String line) {
         coreLogger.trace(line);
+    }
+
+    public static Logger client() {
+        return clientLogger;
     }
 
     public static Logger createLogger(String name) {
