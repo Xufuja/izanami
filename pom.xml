@@ -10,8 +10,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>mmd-editor</module>
+        <module>mmd-engine</module>
         <module>mmd-core</module>
+        <module>mmd-editor</module>
     </modules>
 
 </project>
