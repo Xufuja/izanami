@@ -1,5 +1,6 @@
 package dev.xfj.engine;
 
+import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
 import dev.xfj.engine.event.EventDispatcher;
 import dev.xfj.engine.event.application.WindowCloseEvent;
@@ -10,15 +11,15 @@ import dev.xfj.platform.windows.WindowsWindow;
 
 import java.util.ListIterator;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+
 public class Application {
     private static Application application;
-
     private final Window window;
     private final ImGuiLayer imGuiLayer;
     private boolean running;
     private final LayerStack layerStack;
-
-
+    private float lastFrameTime;
 
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
@@ -39,12 +40,17 @@ public class Application {
         window.setEventCallback(this::onEvent);
         imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
+        lastFrameTime = 0.0f;
     }
 
     public void run() {
         while (running) {
+            float time = (float) glfwGetTime();
+            TimeStep timeStep = new TimeStep(time - lastFrameTime);
+            lastFrameTime = time;
+
             for (Layer layer : layerStack.getLayers()) {
-                layer.onUpdate();
+                layer.onUpdate(timeStep);
             }
             imGuiLayer.begin();
             for (Layer layer : layerStack.getLayers()) {

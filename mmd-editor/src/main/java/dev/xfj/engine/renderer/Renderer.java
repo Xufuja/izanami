@@ -1,5 +1,7 @@
 package dev.xfj.engine.renderer;
 
+import org.joml.Matrix4f;
+
 public class Renderer {
     private static SceneData sceneData;
 
@@ -16,12 +18,17 @@ public class Renderer {
     }
 
     public static void submit(Shader shader, VertexArray vertexArray) {
-        shader.bind();
-        shader.uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
-        vertexArray.bind();
-        RenderCommand.drawIndexed(vertexArray);
+        submit(shader, vertexArray, new Matrix4f().identity());
     }
 
+    public static void submit(Shader shader, VertexArray vertexArray, Matrix4f transform) {
+        shader.bind();
+        shader.uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
+        shader.uploadUniformMat4("u_Transform", transform);
+        vertexArray.bind();
+        RenderCommand.drawIndexed(vertexArray);
+
+    }
 
     public static RendererAPIBase.API getAPI() {
         return RendererAPIBase.getAPI();

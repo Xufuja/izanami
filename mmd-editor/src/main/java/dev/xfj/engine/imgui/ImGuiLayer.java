@@ -2,6 +2,7 @@ package dev.xfj.engine.imgui;
 
 import dev.xfj.engine.Application;
 import dev.xfj.engine.Layer;
+import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -82,7 +83,7 @@ public class ImGuiLayer extends Layer {
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate(TimeStep ts) {
 
     }
 

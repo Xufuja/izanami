@@ -1,5 +1,6 @@
 package dev.xfj.engine;
 
+import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
 
 public abstract class Layer {
@@ -13,7 +14,7 @@ public abstract class Layer {
     }
     public abstract void onAttach();
     public abstract void onDetach();
-    public abstract void onUpdate();
+    public abstract void onUpdate(TimeStep ts);
     public abstract void onImGuiRender();
     public abstract void onEvent(Event event);
 
