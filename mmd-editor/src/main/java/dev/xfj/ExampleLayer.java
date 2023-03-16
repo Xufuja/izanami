@@ -9,7 +9,10 @@ import dev.xfj.engine.renderer.buffer.BufferElement;
 import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
+import dev.xfj.platform.opengl.OpenGLShader;
+import imgui.ImGui;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -19,7 +22,7 @@ public class ExampleLayer extends Layer {
     public Shader shader;
     public VertexArray vertexArray;
 
-    public Shader blueShader;
+    public Shader flatColorShader;
     public VertexArray squareVA;
 
     public OrthographicCamera camera;
@@ -28,6 +31,7 @@ public class ExampleLayer extends Layer {
     public float cameraMoveSpeed;
     public float cameraRotation;
     public float cameraRotationSpeed;
+    public Vector3f squareColor;
 
     public ExampleLayer() {
         super("Example Layer");
@@ -36,6 +40,8 @@ public class ExampleLayer extends Layer {
         cameraMoveSpeed = 5.0f;
         cameraRotation = 0.0f;
         cameraRotationSpeed = 180.0f;
+
+        squareColor = new Vector3f(0.2f, 0.3f, 0.8f);
 
         vertexArray = VertexArray.create();
 
@@ -77,12 +83,16 @@ public class ExampleLayer extends Layer {
 
         String vertexSrc = """
                 #version 330 core
+                                
                 layout(location = 0) in vec3 a_Position;
                 layout(location = 1) in vec4 a_Color;
+                                
                 uniform mat4 u_ViewProjection;
                 uniform mat4 u_Transform;
+                                
                 out vec3 v_Position;
                 out vec4 v_Color;
+                                
                 void main()
                 {
                     v_Position = a_Position;
@@ -93,9 +103,12 @@ public class ExampleLayer extends Layer {
 
         String fragmentSrc = """
                 #version 330 core
+                                
                 layout(location = 0) out vec4 color;
+                                
                 in vec3 v_Position;
                 in vec4 v_Color;
+                                
                 void main()
                 {
                     color = vec4(v_Position * 0.5 + 0.5, 1.0);
@@ -103,30 +116,39 @@ public class ExampleLayer extends Layer {
                 }
                 """;
 
-        shader = new Shader(vertexSrc, fragmentSrc);
+        shader = Shader.create(vertexSrc, fragmentSrc);
 
-        String blueShaderVertexSrc = """
+        String flatColorShaderVertexSrc = """
                 #version 330 core
+                                
                 layout(location = 0) in vec3 a_Position;
+                                
                 uniform mat4 u_ViewProjection;
                 uniform mat4 u_Transform;
+                                
                 out vec3 v_Position;
+                                
                 void main()
                 {
                     v_Position = a_Position;
                     gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
                 }
                 """;
-        String blueShaderFragmentSrc = """
+        String flatColorShaderFragmentSrc = """
                 #version 330 core
+                                
                 layout(location = 0) out vec4 color;
+                                
                 in vec3 v_Position;
+                                
+                uniform vec3 u_Color;
+                                
                 void main()
                 {
-                    color = vec4(0.2, 0.3, 0.8, 1.0);
+                    color = vec4(u_Color, 1.0);
                 }
                 """;
-        blueShader = new Shader(blueShaderVertexSrc, blueShaderFragmentSrc);
+        flatColorShader = Shader.create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
     }
 
     @Override
@@ -164,13 +186,16 @@ public class ExampleLayer extends Layer {
 
         Renderer.beginScene(camera);
 
-
         Matrix4f scale = new Matrix4f().scale(0.1f);
+
+        flatColorShader.bind();
+        ((OpenGLShader) flatColorShader).uploadUniformFloat3("u_Color", squareColor);
+
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 Vector3f pos = new Vector3f(x * 0.11f, y * 0.11f, 0.0f);
                 Matrix4f transform = new Matrix4f().translate(pos).mul(scale);
-                Renderer.submit(blueShader, squareVA, transform);
+                Renderer.submit(flatColorShader, squareVA, transform);
             }
         }
         Renderer.submit(shader, vertexArray);
@@ -180,7 +205,12 @@ public class ExampleLayer extends Layer {
 
     @Override
     public void onImGuiRender() {
-
+        ImGui.begin("Settings");
+        //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
+        float[] newColor = { squareColor.x, squareColor.y, squareColor.z };
+        ImGui.colorEdit3("Square Color", newColor);
+        squareColor = new Vector3f(newColor[0], newColor[1], newColor[2]);
+        ImGui.end();
     }
 
     @Override

@@ -1,73 +1,29 @@
 package dev.xfj.engine.renderer;
 
 import dev.xfj.engine.Log;
+import dev.xfj.platform.opengl.OpenGLShader;
+import dev.xfj.platform.opengl.OpenGLVertexArray;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL41;
 
 import static org.lwjgl.opengl.GL41.*;
 
-public class Shader {
-    private int renderId;
-
-    public Shader(String vertexSrc, String fragmentSrc) {
-        int vertexShader = GL41.glCreateShader(GL_VERTEX_SHADER);
-        GL41.glShaderSource(vertexShader, vertexSrc);
-        GL41.glCompileShader(vertexShader);
-
-        int[] isCompiled = new int[1];
-        GL41.glGetShaderiv(vertexShader, GL_COMPILE_STATUS, isCompiled);
-        if (isCompiled[0] == GL_FALSE) {
-            int[] maxLength = new int[]{0};
-            GL41.glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, maxLength);
-            String infoLog = glGetShaderInfoLog(vertexShader, maxLength[0]);
-            GL41.glDeleteShader(vertexShader);
-            Log.error(infoLog);
-            return;
-        }
-        int fragmentShader = GL41.glCreateShader(GL_FRAGMENT_SHADER);
-        GL41.glShaderSource(fragmentShader, fragmentSrc);
-        GL41.glCompileShader(fragmentShader);
-        GL41.glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, isCompiled);
-        if (isCompiled[0] == GL_FALSE) {
-            int[] maxLength = new int[]{0};
-            GL41.glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, maxLength);
-            String infoLog = glGetShaderInfoLog(fragmentShader, maxLength[0]);
-            GL41.glDeleteShader(fragmentShader);
-            Log.error(infoLog);
-            return;
-        }
-        this.renderId = GL41.glCreateProgram();
-        int program = this.renderId;
-        GL41.glAttachShader(program, vertexShader);
-        GL41.glAttachShader(program, fragmentShader);
-        GL41.glLinkProgram(program);
-
-        int[] isLinked = new int[1];
-        GL41.glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, isLinked);
-        if (isLinked[0] == GL_FALSE) {
-            int[] maxLength = new int[]{0};
-            GL41.glGetShaderiv(program, GL_INFO_LOG_LENGTH, maxLength);
-            String infoLog = glGetShaderInfoLog(program, maxLength[0]);
-            GL41.glDeleteProgram(program);
-            GL41.glDeleteShader(vertexShader);
-            GL41.glDeleteShader(fragmentShader);
-            Log.error(infoLog);
-            return;
-        }
-        GL41.glDetachShader(program, vertexShader);
-        GL41.glDetachShader(program, fragmentShader);
+public interface Shader {
+    static Shader create(String vertexSrc, String fragmentSrc) {
+        return switch (Renderer.getAPI()) {
+            case None -> {
+                Log.error("RendererAPI None is not supported!");
+                yield null;
+            }
+            case OpenGL -> new OpenGLShader(vertexSrc, fragmentSrc);
+            default -> {
+                Log.error("Unknown RendererAPI!");
+                yield null;
+            }
+        };
     }
 
-    public void bind() {
-        GL41.glUseProgram(this.renderId);
-    }
+    void bind();
 
-    public void unbind() {
-        GL41.glUseProgram(0);
-    }
-
-    public void uploadUniformMat4(String name, Matrix4f matrix) {
-        int location = GL41.glGetUniformLocation(renderId, name);
-        GL41.glUniformMatrix4fv(location, false, matrix.get(new float[16]));
-    }
+    void unbind();
 }

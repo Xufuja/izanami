@@ -1,5 +1,6 @@
 package dev.xfj.engine.renderer;
 
+import dev.xfj.platform.opengl.OpenGLShader;
 import org.joml.Matrix4f;
 
 public class Renderer {
@@ -23,8 +24,11 @@ public class Renderer {
 
     public static void submit(Shader shader, VertexArray vertexArray, Matrix4f transform) {
         shader.bind();
-        shader.uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
-        shader.uploadUniformMat4("u_Transform", transform);
+        if (shader instanceof OpenGLShader) {
+            ((OpenGLShader) shader).uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
+            ((OpenGLShader) shader).uploadUniformMat4("u_Transform", transform);
+        }
+
         vertexArray.bind();
         RenderCommand.drawIndexed(vertexArray);
 
