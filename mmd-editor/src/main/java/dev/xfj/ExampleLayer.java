@@ -10,9 +10,9 @@ import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import dev.xfj.platform.opengl.OpenGLShader;
+import dev.xfj.platform.opengl.OpenGLTexture2D;
 import imgui.ImGui;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -24,6 +24,9 @@ public class ExampleLayer extends Layer {
 
     public Shader flatColorShader;
     public VertexArray squareVA;
+
+    public Shader textureShader;
+    public Texture2D texture;
 
     public OrthographicCamera camera;
 
@@ -67,14 +70,14 @@ public class ExampleLayer extends Layer {
         squareVA = VertexArray.create();
 
         float[] squareVertices = {
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f,
-                -0.5f, 0.5f, 0.0f
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+                0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+                -0.5f, 0.5f, 0.0f, 0.0f, 1.0f
         };
 
         VertexBuffer squareVB = VertexBuffer.create(squareVertices);
-        squareVB.setLayout(new BufferLayout(new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position")));
+        squareVB.setLayout(new BufferLayout(new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position"), new BufferElement(BufferElement.ShaderDataType.Float2, "a_TexCoord")));
         squareVA.addVertexBuffer(squareVB);
 
         int[] squareIndices = {0, 1, 2, 2, 3, 0};
@@ -149,6 +152,43 @@ public class ExampleLayer extends Layer {
                 }
                 """;
         flatColorShader = Shader.create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
+
+        String textureShaderVertexSrc = """
+                #version 330 core
+                                
+                layout(location = 0) in vec3 a_Position;
+                layout(location = 1) in vec2 a_TexCoord;
+                                
+                uniform mat4 u_ViewProjection;
+                uniform mat4 u_Transform;
+                                
+                out vec2 v_TexCoord;
+                                                                
+                void main()
+                {
+                    v_TexCoord = a_TexCoord;
+                    gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+                }
+                """;
+        String textureShaderFragmentSrc = """
+                #version 330 core
+                                
+                layout(location = 0) out vec4 color;
+                                
+                in vec2 v_TexCoord;
+                                
+                uniform sampler2D u_Texture;
+                                
+                void main()
+                {
+                    color = texture(u_Texture, v_TexCoord);
+                }
+                """;
+        textureShader = Shader.create(textureShaderVertexSrc, textureShaderFragmentSrc);
+        texture = Texture2D.create("assets/textures/Checkerboard.png");
+
+        textureShader.bind();
+        ((OpenGLShader) textureShader).uploadUniformInt("u_Texture", 0);
     }
 
     @Override
@@ -198,7 +238,9 @@ public class ExampleLayer extends Layer {
                 Renderer.submit(flatColorShader, squareVA, transform);
             }
         }
-        Renderer.submit(shader, vertexArray);
+        texture.bind();
+        Renderer.submit(textureShader, squareVA, new Matrix4f().scale(1.51f));
+        //Renderer.submit(shader, vertexArray);
 
         Renderer.endScene();
     }
@@ -207,7 +249,7 @@ public class ExampleLayer extends Layer {
     public void onImGuiRender() {
         ImGui.begin("Settings");
         //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
-        float[] newColor = { squareColor.x, squareColor.y, squareColor.z };
+        float[] newColor = {squareColor.x, squareColor.y, squareColor.z};
         ImGui.colorEdit3("Square Color", newColor);
         squareColor = new Vector3f(newColor[0], newColor[1], newColor[2]);
         ImGui.end();
