@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL20.GL_BOOL;
 public class OpenGLVertexArray implements VertexArray {
     private final int renderId;
     private final List<VertexBuffer> vertexBuffers;
+    private int vertexBufferIndex;
     private IndexBuffer indexBuffer;
 
     public static int shaderDataTypeToOpenGLBaseType(BufferElement.ShaderDataType type) {
@@ -36,6 +37,7 @@ public class OpenGLVertexArray implements VertexArray {
 
     public OpenGLVertexArray() {
         this.renderId = GL45.glCreateVertexArrays();
+        this.vertexBufferIndex = 0;
         this.vertexBuffers = new ArrayList<>();
     }
 
@@ -55,12 +57,11 @@ public class OpenGLVertexArray implements VertexArray {
         GL45.glBindVertexArray(renderId);
         vertexBuffer.bind();
 
-        int index = 0;
         BufferLayout layout = vertexBuffer.getLayout();
         for (BufferElement element : layout) {
-            GL41.glEnableVertexAttribArray(index);
-            GL41.glVertexAttribPointer(index, element.getComponent(), shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), element.offset);
-            index++;
+            GL41.glEnableVertexAttribArray(vertexBufferIndex);
+            GL41.glVertexAttribPointer(vertexBufferIndex, element.getComponent(), shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), element.offset);
+            vertexBufferIndex++;
         }
         this.vertexBuffers.add(vertexBuffer);
     }
