@@ -5,6 +5,10 @@ import java.util.AbstractMap;
 public abstract class Input {
     private static Input input;
 
+    protected Input() {
+
+    }
+
     public static boolean isKeyPressed(int keyCode) {
         return input.isKeyPressedImpl(keyCode);
     }

@@ -2,10 +2,10 @@ package dev.xfj.platform.opengl;
 
 import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
-import org.lwjgl.opengl.GL41;
+import org.lwjgl.opengl.GL45;
 
-import static org.lwjgl.opengl.GL41.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL41.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL45.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL45.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL45.glCreateBuffers;
 
 public class OpenGLVertexBuffer implements VertexBuffer {
@@ -14,18 +14,18 @@ public class OpenGLVertexBuffer implements VertexBuffer {
 
     public OpenGLVertexBuffer(float[] vertices) {
         this.renderId = glCreateBuffers();
-        GL41.glBindBuffer(GL_ARRAY_BUFFER, renderId);
-        GL41.glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+        GL45.glBindBuffer(GL_ARRAY_BUFFER, renderId);
+        GL45.glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
 
     }
     @Override
     public void bind() {
-        GL41.glBindBuffer(GL_ARRAY_BUFFER, renderId);
+        GL45.glBindBuffer(GL_ARRAY_BUFFER, renderId);
     }
 
     @Override
     public void unbind() {
-        GL41.glBindBuffer(GL_ARRAY_BUFFER, 0);
+        GL45.glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     @Override

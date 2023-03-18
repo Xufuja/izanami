@@ -2,11 +2,6 @@ package dev.xfj.engine.renderer;
 
 import dev.xfj.engine.Log;
 import dev.xfj.platform.opengl.OpenGLShader;
-import dev.xfj.platform.opengl.OpenGLVertexArray;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL41;
-
-import static org.lwjgl.opengl.GL41.*;
 
 public interface Shader {
     static Shader create(String vertexSrc, String fragmentSrc) {

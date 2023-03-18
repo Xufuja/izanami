@@ -6,7 +6,6 @@ import dev.xfj.engine.renderer.buffer.BufferElement;
 import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
-import org.lwjgl.opengl.GL41;
 import org.lwjgl.opengl.GL45;
 
 import java.util.ArrayList;
@@ -59,8 +58,8 @@ public class OpenGLVertexArray implements VertexArray {
 
         BufferLayout layout = vertexBuffer.getLayout();
         for (BufferElement element : layout) {
-            GL41.glEnableVertexAttribArray(vertexBufferIndex);
-            GL41.glVertexAttribPointer(vertexBufferIndex, element.getComponent(), shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), element.offset);
+            GL45.glEnableVertexAttribArray(vertexBufferIndex);
+            GL45.glVertexAttribPointer(vertexBufferIndex, element.getComponent(), shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), element.offset);
             vertexBufferIndex++;
         }
         this.vertexBuffers.add(vertexBuffer);

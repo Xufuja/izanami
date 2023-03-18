@@ -10,7 +10,6 @@ import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import dev.xfj.platform.opengl.OpenGLShader;
-import dev.xfj.platform.opengl.OpenGLTexture2D;
 import imgui.ImGui;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -243,7 +242,7 @@ public class ExampleLayer extends Layer {
         texture.bind();
         Renderer.submit(textureShader, squareVA, new Matrix4f().scale(1.51f));
         logoTexture.bind();
-        Renderer.submit(textureShader, squareVA, new Matrix4f().translate(new Vector3f(0.25f, -0.25f, 0.0f)).mul(new Matrix4f().scale(1.51f)));
+        Renderer.submit(textureShader, squareVA, new Matrix4f().scale(1.51f));
         //Renderer.submit(shader, vertexArray);
 
         Renderer.endScene();

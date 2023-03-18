@@ -3,31 +3,31 @@ package dev.xfj.platform.opengl;
 import dev.xfj.engine.renderer.RendererAPIBase;
 import dev.xfj.engine.renderer.VertexArray;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL41;
+import org.lwjgl.opengl.GL45;
 
-import static org.lwjgl.opengl.GL41.*;
+import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class OpenGLRendererAPI extends RendererAPIBase {
 
     @Override
     public void init() {
-        GL41.glEnable(GL_BLEND);
-        GL41.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL45.glEnable(GL_BLEND);
+        GL45.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
     public void setClearColor(Vector4f color) {
-        GL41.glClearColor(color.x, color.y, color.z, color.z);
+        GL45.glClearColor(color.x, color.y, color.z, color.z);
     }
 
     @Override
     public void clear() {
-        GL41.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL45.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     @Override
     public void drawIndexed(VertexArray vertexArray) {
-        GL41.glDrawElements(GL_TRIANGLES, vertexArray.getIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
+        GL45.glDrawElements(GL_TRIANGLES, vertexArray.getIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
     }
 }

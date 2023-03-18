@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL41.*;
+import static org.lwjgl.opengl.GL45.*;
 
 public class OpenGLContext implements GraphicsContext {
     private final long windowHandle;
@@ -19,7 +19,7 @@ public class OpenGLContext implements GraphicsContext {
     @Override
     public void init() {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 1);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwMakeContextCurrent(windowHandle);
         GL.createCapabilities(); //No need for glad, this kind of does the same as gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         Log.info("OpenGL Info:");

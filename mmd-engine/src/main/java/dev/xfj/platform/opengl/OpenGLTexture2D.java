@@ -3,7 +3,6 @@ package dev.xfj.platform.opengl;
 import dev.xfj.engine.Log;
 import dev.xfj.engine.renderer.Texture2D;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL41;
 import org.lwjgl.opengl.GL45;
 import org.lwjgl.stb.STBImage;
 
