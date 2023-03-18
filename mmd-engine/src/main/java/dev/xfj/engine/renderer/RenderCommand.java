@@ -10,12 +10,18 @@ public class RenderCommand {
         rendererAPI = new OpenGLRendererAPI();
     }
 
+    public static void init() {
+        rendererAPI.init();
+    }
+
     public static void setClearColor(Vector4f color) {
         rendererAPI.setClearColor(color);
     }
+
     public static void clear() {
         rendererAPI.clear();
     }
+
     public static void drawIndexed(VertexArray vertexArray) {
         rendererAPI.drawIndexed(vertexArray);
     }

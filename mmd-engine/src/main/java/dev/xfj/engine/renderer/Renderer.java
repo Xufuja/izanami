@@ -10,6 +10,10 @@ public class Renderer {
         Renderer.sceneData = new SceneData();
     }
 
+    public static void init() {
+        RenderCommand.init();
+    }
+
     public static void beginScene(OrthographicCamera camera) {
         sceneData.viewProjectionMatrix = camera.getViewProjectionMatrix();
     }

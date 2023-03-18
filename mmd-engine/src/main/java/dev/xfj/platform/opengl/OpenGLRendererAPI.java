@@ -11,6 +11,12 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class OpenGLRendererAPI extends RendererAPIBase {
 
     @Override
+    public void init() {
+        GL41.glEnable(GL_BLEND);
+        GL41.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    @Override
     public void setClearColor(Vector4f color) {
         GL41.glClearColor(color.x, color.y, color.z, color.z);
     }

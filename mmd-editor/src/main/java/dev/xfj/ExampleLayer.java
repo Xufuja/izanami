@@ -27,6 +27,7 @@ public class ExampleLayer extends Layer {
 
     public Shader textureShader;
     public Texture2D texture;
+    public Texture2D logoTexture;
 
     public OrthographicCamera camera;
 
@@ -186,6 +187,7 @@ public class ExampleLayer extends Layer {
                 """;
         textureShader = Shader.create(textureShaderVertexSrc, textureShaderFragmentSrc);
         texture = Texture2D.create("assets/textures/Checkerboard.png");
+        logoTexture = Texture2D.create("assets/textures/Logo.png");
 
         textureShader.bind();
         ((OpenGLShader) textureShader).uploadUniformInt("u_Texture", 0);
@@ -240,6 +242,8 @@ public class ExampleLayer extends Layer {
         }
         texture.bind();
         Renderer.submit(textureShader, squareVA, new Matrix4f().scale(1.51f));
+        logoTexture.bind();
+        Renderer.submit(textureShader, squareVA, new Matrix4f().translate(new Vector3f(0.25f, -0.25f, 0.0f)).mul(new Matrix4f().scale(1.51f)));
         //Renderer.submit(shader, vertexArray);
 
         Renderer.endScene();

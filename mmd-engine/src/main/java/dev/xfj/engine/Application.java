@@ -5,6 +5,7 @@ import dev.xfj.engine.event.Event;
 import dev.xfj.engine.event.EventDispatcher;
 import dev.xfj.engine.event.application.WindowCloseEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
+import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.engine.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
@@ -38,6 +39,9 @@ public class Application {
         running = true;
         layerStack = new LayerStack();
         window.setEventCallback(this::onEvent);
+
+        Renderer.init();
+
         imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
         lastFrameTime = 0.0f;

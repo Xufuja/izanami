@@ -1,5 +1,6 @@
 package dev.xfj.platform.opengl;
 
+import dev.xfj.engine.Log;
 import dev.xfj.engine.renderer.Texture2D;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL41;
@@ -28,13 +29,27 @@ public class OpenGLTexture2D extends Texture2D {
         this.width = width.get(0);
         this.height = height.get(0);
 
+        int internalFormat = 0;
+        int dataFormat = 0;
+
+        if (channels.get(0) == 4) {
+            internalFormat = GL45.GL_RGBA8;
+            dataFormat = GL45.GL_RGBA;
+        } else if (channels.get(0) == 3) {
+            internalFormat = GL45.GL_RGB8;
+            dataFormat = GL45.GL_RGB;
+        } else {
+            //Should be some sort of exception
+            Log.error("Format not supported!");
+        }
+
         this.renderId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
-        GL45.glTextureStorage2D(this.renderId, 1, GL45.GL_RGB8, this.width, this.height);
+        GL45.glTextureStorage2D(this.renderId, 1, internalFormat, this.width, this.height);
 
         GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
         GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
 
-        GL45.glTextureSubImage2D(this.renderId, 0, 0, 0, this.width, this.height, GL45.GL_RGB, GL45.GL_UNSIGNED_BYTE, data);
+        GL45.glTextureSubImage2D(this.renderId, 0, 0, 0, this.width, this.height, dataFormat, GL45.GL_UNSIGNED_BYTE, data);
 
         STBImage.stbi_image_free(data);
     }
