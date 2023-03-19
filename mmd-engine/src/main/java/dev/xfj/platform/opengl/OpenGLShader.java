@@ -5,59 +5,133 @@ import dev.xfj.engine.renderer.Shader;
 import org.joml.*;
 import org.lwjgl.opengl.GL45;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
 public class OpenGLShader implements Shader {
     private int renderId;
 
-    public OpenGLShader(String vertexSrc, String fragmentSrc) {
-        int vertexShader = GL45.glCreateShader(GL_VERTEX_SHADER);
-        GL45.glShaderSource(vertexShader, vertexSrc);
-        GL45.glCompileShader(vertexShader);
+    static int shaderTypeFromString(String type) {
+        return switch (type) {
+            case "vertex" -> GL_VERTEX_SHADER;
+            case "fragment", "pixel" -> GL_FRAGMENT_SHADER;
+            default -> {
+                Log.error("Unknown Shader Type!");
+                yield 0;
+            }
+        };
+    }
 
-        int[] isCompiled = new int[1];
-        GL45.glGetShaderiv(vertexShader, GL_COMPILE_STATUS, isCompiled);
-        if (isCompiled[0] == GL_FALSE) {
-            int[] maxLength = new int[]{0};
-            GL45.glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, maxLength);
-            String infoLog = glGetShaderInfoLog(vertexShader, maxLength[0]);
-            GL45.glDeleteShader(vertexShader);
-            Log.error(infoLog);
-            return;
+    public OpenGLShader(String filePath) throws IOException {
+        String source = readFile(filePath);
+        HashMap<Integer, String> shaderSources = preProcess(source);
+        compile(shaderSources);
+    }
+
+    public OpenGLShader(String vertexSrc, String fragmentSrc) {
+       HashMap<Integer, String> sources = new HashMap<>();
+       sources.put(GL_VERTEX_SHADER, vertexSrc);
+       sources.put(GL_FRAGMENT_SHADER, fragmentSrc);
+       compile(sources);
+    }
+
+    private String readFile(String filePath) throws IOException {
+        String result;
+        try (InputStream inputStream = new FileInputStream(filePath)) {
+            byte[] bytes = inputStream.readAllBytes();
+            result = new String(bytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            Log.error("Could not open file: " + filePath);
+            throw e;
         }
-        int fragmentShader = GL45.glCreateShader(GL_FRAGMENT_SHADER);
-        GL45.glShaderSource(fragmentShader, fragmentSrc);
-        GL45.glCompileShader(fragmentShader);
-        GL45.glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, isCompiled);
-        if (isCompiled[0] == GL_FALSE) {
-            int[] maxLength = new int[]{0};
-            GL45.glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, maxLength);
-            String infoLog = glGetShaderInfoLog(fragmentShader, maxLength[0]);
-            GL45.glDeleteShader(fragmentShader);
-            Log.error(infoLog);
-            return;
+        return result;
+    }
+
+    private HashMap<Integer, String> preProcess(String source) {
+        HashMap<Integer, String> shaderSources = new HashMap<>();
+
+        String typeToken = "#type";
+        int typeTokenLength = typeToken.length();
+        int pos = source.indexOf(typeToken);
+        while (pos != -1) {
+            int eol = source.indexOf("\r\n", pos);
+            //Some sort of exception to handle syntax errors
+            int begin = pos + typeTokenLength + 1;
+            String type = source.substring(begin, eol);
+            //Some sort of exception to handle invalid shader types
+
+            int nextLinePos = source.indexOf("\r\n", eol - 1);
+            pos = source.indexOf(typeToken, nextLinePos);
+            shaderSources.put(shaderTypeFromString(type), source.substring(nextLinePos, pos == -1 ? source.length() : pos));
         }
-        this.renderId = GL45.glCreateProgram();
-        int program = this.renderId;
-        GL45.glAttachShader(program, vertexShader);
-        GL45.glAttachShader(program, fragmentShader);
+        return shaderSources;
+    }
+
+
+    private void compile(HashMap<Integer, String> shaderSources) {
+        int program = GL45.glCreateProgram();
+        List<Integer> shaderIds = new ArrayList<>(shaderSources.size());
+
+        for (Map.Entry<Integer, String> entry : shaderSources.entrySet()) {
+            int type = entry.getKey();
+            String source = entry.getValue();
+
+            int shader = GL45.glCreateShader(type);
+
+            GL45.glShaderSource(shader, source);
+
+            GL45.glCompileShader(shader);
+
+            int[] isCompiled = new int[1];
+            GL45.glGetShaderiv(shader, GL_COMPILE_STATUS, isCompiled);
+            if (isCompiled[0] == GL_FALSE) {
+                int[] maxLength = new int[]{0};
+                GL45.glGetShaderiv(shader, GL_INFO_LOG_LENGTH, maxLength);
+
+                String infoLog = glGetShaderInfoLog(shader, maxLength[0]);
+
+                GL45.glDeleteShader(shader);
+                Log.error("Shader compilation failure: " + infoLog);
+                break;
+            }
+            GL45.glAttachShader(program, shader);
+            shaderIds.add(shader);
+        }
+
+        this.renderId = program;
+
         GL45.glLinkProgram(program);
 
         int[] isLinked = new int[1];
-        GL45.glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, isLinked);
+        GL45.glGetProgramiv(program, GL_LINK_STATUS, isLinked);
+
         if (isLinked[0] == GL_FALSE) {
             int[] maxLength = new int[]{0};
-            GL45.glGetShaderiv(program, GL_INFO_LOG_LENGTH, maxLength);
-            String infoLog = glGetShaderInfoLog(program, maxLength[0]);
+            GL45.glGetProgramiv(program, GL_INFO_LOG_LENGTH, maxLength);
+
+            String infoLog = glGetProgramInfoLog(program, maxLength[0]);
+
             GL45.glDeleteProgram(program);
-            GL45.glDeleteShader(vertexShader);
-            GL45.glDeleteShader(fragmentShader);
-            Log.error(infoLog);
+
+            for (int id : shaderIds) {
+                GL45.glDeleteShader(id);
+            }
+            //Should be some sort of exception
+            Log.error("Shader link failure " + infoLog);
             return;
         }
-        GL45.glDetachShader(program, vertexShader);
-        GL45.glDetachShader(program, fragmentShader);
+        for (int id : shaderIds) {
+            GL45.glDetachShader(program, id);
+        }
     }
 
     @Override
