@@ -69,7 +69,7 @@ public class OpenGLShader implements Shader {
             String type = source.substring(begin, eol);
             //Some sort of exception to handle invalid shader types
 
-            int nextLinePos = source.indexOf("\r\n", eol - 1);
+            int nextLinePos = source.indexOf("\r\n", eol);
             pos = source.indexOf(typeToken, nextLinePos);
             shaderSources.put(shaderTypeFromString(type), source.substring(nextLinePos, pos == -1 ? source.length() : pos));
         }
