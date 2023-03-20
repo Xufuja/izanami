@@ -8,14 +8,15 @@ import org.lwjgl.stb.STBImage;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.file.Path;
 
 public class OpenGLTexture2D extends Texture2D {
-    private final String path;
+    private final Path path;
     private final int width;
     private final int height;
     private final int renderId;
 
-    public OpenGLTexture2D(String path) {
+    public OpenGLTexture2D(Path path) {
         this.path = path;
 
         IntBuffer width = BufferUtils.createIntBuffer(1);
@@ -23,7 +24,7 @@ public class OpenGLTexture2D extends Texture2D {
         IntBuffer channels = BufferUtils.createIntBuffer(1);
 
         STBImage.stbi_set_flip_vertically_on_load(true);
-        ByteBuffer data = STBImage.stbi_load(path, width, height, channels, 0);
+        ByteBuffer data = STBImage.stbi_load(path.normalize().toString(), width, height, channels, 0);
         //Some sort exception if the image cannot be loaded
         this.width = width.get(0);
         this.height = height.get(0);

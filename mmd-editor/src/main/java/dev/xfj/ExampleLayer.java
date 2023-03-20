@@ -9,6 +9,8 @@ import dev.xfj.engine.renderer.buffer.BufferElement;
 import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
+import dev.xfj.engine.renderer.shader.Shader;
+import dev.xfj.engine.renderer.shader.ShaderLibrary;
 import dev.xfj.platform.opengl.OpenGLShader;
 import imgui.ImGui;
 import org.joml.Matrix4f;
@@ -16,17 +18,18 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import static dev.xfj.engine.KeyCodes.*;
 
 public class ExampleLayer extends Layer {
+    public ShaderLibrary shaderLibrary;
     public Shader shader;
     public VertexArray vertexArray;
 
     public Shader flatColorShader;
     public VertexArray squareVA;
 
-    public Shader textureShader;
     public Texture2D texture;
     public Texture2D logoTexture;
 
@@ -40,6 +43,7 @@ public class ExampleLayer extends Layer {
 
     public ExampleLayer() throws IOException {
         super("Example Layer");
+        shaderLibrary = new ShaderLibrary();
         camera = new OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
         cameraPosition = new Vector3f(0.0f);
         cameraMoveSpeed = 5.0f;
@@ -121,7 +125,7 @@ public class ExampleLayer extends Layer {
                 }
                 """;
 
-        shader = Shader.create(vertexSrc, fragmentSrc);
+        shader = Shader.create("VertexPosColor",vertexSrc, fragmentSrc);
 
         String flatColorShaderVertexSrc = """
                 #version 330 core
@@ -153,11 +157,11 @@ public class ExampleLayer extends Layer {
                     color = vec4(u_Color, 1.0);
                 }
                 """;
-        flatColorShader = Shader.create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
+        flatColorShader = Shader.create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
-        textureShader = Shader.create("assets/shaders/Texture.glsl");
-        texture = Texture2D.create("assets/textures/Checkerboard.png");
-        logoTexture = Texture2D.create("assets/textures/Logo.png");
+        Shader textureShader = shaderLibrary.load(Paths.get("assets", "shaders", "Texture.glsl"));
+        texture = Texture2D.create(Paths.get("assets", "textures", "Checkerboard.png"));
+        logoTexture = Texture2D.create(Paths.get("assets", "textures", "Logo.png"));
 
         textureShader.bind();
         ((OpenGLShader) textureShader).uploadUniformInt("u_Texture", 0);
@@ -210,6 +214,9 @@ public class ExampleLayer extends Layer {
                 Renderer.submit(flatColorShader, squareVA, transform);
             }
         }
+
+        Shader textureShader = shaderLibrary.get("Texture");
+
         texture.bind();
         Renderer.submit(textureShader, squareVA, new Matrix4f().scale(1.51f));
         logoTexture.bind();

@@ -1,14 +1,15 @@
 package dev.xfj.platform.opengl;
 
 import dev.xfj.engine.Log;
-import dev.xfj.engine.renderer.Shader;
+import dev.xfj.engine.renderer.shader.Shader;
 import org.joml.*;
 import org.lwjgl.opengl.GL45;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class OpenGLShader implements Shader {
     private int renderId;
+    private final String name;
 
     static int shaderTypeFromString(String type) {
         return switch (type) {
@@ -31,22 +33,27 @@ public class OpenGLShader implements Shader {
         };
     }
 
-    public OpenGLShader(String filePath) throws IOException {
+    public OpenGLShader(Path filePath) throws IOException {
         String source = readFile(filePath);
         HashMap<Integer, String> shaderSources = preProcess(source);
         compile(shaderSources);
+
+        String fullName = filePath.getFileName().toString();
+        int lastDot = fullName.lastIndexOf(".");
+        this.name = fullName.substring(0, lastDot);
     }
 
-    public OpenGLShader(String vertexSrc, String fragmentSrc) {
-       HashMap<Integer, String> sources = new HashMap<>();
-       sources.put(GL_VERTEX_SHADER, vertexSrc);
-       sources.put(GL_FRAGMENT_SHADER, fragmentSrc);
-       compile(sources);
+    public OpenGLShader(String name, String vertexSrc, String fragmentSrc) {
+        this.name = name;
+        HashMap<Integer, String> sources = new HashMap<>();
+        sources.put(GL_VERTEX_SHADER, vertexSrc);
+        sources.put(GL_FRAGMENT_SHADER, fragmentSrc);
+        compile(sources);
     }
 
-    private String readFile(String filePath) throws IOException {
+    private String readFile(Path filePath) throws IOException {
         String result;
-        try (InputStream inputStream = new FileInputStream(filePath)) {
+        try (InputStream inputStream = Files.newInputStream(filePath)) {
             byte[] bytes = inputStream.readAllBytes();
             result = new String(bytes, StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -79,7 +86,9 @@ public class OpenGLShader implements Shader {
 
     private void compile(HashMap<Integer, String> shaderSources) {
         int program = GL45.glCreateProgram();
-        List<Integer> shaderIds = new ArrayList<>(shaderSources.size());
+        //Some sort of exception if shaderSources has more than 2 entries
+        List<Integer> shaderIds = new ArrayList<>(2);
+        int glShaderIDIndex = 0;
 
         for (Map.Entry<Integer, String> entry : shaderSources.entrySet()) {
             int type = entry.getKey();
@@ -104,7 +113,7 @@ public class OpenGLShader implements Shader {
                 break;
             }
             GL45.glAttachShader(program, shader);
-            shaderIds.add(shader);
+            shaderIds.add(glShaderIDIndex++, shader);
         }
 
         this.renderId = program;
@@ -142,6 +151,11 @@ public class OpenGLShader implements Shader {
     @Override
     public void unbind() {
         GL45.glUseProgram(0);
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     public void uploadUniformInt(String name, int value) {

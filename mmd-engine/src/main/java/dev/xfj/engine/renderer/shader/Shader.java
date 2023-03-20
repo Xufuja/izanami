@@ -1,12 +1,14 @@
-package dev.xfj.engine.renderer;
+package dev.xfj.engine.renderer.shader;
 
 import dev.xfj.engine.Log;
+import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.platform.opengl.OpenGLShader;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 public interface Shader {
-    static Shader create(String filePath) throws IOException {
+    static Shader create(Path filePath) throws IOException {
         return switch (Renderer.getAPI()) {
             case None -> {
                 Log.error("RendererAPI None is not supported!");
@@ -19,13 +21,13 @@ public interface Shader {
             }
         };
     }
-    static Shader create(String vertexSrc, String fragmentSrc) {
+    static Shader create(String name, String vertexSrc, String fragmentSrc) {
         return switch (Renderer.getAPI()) {
             case None -> {
                 Log.error("RendererAPI None is not supported!");
                 yield null;
             }
-            case OpenGL -> new OpenGLShader(vertexSrc, fragmentSrc);
+            case OpenGL -> new OpenGLShader(name, vertexSrc, fragmentSrc);
             default -> {
                 Log.error("Unknown RendererAPI!");
                 yield null;
@@ -36,4 +38,6 @@ public interface Shader {
     void bind();
 
     void unbind();
+
+    String getName();
 }
