@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class OrthographicCamera {
-    private final Matrix4f projectionMatrix;
+    private Matrix4f projectionMatrix;
     private Matrix4f viewMatrix;
     private Matrix4f viewProjectionMatrix;
     private Vector3f position;
@@ -13,8 +13,13 @@ public class OrthographicCamera {
     public OrthographicCamera(float left, float right, float bottom, float top) {
         this.position = new Vector3f(0.0f, 0.0f, 5.0f);
         this.rotation = 0.0f;
-        this.projectionMatrix = new Matrix4f().setOrtho(left, right, bottom, top, -1, 1.0f);
+        this.projectionMatrix = new Matrix4f().setOrtho(left, right, bottom, top, -1.0f, 1.0f);
         this.viewMatrix = new Matrix4f().identity();
+        this.viewProjectionMatrix = this.projectionMatrix.mul(this.viewMatrix);
+    }
+
+    public void setProjection(float left, float right, float bottom, float top) {
+        this.projectionMatrix = new Matrix4f().setOrtho(left, right, bottom, top, -1.0f, 1.0f);
         this.viewProjectionMatrix = this.projectionMatrix.mul(this.viewMatrix);
     }
 

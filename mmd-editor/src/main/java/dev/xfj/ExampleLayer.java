@@ -1,10 +1,13 @@
 package dev.xfj;
 
-import dev.xfj.engine.Input;
 import dev.xfj.engine.Layer;
+import dev.xfj.engine.OrthographicCameraController;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
-import dev.xfj.engine.renderer.*;
+import dev.xfj.engine.renderer.RenderCommand;
+import dev.xfj.engine.renderer.Renderer;
+import dev.xfj.engine.renderer.Texture2D;
+import dev.xfj.engine.renderer.VertexArray;
 import dev.xfj.engine.renderer.buffer.BufferElement;
 import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
@@ -20,8 +23,6 @@ import org.joml.Vector4f;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static dev.xfj.engine.KeyCodes.*;
-
 public class ExampleLayer extends Layer {
     public ShaderLibrary shaderLibrary;
     public Shader shader;
@@ -33,22 +34,13 @@ public class ExampleLayer extends Layer {
     public Texture2D texture;
     public Texture2D logoTexture;
 
-    public OrthographicCamera camera;
-
-    public Vector3f cameraPosition;
-    public float cameraMoveSpeed;
-    public float cameraRotation;
-    public float cameraRotationSpeed;
+    public OrthographicCameraController cameraController;
     public Vector3f squareColor;
 
     public ExampleLayer() throws IOException {
         super("Example Layer");
         shaderLibrary = new ShaderLibrary();
-        camera = new OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
-        cameraPosition = new Vector3f(0.0f);
-        cameraMoveSpeed = 5.0f;
-        cameraRotation = 0.0f;
-        cameraRotationSpeed = 180.0f;
+        cameraController = new OrthographicCameraController(1280.0f / 720.0f);
 
         squareColor = new Vector3f(0.2f, 0.3f, 0.8f);
 
@@ -125,7 +117,7 @@ public class ExampleLayer extends Layer {
                 }
                 """;
 
-        shader = Shader.create("VertexPosColor",vertexSrc, fragmentSrc);
+        shader = Shader.create("VertexPosColor", vertexSrc, fragmentSrc);
 
         String flatColorShaderVertexSrc = """
                 #version 330 core
@@ -179,28 +171,11 @@ public class ExampleLayer extends Layer {
 
     @Override
     public void onUpdate(TimeStep ts) {
-        if (Input.isKeyPressed(MMD_KEY_LEFT)) {
-            cameraPosition.x -= cameraMoveSpeed * ts.getTime();
-        } else if (Input.isKeyPressed(MMD_KEY_RIGHT)) {
-            cameraPosition.x += cameraMoveSpeed * ts.getTime();
-        }
-        if (Input.isKeyPressed(MMD_KEY_UP)) {
-            cameraPosition.y += cameraMoveSpeed * ts.getTime();
-        } else if (Input.isKeyPressed(MMD_KEY_DOWN)) {
-            cameraPosition.y -= cameraMoveSpeed * ts.getTime();
-        }
-        if (Input.isKeyPressed(MMD_KEY_A)) {
-            cameraRotation += cameraRotationSpeed * ts.getTime();
-        } else if (Input.isKeyPressed(MMD_KEY_D)) {
-            cameraRotation -= cameraRotationSpeed * ts.getTime();
-        }
+        cameraController.onUpdate(ts);
         RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
         RenderCommand.clear();
 
-        camera.setPosition(cameraPosition);
-        camera.setRotation(cameraRotation);
-
-        Renderer.beginScene(camera);
+        Renderer.beginScene(cameraController.getCamera());
 
         Matrix4f scale = new Matrix4f().scale(0.1f);
 
@@ -238,6 +213,6 @@ public class ExampleLayer extends Layer {
 
     @Override
     public void onEvent(Event event) {
-
+        cameraController.onEvent(event);
     }
 }
