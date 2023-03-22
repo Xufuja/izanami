@@ -14,6 +14,7 @@ public abstract class RendererAPIBase implements RendererAPI {
         OpenGL
     }
 
+    public abstract void setViewport(int x, int y, int width, int height);
     public abstract void setClearColor(Vector4f color);
 
     public abstract void clear();

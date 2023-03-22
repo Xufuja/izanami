@@ -4,6 +4,7 @@ import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
 import dev.xfj.engine.event.EventDispatcher;
 import dev.xfj.engine.event.application.WindowCloseEvent;
+import dev.xfj.engine.event.application.WindowResizeEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.engine.window.Window;
@@ -19,6 +20,7 @@ public class Application {
     private final Window window;
     private final ImGuiLayer imGuiLayer;
     private boolean running;
+    private boolean minimized;
     private final LayerStack layerStack;
     private float lastFrameTime;
 
@@ -37,6 +39,7 @@ public class Application {
 
         window = WindowsWindow.create();
         running = true;
+        minimized = false;
         layerStack = new LayerStack();
         window.setEventCallback(this::onEvent);
 
@@ -68,20 +71,18 @@ public class Application {
 
     public void onEvent(Event event) {
         EventDispatcher eventDispatcher = new EventDispatcher(event);
-        boolean result = false;
-        if (event instanceof WindowCloseEvent) {
-            result = eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);
-        }
-        if (result) {
-            Log.debug("Dispatched: " + event.getClass().getSimpleName());
-        }
+        eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);
+        eventDispatcher.dispatch(WindowResizeEvent.class, this::onWindowResize);
+
         Log.trace(event.toString());
-        ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
-        while (it.hasPrevious()) {
-            Layer layer = it.previous();
-            layer.onEvent(event);
-            if (event.isHandled()) {
-                break;
+        if (!minimized) {
+            ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
+            while (it.hasPrevious()) {
+                Layer layer = it.previous();
+                layer.onEvent(event);
+                if (event.isHandled()) {
+                    break;
+                }
             }
         }
     }
@@ -97,6 +98,16 @@ public class Application {
     private boolean onWindowClose(WindowCloseEvent windowCloseEvent) {
         running = false;
         return true;
+    }
+
+    private boolean onWindowResize(WindowResizeEvent windowResizeEvent) {
+        if (windowResizeEvent.getWidth() == 0 || windowResizeEvent.getHeight() == 0) {
+            minimized = true;
+            return false;
+        }
+        minimized = false;
+        Renderer.onWindowResize(windowResizeEvent.getWidth(), windowResizeEvent.getHeight());
+        return false;
     }
 
     public Window getWindow() {

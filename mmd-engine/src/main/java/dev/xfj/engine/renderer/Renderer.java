@@ -19,6 +19,10 @@ public class Renderer {
         sceneData.viewProjectionMatrix = camera.getViewProjectionMatrix();
     }
 
+    public static void onWindowResize(int width, int height) {
+        RenderCommand.setViewport(0, 0, width, height);
+    }
+
     public static void endScene() {
 
     }

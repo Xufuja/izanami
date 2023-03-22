@@ -71,6 +71,13 @@ public class OrthographicCameraController {
         return this.camera;
     }
 
+    public float getZoomLevel() {
+        return this.zoomLevel;
+    }
+    public void setZoomLevel(float zoomLevel) {
+        this.zoomLevel = zoomLevel;
+    }
+
     private boolean onMouseScrolled(MouseScrolledEvent event) {
         zoomLevel -= event.getyOffset() * 0.25f;
         zoomLevel = Math.max(zoomLevel, 0.25f);

@@ -17,6 +17,11 @@ public class OpenGLRendererAPI extends RendererAPIBase {
     }
 
     @Override
+    public void setViewport(int x, int y, int width, int height) {
+        GL45.glViewport(x, y, width, height);
+    }
+
+    @Override
     public void setClearColor(Vector4f color) {
         GL45.glClearColor(color.x, color.y, color.z, color.z);
     }
