@@ -1,15 +1,15 @@
 package dev.xfj.platform.windows;
 
 import dev.xfj.engine.core.Log;
-import dev.xfj.engine.event.application.WindowCloseEvent;
-import dev.xfj.engine.event.application.WindowResizeEvent;
-import dev.xfj.engine.event.key.KeyPressedEvent;
-import dev.xfj.engine.event.key.KeyReleasedEvent;
-import dev.xfj.engine.event.key.KeyTypedEvent;
-import dev.xfj.engine.event.mouse.MouseButtonPressedEvent;
-import dev.xfj.engine.event.mouse.MouseButtonReleasedEvent;
-import dev.xfj.engine.event.mouse.MouseMovedEvent;
-import dev.xfj.engine.event.mouse.MouseScrolledEvent;
+import dev.xfj.engine.events.application.WindowCloseEvent;
+import dev.xfj.engine.events.application.WindowResizeEvent;
+import dev.xfj.engine.events.key.KeyPressedEvent;
+import dev.xfj.engine.events.key.KeyReleasedEvent;
+import dev.xfj.engine.events.key.KeyTypedEvent;
+import dev.xfj.engine.events.mouse.MouseButtonPressedEvent;
+import dev.xfj.engine.events.mouse.MouseButtonReleasedEvent;
+import dev.xfj.engine.events.mouse.MouseMovedEvent;
+import dev.xfj.engine.events.mouse.MouseScrolledEvent;
 import dev.xfj.engine.renderer.GraphicsContext;
 import dev.xfj.engine.core.window.EventCallBack;
 import dev.xfj.engine.core.window.Window;

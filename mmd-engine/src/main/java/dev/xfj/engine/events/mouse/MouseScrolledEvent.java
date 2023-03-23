@@ -1,6 +1,6 @@
-package dev.xfj.engine.event.mouse;
+package dev.xfj.engine.events.mouse;
 
-import dev.xfj.engine.event.Event;
+import dev.xfj.engine.events.Event;
 
 import java.util.EnumSet;
 

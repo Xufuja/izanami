@@ -1,9 +1,9 @@
 package dev.xfj.engine.core;
 
-import dev.xfj.engine.event.Event;
-import dev.xfj.engine.event.EventDispatcher;
-import dev.xfj.engine.event.application.WindowCloseEvent;
-import dev.xfj.engine.event.application.WindowResizeEvent;
+import dev.xfj.engine.events.Event;
+import dev.xfj.engine.events.EventDispatcher;
+import dev.xfj.engine.events.application.WindowCloseEvent;
+import dev.xfj.engine.events.application.WindowResizeEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.engine.core.window.Window;

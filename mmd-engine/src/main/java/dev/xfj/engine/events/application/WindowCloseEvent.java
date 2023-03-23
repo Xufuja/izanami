@@ -1,13 +1,13 @@
-package dev.xfj.engine.event.application;
+package dev.xfj.engine.events.application;
 
-import dev.xfj.engine.event.Event;
+import dev.xfj.engine.events.Event;
 
 import java.util.EnumSet;
 
-public class AppRenderEvent extends Event {
-    private static final EventType eventType = EventType.AppRender;
+public class WindowCloseEvent extends Event {
+    private static final EventType eventType = EventType.WindowClose;
 
-    public AppRenderEvent() {
+    public WindowCloseEvent() {
         super(EnumSet.of(Event.EventCategory.EventCategoryApplication));
     }
 
@@ -19,6 +19,5 @@ public class AppRenderEvent extends Event {
     public Event.EventType getEventType() {
         return getStaticType();
     }
-
 
 }

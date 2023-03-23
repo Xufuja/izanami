@@ -1,6 +1,6 @@
-package dev.xfj.engine.event.key;
+package dev.xfj.engine.events.key;
 
-import dev.xfj.engine.event.Event;
+import dev.xfj.engine.events.Event;
 
 public class KeyTypedEvent extends KeyEvent {
     private static final EventType eventType = EventType.KeyTyped;

@@ -2,11 +2,10 @@ package dev.xfj.engine.renderer;
 
 import dev.xfj.engine.core.Input;
 import dev.xfj.engine.core.TimeStep;
-import dev.xfj.engine.event.Event;
-import dev.xfj.engine.event.EventDispatcher;
-import dev.xfj.engine.event.application.WindowResizeEvent;
-import dev.xfj.engine.event.mouse.MouseScrolledEvent;
-import dev.xfj.engine.renderer.OrthographicCamera;
+import dev.xfj.engine.events.Event;
+import dev.xfj.engine.events.EventDispatcher;
+import dev.xfj.engine.events.application.WindowResizeEvent;
+import dev.xfj.engine.events.mouse.MouseScrolledEvent;
 import org.joml.Vector3f;
 
 import static dev.xfj.engine.core.KeyCodes.*;

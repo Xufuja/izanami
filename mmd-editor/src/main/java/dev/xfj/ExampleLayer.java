@@ -3,7 +3,7 @@ package dev.xfj;
 import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.renderer.OrthographicCameraController;
 import dev.xfj.engine.core.TimeStep;
-import dev.xfj.engine.event.Event;
+import dev.xfj.engine.events.Event;
 import dev.xfj.engine.renderer.RenderCommand;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.engine.renderer.Texture2D;

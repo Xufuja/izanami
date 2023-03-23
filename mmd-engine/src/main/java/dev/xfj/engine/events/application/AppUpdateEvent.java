@@ -1,13 +1,13 @@
-package dev.xfj.engine.event.application;
+package dev.xfj.engine.events.application;
 
-import dev.xfj.engine.event.Event;
+import dev.xfj.engine.events.Event;
 
 import java.util.EnumSet;
 
-public class AppTickEvent extends Event {
-    private static final EventType eventType = EventType.AppTick;
+public class AppUpdateEvent extends Event {
+    private static final EventType eventType = EventType.AppUpdate;
 
-    public AppTickEvent() {
+    public AppUpdateEvent() {
         super(EnumSet.of(Event.EventCategory.EventCategoryApplication));
     }
 

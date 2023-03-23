@@ -1,7 +1,6 @@
 package dev.xfj.engine.core;
 
-import dev.xfj.engine.core.TimeStep;
-import dev.xfj.engine.event.Event;
+import dev.xfj.engine.events.Event;
 
 public abstract class Layer {
     protected String debugName;
