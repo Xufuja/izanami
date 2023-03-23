@@ -4,6 +4,7 @@ import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.GraphicsContext;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL45;
 
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -26,6 +27,7 @@ public class OpenGLContext implements GraphicsContext {
         Log.info(String.format(" Vendor: %1$s", glGetString(GL_VENDOR)));
         Log.info(String.format(" Renderer: %1$s", glGetString(GL_RENDERER)));
         Log.info(String.format(" Version: %1$s", glGetString(GL_VERSION)));
+
     }
 
     @Override

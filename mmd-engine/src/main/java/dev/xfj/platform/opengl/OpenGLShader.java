@@ -78,7 +78,7 @@ public class OpenGLShader implements Shader {
 
             int nextLinePos = source.indexOf("\r\n", eol);
             pos = source.indexOf(typeToken, nextLinePos);
-            shaderSources.put(shaderTypeFromString(type), source.substring(nextLinePos, pos == -1 ? source.length() : pos));
+            shaderSources.put(shaderTypeFromString(type), pos == -1 ? source.substring(nextLinePos) : source.substring(nextLinePos, pos));
         }
         return shaderSources;
     }
@@ -140,6 +140,7 @@ public class OpenGLShader implements Shader {
         }
         for (int id : shaderIds) {
             GL45.glDetachShader(program, id);
+            GL45.glDeleteShader(id);
         }
     }
 

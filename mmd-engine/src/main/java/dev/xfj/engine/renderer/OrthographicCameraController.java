@@ -37,14 +37,19 @@ public class OrthographicCameraController {
 
     public void onUpdate(TimeStep ts) {
         if (Input.isKeyPressed(MMD_KEY_A)) {
-            cameraPosition.x -= cameraTranslationSpeed * ts.getTime();
+            cameraPosition.x -= Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.y -= Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
         } else if (Input.isKeyPressed(MMD_KEY_D)) {
-            cameraPosition.x += cameraTranslationSpeed * ts.getTime();
+            cameraPosition.x += Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.y += Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
         }
         if (Input.isKeyPressed(MMD_KEY_W)) {
-            cameraPosition.y += cameraTranslationSpeed * ts.getTime();
+            cameraPosition.x += Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.y -= Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+
         } else if (Input.isKeyPressed(MMD_KEY_S)) {
-            cameraPosition.y -= cameraTranslationSpeed * ts.getTime();
+            cameraPosition.x -= Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.y += Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
         }
 
         if (this.rotation) {
@@ -53,6 +58,11 @@ public class OrthographicCameraController {
             }
             if (Input.isKeyPressed(MMD_KEY_E)) {
                 cameraRotation -= cameraRotationSpeed * ts.getTime();
+            }
+            if (cameraRotation > 180.0f) {
+                cameraRotation -= 360.0f;
+            } else if (cameraRotation <= -180.0f) {
+                cameraRotation += 360.0f;
             }
             camera.setRotation(cameraRotation);
         }
@@ -74,6 +84,7 @@ public class OrthographicCameraController {
     public float getZoomLevel() {
         return this.zoomLevel;
     }
+
     public void setZoomLevel(float zoomLevel) {
         this.zoomLevel = zoomLevel;
     }

@@ -40,7 +40,7 @@ public class ExampleLayer extends Layer {
     public ExampleLayer() throws IOException {
         super("Example Layer");
         shaderLibrary = new ShaderLibrary();
-        cameraController = new OrthographicCameraController(1280.0f / 720.0f);
+        cameraController = new OrthographicCameraController(1280.0f / 720.0f, true);
 
         squareColor = new Vector3f(0.2f, 0.3f, 0.8f);
 
