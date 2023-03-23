@@ -3,10 +3,12 @@ package dev.xfj.platform.opengl;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.shader.Shader;
 import org.joml.*;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL45;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,6 +79,7 @@ public class OpenGLShader implements Shader {
             //Some sort of exception to handle invalid shader types
 
             int nextLinePos = source.indexOf("\r\n", eol);
+            //Add some sort of exception in case nextLinePos != -1, which should throw Syntax Error
             pos = source.indexOf(typeToken, nextLinePos);
             shaderSources.put(shaderTypeFromString(type), pos == -1 ? source.substring(nextLinePos) : source.substring(nextLinePos, pos));
         }
@@ -100,9 +103,9 @@ public class OpenGLShader implements Shader {
 
             GL45.glCompileShader(shader);
 
-            int[] isCompiled = new int[1];
+            IntBuffer isCompiled = BufferUtils.createIntBuffer(1);
             GL45.glGetShaderiv(shader, GL_COMPILE_STATUS, isCompiled);
-            if (isCompiled[0] == GL_FALSE) {
+            if (isCompiled.get(0) == GL_FALSE) {
                 int[] maxLength = new int[]{0};
                 GL45.glGetShaderiv(shader, GL_INFO_LOG_LENGTH, maxLength);
 
@@ -120,10 +123,10 @@ public class OpenGLShader implements Shader {
 
         GL45.glLinkProgram(program);
 
-        int[] isLinked = new int[1];
+        IntBuffer isLinked = BufferUtils.createIntBuffer(1);
         GL45.glGetProgramiv(program, GL_LINK_STATUS, isLinked);
 
-        if (isLinked[0] == GL_FALSE) {
+        if (isLinked.get(0) == GL_FALSE) {
             int[] maxLength = new int[]{0};
             GL45.glGetProgramiv(program, GL_INFO_LOG_LENGTH, maxLength);
 
