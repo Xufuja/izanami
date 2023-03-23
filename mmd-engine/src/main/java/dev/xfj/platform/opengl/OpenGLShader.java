@@ -1,6 +1,6 @@
 package dev.xfj.platform.opengl;
 
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.shader.Shader;
 import org.joml.*;
 import org.lwjgl.opengl.GL45;

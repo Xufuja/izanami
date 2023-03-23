@@ -1,4 +1,4 @@
-package dev.xfj.engine;
+package dev.xfj.engine.core;
 
 public class KeyCodes {
     //From GLFW

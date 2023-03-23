@@ -1,5 +1,6 @@
-package dev.xfj.engine;
+package dev.xfj.engine.renderer;
 
+import dev.xfj.engine.core.Input;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
 import dev.xfj.engine.event.EventDispatcher;
@@ -8,7 +9,7 @@ import dev.xfj.engine.event.mouse.MouseScrolledEvent;
 import dev.xfj.engine.renderer.OrthographicCamera;
 import org.joml.Vector3f;
 
-import static dev.xfj.engine.KeyCodes.*;
+import static dev.xfj.engine.core.KeyCodes.*;
 
 public class OrthographicCameraController {
     private float aspectRatio;

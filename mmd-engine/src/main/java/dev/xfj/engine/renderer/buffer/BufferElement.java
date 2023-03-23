@@ -1,6 +1,6 @@
 package dev.xfj.engine.renderer.buffer;
 
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Log;
 
 public class BufferElement {
     public String name;

@@ -1,6 +1,6 @@
 package dev.xfj.engine.renderer;
 
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import dev.xfj.platform.opengl.OpenGLVertexArray;

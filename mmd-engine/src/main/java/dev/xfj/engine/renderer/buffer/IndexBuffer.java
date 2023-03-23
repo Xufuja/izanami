@@ -1,6 +1,6 @@
 package dev.xfj.engine.renderer.buffer;
 
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.platform.opengl.OpenGLIndexBuffer;
 

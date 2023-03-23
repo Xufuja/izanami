@@ -1,4 +1,4 @@
-package dev.xfj.engine.window;
+package dev.xfj.engine.core.window;
 
 import dev.xfj.engine.event.Event;
 

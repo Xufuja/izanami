@@ -1,4 +1,4 @@
-package dev.xfj.engine.window;
+package dev.xfj.engine.core.window;
 
 public class WindowProps {
     public String title;

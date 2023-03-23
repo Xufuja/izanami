@@ -1,4 +1,4 @@
-package dev.xfj.engine;
+package dev.xfj.engine.core;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

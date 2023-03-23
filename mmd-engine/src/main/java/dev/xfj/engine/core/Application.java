@@ -1,13 +1,12 @@
-package dev.xfj.engine;
+package dev.xfj.engine.core;
 
-import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
 import dev.xfj.engine.event.EventDispatcher;
 import dev.xfj.engine.event.application.WindowCloseEvent;
 import dev.xfj.engine.event.application.WindowResizeEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.renderer.Renderer;
-import dev.xfj.engine.window.Window;
+import dev.xfj.engine.core.window.Window;
 import dev.xfj.platform.windows.WindowsInput;
 import dev.xfj.platform.windows.WindowsWindow;
 

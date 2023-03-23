@@ -1,7 +1,7 @@
 package dev.xfj;
 
-import dev.xfj.engine.Application;
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Application;
+import dev.xfj.engine.core.Log;
 
 import java.io.IOException;
 

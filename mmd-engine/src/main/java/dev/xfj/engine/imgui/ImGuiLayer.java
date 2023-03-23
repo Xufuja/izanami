@@ -1,7 +1,7 @@
 package dev.xfj.engine.imgui;
 
-import dev.xfj.engine.Application;
-import dev.xfj.engine.Layer;
+import dev.xfj.engine.core.Application;
+import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.event.Event;
 import imgui.ImGui;

@@ -1,6 +1,6 @@
 package dev.xfj.platform.windows;
 
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.event.application.WindowCloseEvent;
 import dev.xfj.engine.event.application.WindowResizeEvent;
 import dev.xfj.engine.event.key.KeyPressedEvent;
@@ -11,10 +11,10 @@ import dev.xfj.engine.event.mouse.MouseButtonReleasedEvent;
 import dev.xfj.engine.event.mouse.MouseMovedEvent;
 import dev.xfj.engine.event.mouse.MouseScrolledEvent;
 import dev.xfj.engine.renderer.GraphicsContext;
-import dev.xfj.engine.window.EventCallBack;
-import dev.xfj.engine.window.Window;
-import dev.xfj.engine.window.WindowData;
-import dev.xfj.engine.window.WindowProps;
+import dev.xfj.engine.core.window.EventCallBack;
+import dev.xfj.engine.core.window.Window;
+import dev.xfj.engine.core.window.WindowData;
+import dev.xfj.engine.core.window.WindowProps;
 import dev.xfj.platform.opengl.OpenGLContext;
 import org.lwjgl.glfw.*;
 

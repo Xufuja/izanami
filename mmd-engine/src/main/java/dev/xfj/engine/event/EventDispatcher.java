@@ -1,6 +1,6 @@
 package dev.xfj.engine.event;
 
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

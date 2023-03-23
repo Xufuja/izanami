@@ -1,6 +1,6 @@
 package dev.xfj.platform.opengl;
 
-import dev.xfj.engine.Log;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.GraphicsContext;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
