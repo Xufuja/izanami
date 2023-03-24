@@ -8,7 +8,8 @@ import java.io.IOException;
 public class Editor extends Application {
 
     public Editor() throws IOException {
-        pushLayer(new ExampleLayer());
+        //pushLayer(new ExampleLayer());
+        pushLayer(new Sample2D());
         Log.client().info("Layer pushed!");
     }
 }
