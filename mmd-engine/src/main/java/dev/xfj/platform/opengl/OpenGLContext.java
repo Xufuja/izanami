@@ -5,7 +5,6 @@ import dev.xfj.engine.renderer.GraphicsContext;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL45;
 
 import java.nio.IntBuffer;
 

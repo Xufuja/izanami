@@ -22,7 +22,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class WindowsWindow implements Window {
-    public static boolean glfwInitialized = false;
+    public static int glfwWindowCount = 0;
     private long window;
     private GraphicsContext context;
     private final WindowData windowData;
@@ -44,7 +44,7 @@ public class WindowsWindow implements Window {
 
         Log.info(String.format("Creating new window %1$s (%2$d, %3$d)", windowProps.title, windowProps.width, windowProps.height));
 
-        if (!glfwInitialized) {
+        if (glfwWindowCount == 0) {
             boolean success = glfwInit();
             if (!success) {
                 throw new RuntimeException("Could not initialize GLFW!");
@@ -55,10 +55,10 @@ public class WindowsWindow implements Window {
                         Log.error(String.format("GLFW error (%1$d): %2$d", error, description));
                     }
                 });
-                glfwInitialized = true;
             }
         }
         window = glfwCreateWindow(windowProps.width, windowProps.height, windowProps.title, NULL, NULL);
+        ++glfwWindowCount;
         context = new OpenGLContext(window);
         context.init();
         //glfwSetWindowUserPointer(window, windowData);
@@ -142,7 +142,9 @@ public class WindowsWindow implements Window {
 
     public void shutdown() {
         glfwDestroyWindow(window);
-        glfwTerminate();
+        if (--glfwWindowCount == 0) {
+            glfwTerminate();
+        }
     }
 
     public void onUpdate() {
