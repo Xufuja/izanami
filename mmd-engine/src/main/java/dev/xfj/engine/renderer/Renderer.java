@@ -13,6 +13,7 @@ public class Renderer {
 
     public static void init() {
         RenderCommand.init();
+        Renderer2D.init();
     }
 
     public static void beginScene(OrthographicCamera camera) {
@@ -33,10 +34,9 @@ public class Renderer {
 
     public static void submit(Shader shader, VertexArray vertexArray, Matrix4f transform) {
         shader.bind();
-        if (shader instanceof OpenGLShader) {
-            ((OpenGLShader) shader).uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
-            ((OpenGLShader) shader).uploadUniformMat4("u_Transform", transform);
-        }
+
+        ((OpenGLShader) shader).uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
+        ((OpenGLShader) shader).uploadUniformMat4("u_Transform", transform);
 
         vertexArray.bind();
         RenderCommand.drawIndexed(vertexArray);

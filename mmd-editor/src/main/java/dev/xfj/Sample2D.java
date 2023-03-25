@@ -1,23 +1,16 @@
 package dev.xfj;
 
 import dev.xfj.engine.core.Layer;
-import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
-import dev.xfj.engine.renderer.*;
-import dev.xfj.engine.renderer.buffer.BufferElement;
-import dev.xfj.engine.renderer.buffer.BufferLayout;
-import dev.xfj.engine.renderer.buffer.IndexBuffer;
-import dev.xfj.engine.renderer.buffer.VertexBuffer;
+import dev.xfj.engine.renderer.OrthographicCameraController;
+import dev.xfj.engine.renderer.RenderCommand;
+import dev.xfj.engine.renderer.Renderer2D;
+import dev.xfj.engine.renderer.VertexArray;
 import dev.xfj.engine.renderer.shader.Shader;
-import dev.xfj.platform.opengl.OpenGLShader;
 import imgui.ImGui;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.Vector2f;
 import org.joml.Vector4f;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class Sample2D extends Layer {
     private OrthographicCameraController cameraController;
@@ -33,27 +26,7 @@ public class Sample2D extends Layer {
 
     @Override
     public void onAttach() {
-        squareVA = VertexArray.create();
 
-        float[] squareVertices = {
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f,
-                -0.5f, 0.5f, 0.0f
-        };
-
-        VertexBuffer squareVB = VertexBuffer.create(squareVertices);
-        squareVB.setLayout(new BufferLayout(new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position")));
-        squareVA.addVertexBuffer(squareVB);
-
-        int[] squareIndices = {0, 1, 2, 2, 3, 0};
-        IndexBuffer squareIB = IndexBuffer.create(squareIndices, squareIndices.length);
-        squareVA.setIndexBuffer(squareIB);
-        try {
-            flatColorShader = Shader.create(Path.of("assets/shaders/FlatColor.glsl"));
-        } catch (IOException e) {
-            Log.error(e.toString());
-        }
     }
 
     @Override
@@ -67,14 +40,10 @@ public class Sample2D extends Layer {
         RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
         RenderCommand.clear();
 
-        Renderer.beginScene(cameraController.getCamera());
+        Renderer2D.beginScene(cameraController.getCamera());
+        Renderer2D.drawQuad(new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector4f(0.8f, 0.2f, 0.3f, 1.0f));
 
-        flatColorShader.bind();
-        ((OpenGLShader) flatColorShader).uploadUniformFloat4("u_Color", squareColor);
-
-        Renderer.submit(flatColorShader, squareVA, new Matrix4f().scale(1.5f));
-
-        Renderer.endScene();
+        Renderer2D.endScene();
     }
 
     @Override
