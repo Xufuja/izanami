@@ -157,9 +157,23 @@ public class OpenGLShader implements Shader {
         GL45.glUseProgram(0);
     }
 
+    public void setInt(String name, int value) {
+        uploadUniformInt(name, value);
+    }
+
     @Override
-    public String getName() {
-        return this.name;
+    public void setFloat3(String name, Vector3f value) {
+        uploadUniformFloat3(name, value);
+    }
+
+    @Override
+    public void setFloat4(String name, Vector4f value) {
+        uploadUniformFloat4(name, value);
+    }
+
+    @Override
+    public void setMat4(String name, Matrix4f value) {
+        uploadUniformMat4(name, value);
     }
 
     public void uploadUniformInt(String name, int value) {
@@ -195,5 +209,10 @@ public class OpenGLShader implements Shader {
     public void uploadUniformMat4(String name, Matrix4f matrix) {
         int location = GL45.glGetUniformLocation(renderId, name);
         GL45.glUniformMatrix4fv(location, false, matrix.get(new float[16]));
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 }

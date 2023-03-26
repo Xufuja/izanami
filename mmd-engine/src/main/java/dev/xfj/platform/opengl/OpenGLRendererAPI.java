@@ -14,6 +14,7 @@ public class OpenGLRendererAPI extends RendererAPIBase {
     public void init() {
         GL45.glEnable(GL_BLEND);
         GL45.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL45.glEnable(GL_DEPTH_TEST);
     }
 
     @Override

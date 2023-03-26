@@ -3,6 +3,9 @@ package dev.xfj.engine.renderer.shader;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.platform.opengl.OpenGLShader;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -21,6 +24,7 @@ public interface Shader {
             }
         };
     }
+
     static Shader create(String name, String vertexSrc, String fragmentSrc) {
         return switch (Renderer.getAPI()) {
             case None -> {
@@ -38,6 +42,14 @@ public interface Shader {
     void bind();
 
     void unbind();
+
+    void setInt(String name, int value);
+
+    void setFloat3(String name, Vector3f value);
+
+    void setFloat4(String name, Vector4f value);
+
+    void setMat4(String name, Matrix4f value);
 
     String getName();
 }

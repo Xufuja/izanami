@@ -23,13 +23,13 @@ public class Renderer2D {
         renderer2DStorage.quadVertexArray = VertexArray.create();
 
         float[] squareVertices = {
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f,
-                -0.5f, 0.5f, 0.0f
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+                0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+                -0.5f, 0.5f, 0.0f, 0.0f, 1.0f
         };
         VertexBuffer squareVB = VertexBuffer.create(squareVertices);
-        squareVB.setLayout(new BufferLayout(new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position")));
+        squareVB.setLayout(new BufferLayout(new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position"), new BufferElement(BufferElement.ShaderDataType.Float2, "a_TexCoord")));
         renderer2DStorage.quadVertexArray.addVertexBuffer(squareVB);
 
         int[] squareIndices = {0, 1, 2, 2, 3, 0};
@@ -37,6 +37,9 @@ public class Renderer2D {
         renderer2DStorage.quadVertexArray.setIndexBuffer(squareIB);
         try {
             renderer2DStorage.flatColorShader = Shader.create(Path.of("assets/shaders/FlatColor.glsl"));
+            renderer2DStorage.textureShader = Shader.create(Path.of("assets/shaders/Texture.glsl"));
+            renderer2DStorage.textureShader.bind();
+            renderer2DStorage.textureShader.setInt("u_Texture", 0);
         } catch (IOException e) {
             Log.error(e.toString());
         }
@@ -48,8 +51,10 @@ public class Renderer2D {
 
     public static void beginScene(OrthographicCamera camera) {
         renderer2DStorage.flatColorShader.bind();
-        ((OpenGLShader) renderer2DStorage.flatColorShader).uploadUniformMat4("u_ViewProjection", camera.getViewProjectionMatrix());
-        ((OpenGLShader) renderer2DStorage.flatColorShader).uploadUniformMat4("u_Transform", new Matrix4f().identity());
+        renderer2DStorage.flatColorShader.setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
+
+        renderer2DStorage.textureShader.bind();
+        renderer2DStorage.textureShader.setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
     }
 
     public static void endScene() {
@@ -62,7 +67,26 @@ public class Renderer2D {
 
     public static void drawQuad(Vector3f position, Vector2f size, Vector4f color) {
         renderer2DStorage.flatColorShader.bind();
-        ((OpenGLShader) renderer2DStorage.flatColorShader).uploadUniformFloat4("u_Color", color);
+        renderer2DStorage.flatColorShader.setFloat4("u_Color", color);
+
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        renderer2DStorage.flatColorShader.setMat4("u_Transform", transform);
+
+        renderer2DStorage.quadVertexArray.bind();
+        RenderCommand.drawIndexed(renderer2DStorage.quadVertexArray);
+    }
+
+    public static void drawQuad(Vector2f position, Vector2f size, Texture2D texture) {
+        drawQuad(new Vector3f(position.x, position.y, 0.0f), size, texture);
+    }
+
+    public static void drawQuad(Vector3f position, Vector2f size, Texture2D texture) {
+        renderer2DStorage.textureShader.bind();
+
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        renderer2DStorage.flatColorShader.setMat4("u_Transform", transform);
+
+        texture.bind();
 
         renderer2DStorage.quadVertexArray.bind();
         RenderCommand.drawIndexed(renderer2DStorage.quadVertexArray);

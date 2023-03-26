@@ -49,6 +49,9 @@ public class OpenGLTexture2D extends Texture2D {
         GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
         GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
 
+        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
+        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
+
         GL45.glTextureSubImage2D(this.renderId, 0, 0, 0, this.width, this.height, dataFormat, GL45.GL_UNSIGNED_BYTE, data);
 
         STBImage.stbi_image_free(data);
