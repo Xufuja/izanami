@@ -66,6 +66,7 @@ public class Application {
             window.onUpdate();
         }
         window.shutdown();
+        Renderer.shutdown();
     }
 
     public void onEvent(Event event) {

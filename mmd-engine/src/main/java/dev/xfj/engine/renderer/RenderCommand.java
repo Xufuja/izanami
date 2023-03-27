@@ -1,13 +1,12 @@
 package dev.xfj.engine.renderer;
 
-import dev.xfj.platform.opengl.OpenGLRendererAPI;
 import org.joml.Vector4f;
 
 public class RenderCommand {
     private static final RendererAPI rendererAPI;
 
     static {
-        rendererAPI = new OpenGLRendererAPI();
+        rendererAPI = RendererAPI.create();
     }
 
     public static void init() {

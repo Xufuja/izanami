@@ -59,7 +59,7 @@ public class WindowsWindow implements Window {
         }
         window = glfwCreateWindow(windowProps.width, windowProps.height, windowProps.title, NULL, NULL);
         ++glfwWindowCount;
-        context = new OpenGLContext(window);
+        context = GraphicsContext.create(window);
         context.init();
         //glfwSetWindowUserPointer(window, windowData);
         setVSync(true);
@@ -142,7 +142,8 @@ public class WindowsWindow implements Window {
 
     public void shutdown() {
         glfwDestroyWindow(window);
-        if (--glfwWindowCount == 0) {
+        --glfwWindowCount;
+        if (glfwWindowCount == 0) {
             glfwTerminate();
         }
     }

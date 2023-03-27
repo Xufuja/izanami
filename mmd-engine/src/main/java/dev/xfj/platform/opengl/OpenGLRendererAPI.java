@@ -35,5 +35,6 @@ public class OpenGLRendererAPI extends RendererAPIBase {
     @Override
     public void drawIndexed(VertexArray vertexArray) {
         GL45.glDrawElements(GL_TRIANGLES, vertexArray.getIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
+        GL45.glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

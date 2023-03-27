@@ -156,7 +156,7 @@ public class ExampleLayer extends Layer {
         logoTexture = Texture2D.create(Paths.get("assets", "textures", "Logo.png"));
 
         textureShader.bind();
-        ((OpenGLShader) textureShader).uploadUniformInt("u_Texture", 0);
+        textureShader.setInt("u_Texture", 0);
     }
 
     @Override
@@ -180,7 +180,7 @@ public class ExampleLayer extends Layer {
         Matrix4f scale = new Matrix4f().scale(0.1f);
 
         flatColorShader.bind();
-        ((OpenGLShader) flatColorShader).uploadUniformFloat3("u_Color", squareColor);
+        flatColorShader.setFloat3("u_Color", squareColor);
 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {

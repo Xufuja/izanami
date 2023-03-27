@@ -20,6 +20,10 @@ public class Renderer {
         sceneData.viewProjectionMatrix = camera.getViewProjectionMatrix();
     }
 
+    public static void shutdown() {
+        Renderer2D.shutdown();
+    }
+
     public static void onWindowResize(int width, int height) {
         RenderCommand.setViewport(0, 0, width, height);
     }
@@ -35,8 +39,8 @@ public class Renderer {
     public static void submit(Shader shader, VertexArray vertexArray, Matrix4f transform) {
         shader.bind();
 
-        ((OpenGLShader) shader).uploadUniformMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
-        ((OpenGLShader) shader).uploadUniformMat4("u_Transform", transform);
+        shader.setMat4("u_ViewProjection", sceneData.viewProjectionMatrix);
+        shader.setMat4("u_Transform", transform);
 
         vertexArray.bind();
         RenderCommand.drawIndexed(vertexArray);
