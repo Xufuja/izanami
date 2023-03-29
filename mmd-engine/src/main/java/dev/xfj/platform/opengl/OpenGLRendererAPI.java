@@ -1,12 +1,19 @@
 package dev.xfj.platform.opengl;
 
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.RendererAPIBase;
 import dev.xfj.engine.renderer.VertexArray;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL45;
+import org.lwjgl.opengl.GLDebugMessageCallback;
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.system.MemoryUtil.memUTF8;
 
 public class OpenGLRendererAPI extends RendererAPIBase {
 
@@ -15,6 +22,25 @@ public class OpenGLRendererAPI extends RendererAPIBase {
         GL45.glEnable(GL_BLEND);
         GL45.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GL45.glEnable(GL_DEPTH_TEST);
+
+        if (ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0) {
+            GL45.glEnable(GL_DEBUG_OUTPUT);
+            GL45.glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            GLDebugMessageCallback callback = new GLDebugMessageCallback() {
+                @Override
+                public void invoke(int source, int type, int id, int severity, int length, long message, long userParam) {
+                    switch (severity) {
+                        case GL_DEBUG_SEVERITY_HIGH, GL_DEBUG_SEVERITY_MEDIUM -> Log.error(memUTF8(message));
+                        case GL_DEBUG_SEVERITY_LOW -> Log.warn(memUTF8(message));
+                        case GL_DEBUG_SEVERITY_NOTIFICATION -> Log.trace(memUTF8(message));
+                        default -> Log.error("Unknown severity!");
+                    }
+                }
+            };
+            GL45.glDebugMessageCallback(callback, NULL);
+            GL45.glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, (IntBuffer) null, false);
+        }
+
     }
 
     @Override

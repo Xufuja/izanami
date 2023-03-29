@@ -157,8 +157,14 @@ public class OpenGLShader implements Shader {
         GL45.glUseProgram(0);
     }
 
+    @Override
     public void setInt(String name, int value) {
         uploadUniformInt(name, value);
+    }
+
+    @Override
+    public void setFloat(String name, float value) {
+        uploadUniformFloat(name, value);
     }
 
     @Override

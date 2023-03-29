@@ -6,6 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.FileAppender;
 import org.slf4j.LoggerFactory;
 
 public class Log {
@@ -58,8 +59,15 @@ public class Log {
         consoleAppender.setContext(loggerContext);
         consoleAppender.start();
 
+        FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
+        fileAppender.setFile("mmd.log");
+        fileAppender.setEncoder(patternLayoutEncoder);
+        fileAppender.setContext(loggerContext);
+        fileAppender.start();
+
         Logger logger = (Logger) LoggerFactory.getLogger(name);
         logger.addAppender(consoleAppender);
+        logger.addAppender(fileAppender);
         logger.setLevel(Level.DEBUG);
         logger.setAdditive(false);
 

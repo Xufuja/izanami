@@ -26,7 +26,7 @@ public class Application {
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
         //It seems to do the same thing as using this static block, but not sure how that is being called
-        Input.setInput(new WindowsInput());
+        Input.setInput(Input.create());
     }
 
     public Application() {
@@ -36,7 +36,7 @@ public class Application {
             Log.error("Application already exists!");
         }
 
-        window = WindowsWindow.create();
+        window = Window.create();
         running = true;
         minimized = false;
         layerStack = new LayerStack();

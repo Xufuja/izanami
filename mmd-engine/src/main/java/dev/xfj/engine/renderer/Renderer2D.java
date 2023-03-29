@@ -80,14 +80,78 @@ public class Renderer2D {
     }
 
     public static void drawQuad(Vector2f position, Vector2f size, Texture2D texture) {
-        drawQuad(new Vector3f(position.x, position.y, 0.0f), size, texture);
+        drawQuad(position, size, texture, 1.0f, new Vector4f(1.0f));
+    }
+
+    public static void drawQuad(Vector2f position, Vector2f size, Texture2D texture, float tilingFactor) {
+        drawQuad(position, size, texture, tilingFactor, new Vector4f(1.0f));
+    }
+
+    public static void drawQuad(Vector2f position, Vector2f size, Texture2D texture, float tilingFactor, Vector4f tintColor) {
+        drawQuad(new Vector3f(position.x, position.y, 0.0f), size, texture, tilingFactor, tintColor);
     }
 
     public static void drawQuad(Vector3f position, Vector2f size, Texture2D texture) {
-        renderer2DStorage.textureShader.setFloat4("u_Color", new Vector4f(0.2f, 0.3f, 0.8f,0.5f));
+        drawQuad(position, size, texture, 1.0f);
+    }
+
+    public static void drawQuad(Vector3f position, Vector2f size, Texture2D texture, float tilingFactor) {
+        drawQuad(position, size, texture, tilingFactor, new Vector4f(1.0f));
+    }
+
+    public static void drawQuad(Vector3f position, Vector2f size, Texture2D texture, float tilingFactor, Vector4f tintColor) {
+        renderer2DStorage.textureShader.setFloat4("u_Color", tintColor);
+        renderer2DStorage.textureShader.setFloat("u_TilingFactor", tilingFactor);
         texture.bind();
 
         Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        renderer2DStorage.textureShader.setMat4("u_Transform", transform);
+
+        renderer2DStorage.quadVertexArray.bind();
+        RenderCommand.drawIndexed(renderer2DStorage.quadVertexArray);
+    }
+
+    public static void drawRotatedQuad(Vector2f position, Vector2f size, float rotation, Vector4f color) {
+        drawRotatedQuad(new Vector3f(position.x, position.y, 0.0f), size, rotation, color);
+    }
+
+    public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Vector4f color) {
+        renderer2DStorage.textureShader.setFloat4("u_Color", color);
+        renderer2DStorage.textureShader.setFloat("u_TilingFactor", 1.0f);
+        renderer2DStorage.whiteTexture.bind();
+
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        renderer2DStorage.textureShader.setMat4("u_Transform", transform);
+
+        renderer2DStorage.quadVertexArray.bind();
+        RenderCommand.drawIndexed(renderer2DStorage.quadVertexArray);
+    }
+
+    public static void drawRotatedQuad(Vector2f position, Vector2f size, float rotation, Texture2D texture) {
+        drawRotatedQuad(position, size, rotation, texture, 1.0f);
+    }
+
+    public static void drawRotatedQuad(Vector2f position, Vector2f size, float rotation, Texture2D texture, float tilingFactor) {
+        drawRotatedQuad(position, size, rotation, texture, tilingFactor, new Vector4f(1.0f));
+    }
+
+    public static void drawRotatedQuad(Vector2f position, Vector2f size, float rotation, Texture2D texture, float tilingFactor, Vector4f tintColor) {
+        drawRotatedQuad(new Vector3f(position.x, position.y, 0.0f), size, rotation, texture, tilingFactor, tintColor);
+    }
+
+    public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Texture2D texture) {
+        drawRotatedQuad(position, size, rotation, texture, 1.0f);
+    }
+
+    public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Texture2D texture, float tilingFactor) {
+        drawRotatedQuad(position, size, rotation, texture, tilingFactor, new Vector4f(1.0f));
+    }
+    public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Texture2D texture, float tilingFactor, Vector4f tintColor) {
+        renderer2DStorage.textureShader.setFloat4("u_Color", tintColor);
+        renderer2DStorage.textureShader.setFloat("u_TilingFactor", tilingFactor);
+        texture.bind();
+
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
         renderer2DStorage.textureShader.setMat4("u_Transform", transform);
 
         renderer2DStorage.quadVertexArray.bind();

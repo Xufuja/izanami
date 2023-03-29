@@ -6,10 +6,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
+import java.lang.management.ManagementFactory;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL45.*;
 
 public class OpenGLContext implements GraphicsContext {
@@ -23,6 +23,9 @@ public class OpenGLContext implements GraphicsContext {
     public void init() {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 5);
+        if (ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0) {
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        }
         glfwMakeContextCurrent(windowHandle);
         GL.createCapabilities(); //No need for glad, this kind of does the same as gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         Log.info("OpenGL Info:");

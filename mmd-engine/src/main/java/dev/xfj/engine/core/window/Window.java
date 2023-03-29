@@ -1,6 +1,17 @@
 package dev.xfj.engine.core.window;
 
+import dev.xfj.platform.windows.WindowsWindow;
+
 public interface Window {
+    static Window create() {
+        String os = System.getProperty("os.name").toLowerCase();
+        WindowProps windowProps = new WindowProps();
+        if (os.contains("win")) {
+            return new WindowsWindow(windowProps);
+        } else {
+            throw new RuntimeException("Unknown platform!");
+        }
+    }
     void onUpdate();
     int getWidth();
     int getHeight();

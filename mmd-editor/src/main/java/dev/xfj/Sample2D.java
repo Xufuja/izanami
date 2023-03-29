@@ -43,9 +43,9 @@ public class Sample2D extends Layer {
         RenderCommand.clear();
 
         Renderer2D.beginScene(cameraController.getCamera());
-        Renderer2D.drawQuad(new Vector2f(-1.0f, 0.0f), new Vector2f(0.8f, 0.8f), new Vector4f(0.8f, 0.2f, 0.3f, 1.0f));
+        Renderer2D.drawRotatedQuad(new Vector2f(-1.0f, 0.0f), new Vector2f(0.8f, 0.8f), (float) Math.toRadians(-45.0f), new Vector4f(0.8f, 0.2f, 0.3f, 1.0f));
         Renderer2D.drawQuad(new Vector2f(0.5f, -0.5f), new Vector2f(0.5f, 0.75f), squareColor);
-        Renderer2D.drawQuad(new Vector3f(0.0f, 0.0f, -0.1f), new Vector2f(10.0f, 10.0f), checkerBoardTexture);
+        Renderer2D.drawQuad(new Vector3f(0.0f, 0.0f, -0.1f), new Vector2f(10.0f, 10.0f),checkerBoardTexture, 10.0f, new Vector4f(1.0f, 0.9f, 0.9f, 1.0f));
         Renderer2D.endScene();
     }
 

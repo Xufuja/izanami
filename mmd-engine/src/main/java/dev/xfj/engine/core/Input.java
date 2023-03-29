@@ -1,12 +1,19 @@
 package dev.xfj.engine.core;
 
+import dev.xfj.platform.windows.WindowsInput;
+
 import java.util.AbstractMap;
 
 public abstract class Input {
     private static Input input;
 
-    protected Input() {
-
+    static Input create() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            return new WindowsInput();
+        } else {
+            throw new RuntimeException("Unknown platform!");
+        }
     }
 
     public static boolean isKeyPressed(int keyCode) {

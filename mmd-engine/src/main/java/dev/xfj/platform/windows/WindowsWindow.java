@@ -1,6 +1,10 @@
 package dev.xfj.platform.windows;
 
 import dev.xfj.engine.core.Log;
+import dev.xfj.engine.core.window.EventCallBack;
+import dev.xfj.engine.core.window.Window;
+import dev.xfj.engine.core.window.WindowData;
+import dev.xfj.engine.core.window.WindowProps;
 import dev.xfj.engine.events.application.WindowCloseEvent;
 import dev.xfj.engine.events.application.WindowResizeEvent;
 import dev.xfj.engine.events.key.KeyPressedEvent;
@@ -11,11 +15,6 @@ import dev.xfj.engine.events.mouse.MouseButtonReleasedEvent;
 import dev.xfj.engine.events.mouse.MouseMovedEvent;
 import dev.xfj.engine.events.mouse.MouseScrolledEvent;
 import dev.xfj.engine.renderer.GraphicsContext;
-import dev.xfj.engine.core.window.EventCallBack;
-import dev.xfj.engine.core.window.Window;
-import dev.xfj.engine.core.window.WindowData;
-import dev.xfj.engine.core.window.WindowProps;
-import dev.xfj.platform.opengl.OpenGLContext;
 import org.lwjgl.glfw.*;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -27,12 +26,8 @@ public class WindowsWindow implements Window {
     private GraphicsContext context;
     private final WindowData windowData;
 
-    public static Window create() {
-        WindowProps windowProps = new WindowProps();
-        return new WindowsWindow(windowProps);
-    }
 
-    private WindowsWindow(WindowProps windowProps) {
+    public WindowsWindow(WindowProps windowProps) {
         this.windowData = new WindowData();
         init(windowProps);
     }
