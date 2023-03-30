@@ -9,7 +9,7 @@ public class Editor extends Application {
 
     public Editor() throws IOException {
         //pushLayer(new ExampleLayer());
-        pushLayer(new Sample2D());
-        Log.client().info("Layer pushed!");
+        //pushLayer(new Sample2D());
+        pushLayer(new GameLayer());
     }
 }

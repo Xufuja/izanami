@@ -72,13 +72,13 @@ public class OpenGLShader implements Shader {
         int typeTokenLength = typeToken.length();
         int pos = source.indexOf(typeToken);
         while (pos != -1) {
-            int eol = source.indexOf("\r\n", pos);
+            int eol = source.indexOf("\n", pos);
             //Some sort of exception to handle syntax errors
             int begin = pos + typeTokenLength + 1;
             String type = source.substring(begin, eol);
             //Some sort of exception to handle invalid shader types
 
-            int nextLinePos = source.indexOf("\r\n", eol);
+            int nextLinePos = source.indexOf("\n", eol);
             //Add some sort of exception in case nextLinePos != -1, which should throw Syntax Error
             pos = source.indexOf(typeToken, nextLinePos);
             shaderSources.put(shaderTypeFromString(type), pos == -1 ? source.substring(nextLinePos) : source.substring(nextLinePos, pos));
