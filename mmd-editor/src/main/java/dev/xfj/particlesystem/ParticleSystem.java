@@ -39,8 +39,7 @@ public class ParticleSystem {
         particle.lifeTime = particleProps.lifeTime;
         particle.lifeRemaining = particleProps.lifeTime;
 
-        poolIndex = --poolIndex & particlePool.size();
-
+        poolIndex = --poolIndex % particlePool.size();
     }
 
     public void onUpdate(TimeStep ts) {
@@ -69,7 +68,6 @@ public class ParticleSystem {
 
             float size = Math.fma(1.0f - life, particle.sizeBegin, life * particle.sizeEnd);
             Renderer2D.drawRotatedQuad(particle.position, new Vector2f(size, size), particle.rotation, color);
-
         }
     }
 }

@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL45;
 import org.lwjgl.opengl.GLDebugMessageCallback;
 
 import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL45.*;

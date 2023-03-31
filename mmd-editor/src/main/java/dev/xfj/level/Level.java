@@ -91,16 +91,18 @@ public class Level {
         for (int i = 0; i < 5; i++) {
             createPillar(i, i * 10.0f);
         }
-
     }
 
     public void onUpdate(TimeStep ts) {
         player.onUpdate(ts);
+
         if (collisionTest()) {
             gameOver();
             return;
         }
+
         pillarHSV.x += 0.01 * ts.getTime();
+
         if (pillarHSV.x > 1.0f) {
             pillarHSV.x = 0.0f;
         }
@@ -115,12 +117,14 @@ public class Level {
     public void onRender() {
         Vector2f playerPos = player.getPosition();
         Vector4f color = hsvToRgb(pillarHSV);
+
         Renderer2D.drawQuad(new Vector3f(playerPos.x, 0.0f, -0.8f), new Vector2f(50.0f, 50.0f), new Vector4f(0.3f, 0.3f, 0.3f, 1.0f));
         Renderer2D.drawQuad(new Vector2f(playerPos.x, 34.0f), new Vector2f(50.0f, 50.0f), color);
         Renderer2D.drawQuad(new Vector2f(playerPos.x, -34.0f), new Vector2f(50.0f, 50.0f), color);
+
         for (Pillar pillar : pillars) {
-            Renderer2D.drawRotatedQuad(pillar.topPosition, pillar.topScale, (float) Math.toRadians(180.0f), triangleTexture, 1.0f, color);
-            Renderer2D.drawRotatedQuad(pillar.bottomPosition, pillar.bottomScale, (float) Math.toRadians(0.0f), triangleTexture, 1.0f, color);
+            Renderer2D.drawRotatedQuad(pillar.topPosition, pillar.topScale, Math.toRadians(180.0f), triangleTexture, 1.0f, color);
+            Renderer2D.drawRotatedQuad(pillar.bottomPosition, pillar.bottomScale, Math.toRadians(0.0f), triangleTexture, 1.0f, color);
         }
         player.onRender();
 

@@ -47,7 +47,6 @@ public class GameLayer extends Layer {
         ImGuiIO io = ImGui.getIO();
         font = io.getFonts().addFontFromFileTTF("assets/OpenSans-Regular.ttf", 120.0f);
         io.getFonts().build();
-
     }
 
     @Override
@@ -81,6 +80,10 @@ public class GameLayer extends Layer {
 
     @Override
     public void onImGuiRender() {
+        //ImGui.begin("Settings");
+        //level.onImGuiRender();
+        //ImGui.end();
+
         switch (gameState) {
             case Play -> {
                 int playerScore = level.getPlayer().getScore();

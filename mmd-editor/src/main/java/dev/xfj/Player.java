@@ -12,7 +12,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.nio.FloatBuffer;
 import java.nio.file.Path;
 
 import static dev.xfj.engine.core.KeyCodes.MMD_KEY_SPACE;
@@ -38,7 +37,9 @@ public class Player {
         this.time = 0.0f;
         this.smokeEmitInterval = 0.4f;
         this.smokeNextEmitTime = this.smokeEmitInterval;
+        this.particleSystem = new ParticleSystem();
         this.smokeParticle = new ParticleProps();
+        this.engineParticle = new ParticleProps();
 
         this.smokeParticle.position = new Vector2f(0.0f, 0.0f);
         this.smokeParticle.velocity = new Vector2f(-2.0f, 0.0f);
@@ -50,7 +51,6 @@ public class Player {
         this.smokeParticle.colorEnd = new Vector4f(0.6f, 0.6f, 0.6f, 1.0f);
         this.smokeParticle.lifeTime = 4.0f;
 
-        this.engineParticle = new ParticleProps();
         this.engineParticle.position = new Vector2f(0.0f, 0.0f);
         this.engineParticle.velocity = new Vector2f(-2.0f, 0.0f);
         this.engineParticle.velocityVariation = new Vector2f(3.0f, 1.0f);
@@ -60,8 +60,6 @@ public class Player {
         this.engineParticle.colorBegin = new Vector4f(254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f);
         this.engineParticle.colorEnd = new Vector4f(254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f);
         this.engineParticle.lifeTime = 1.0f;
-
-        this.particleSystem = new ParticleSystem();
     }
 
 
@@ -71,12 +69,14 @@ public class Player {
 
     public void onUpdate(TimeStep ts) {
         time += ts.getTime();
+
         if (Input.isKeyPressed(MMD_KEY_SPACE)) {
             velocity.y += enginePower;
-            if (velocity.y < 0.0f)
-                velocity.y += enginePower * 2.0f;
 
-            // Flames
+            if (velocity.y < 0.0f) {
+                velocity.y += enginePower * 2.0f;
+            }
+
             Vector2f emissionPoint = new Vector2f(0.0f, -0.6f);
             float rotation = (float) Math.toRadians(getRotation());
             Vector4f rotated = new Vector4f(emissionPoint.x, emissionPoint.y, 0.0f, 1.0f).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f)));
@@ -86,6 +86,7 @@ public class Player {
         } else {
             velocity.y -= gravity;
         }
+
         velocity.y = Math.max(-20.0f, Math.min(velocity.y, 20.0f));
         position.add(velocity.mul(ts.getTime()));
 
