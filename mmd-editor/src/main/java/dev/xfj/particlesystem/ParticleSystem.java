@@ -40,6 +40,13 @@ public class ParticleSystem {
         particle.lifeRemaining = particleProps.lifeTime;
 
         poolIndex = --poolIndex % particlePool.size();
+        //Unsure why this never happens in the C++ version
+        if (poolIndex < 0) {
+            poolIndex++;
+        }
+        if (poolIndex > 999) {
+            poolIndex--;
+        }
     }
 
     public void onUpdate(TimeStep ts) {

@@ -90,7 +90,7 @@ public class GameLayer extends Layer {
         switch (gameState) {
             case Play -> {
                 int playerScore = level.getPlayer().getScore();
-                String score = String.format("Score %1%s", playerScore);
+                String score = String.format("Score %1$s", playerScore);
                 ImGui.getForegroundDrawList().addText(font, 48.0f, ImGui.getWindowPos().x, ImGui.getWindowPos().y, 0xffffffff, score);
             }
             case MainMenu -> {
@@ -120,7 +120,7 @@ public class GameLayer extends Layer {
                 pos.x += 200.0f;
                 pos.y += 150.0f;
                 int playerScore = level.getPlayer().getScore();
-                String score = String.format("Score %1%s", playerScore);
+                String score = String.format("Score %1$s", playerScore);
                 ImGui.getForegroundDrawList().addText(font, 48.0f, pos.x, pos.y, 0xffffffff, score);
             }
         }
