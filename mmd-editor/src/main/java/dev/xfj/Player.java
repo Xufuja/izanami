@@ -57,8 +57,8 @@ public class Player {
         this.engineParticle.sizeBegin = 0.5f;
         this.engineParticle.sizeEnd = 0.0f;
         this.engineParticle.sizeVariation = 0.3f;
-        this.engineParticle.colorBegin = new Vector4f(254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f);
-        this.engineParticle.colorEnd = new Vector4f(254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f);
+        this.engineParticle.colorBegin = new Vector4f(154 / 255.0f, 109 / 255.0f, 141 / 255.0f, 1.0f);
+        this.engineParticle.colorEnd = new Vector4f(154 / 255.0f, 212 / 255.0f, 223 / 255.0f, 1.0f);
         this.engineParticle.lifeTime = 1.0f;
     }
 

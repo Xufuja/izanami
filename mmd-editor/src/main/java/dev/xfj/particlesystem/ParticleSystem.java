@@ -66,7 +66,7 @@ public class ParticleSystem {
             Vector4f color = particle.colorEnd.lerp(particle.colorBegin, life);
             color.w = color.w * life;
 
-            float size = Math.fma(1.0f - life, particle.sizeBegin, life * particle.sizeEnd);
+            float size = (1.0f - life) * particle.sizeEnd + life * particle.sizeBegin;
             Renderer2D.drawRotatedQuad(particle.position, new Vector2f(size, size), particle.rotation, color);
         }
     }
