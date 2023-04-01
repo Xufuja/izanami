@@ -48,7 +48,7 @@ public class ImGuiLayer extends Layer {
         Application application = Application.getApplication();
         long window = application.getWindow().getNativeWindow();
         imGuiGlfw.init(window, true);
-        imGuiGl3.init("#version 410");
+        imGuiGl3.init("#version 450");
     }
 
     @Override
