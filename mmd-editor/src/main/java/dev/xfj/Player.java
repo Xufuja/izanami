@@ -1,7 +1,6 @@
 package dev.xfj;
 
 import dev.xfj.engine.core.Input;
-import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Renderer2D;
 import dev.xfj.engine.renderer.Texture2D;
@@ -81,7 +80,7 @@ public class Player {
             Vector2f emissionPoint = new Vector2f(0.0f, -0.6f);
             float rotation = (float) Math.toRadians(getRotation());
             Vector4f rotated = new Vector4f(emissionPoint.x, emissionPoint.y, 0.0f, 1.0f).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f)));
-            engineParticle.position = position.add(new Vector2f(rotated.x, rotated.y));
+            engineParticle.position = position.add(new Vector2f(rotated.x, rotated.y), new Vector2f());
             engineParticle.velocity.y = -velocity.y * 0.2f - 0.2f;
             particleSystem.emit(engineParticle);
         } else {
