@@ -59,6 +59,14 @@ public class ImGuiLayer extends Layer {
     }
 
     public void begin() {
+        //Alright, apparently there is a difference between the C++ and Java versions of ImGui
+        //imGuiGlfw.init() call createDeviceObjects() which calls updateFontsTexture() to set up the font atlas
+        //This happens in onAttach(),
+        //The difference is that that C++ equivalent of createDeviceObjects() is called in ImGui_ImplOpenGL3_NewFrame()
+        //So in the Java version the font atlas is set up once whereas in C++ it is done on every frame
+        //After figuring that out, there is in fact a comment left behind commenting on this in the Java version
+        //It mentions that updateFontsTexture() can be separately called to update fonts in runtime
+        imGuiGl3.updateFontsTexture();
         imGuiGlfw.newFrame();
         ImGui.newFrame();
     }
