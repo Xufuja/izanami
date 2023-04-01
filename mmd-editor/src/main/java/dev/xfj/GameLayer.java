@@ -57,12 +57,15 @@ public class GameLayer extends Layer {
     @Override
     public void onUpdate(TimeStep ts) {
         time += ts.getTime();
+
         if ((int) (time * 10.0f) % 8 > 4) {
             blink = !blink;
         }
+
         if (level.isGameOver()) {
             gameState = GameState.GameOver;
         }
+
         Vector2f playerPos = level.getPlayer().getPosition();
         camera.setPosition(new Vector3f(playerPos.x, playerPos.y, 0.0f));
 
@@ -113,6 +116,7 @@ public class GameLayer extends Layer {
                 if (blink) {
                     ImGui.getForegroundDrawList().addText(font, 120.0f, pos.x, pos.y, 0xffffffff, "Click to Play!");
                 }
+
                 pos.x += 200.0f;
                 pos.y += 150.0f;
                 int playerScore = level.getPlayer().getScore();

@@ -52,7 +52,7 @@ public class ParticleSystem {
                 continue;
             }
             particle.lifeRemaining -= ts.getTime();
-            particle.position.add(particle.velocity.mul(ts.getTime()));
+            particle.position.add(particle.velocity.mul(ts.getTime(), new Vector2f()));
             particle.rotation += 0.01f * ts.getTime();
         }
     }

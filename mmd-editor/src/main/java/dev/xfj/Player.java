@@ -1,6 +1,7 @@
 package dev.xfj;
 
 import dev.xfj.engine.core.Input;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Renderer2D;
 import dev.xfj.engine.renderer.Texture2D;
@@ -20,13 +21,13 @@ public class Player {
     private Vector2f position;
     private Vector2f velocity;
     private float enginePower;
-    private float gravity;
+    private final float gravity;
     private float time;
-    private float smokeEmitInterval;
+    private final float smokeEmitInterval;
     private float smokeNextEmitTime;
-    private ParticleProps smokeParticle;
-    private ParticleProps engineParticle;
-    private ParticleSystem particleSystem;
+    private final ParticleProps smokeParticle;
+    private final ParticleProps engineParticle;
+    private final ParticleSystem particleSystem;
     private Texture2D shipTexture;
 
     public Player() {
@@ -88,7 +89,8 @@ public class Player {
         }
 
         velocity.y = Math.max(-20.0f, Math.min(velocity.y, 20.0f));
-        position.add(velocity.mul(ts.getTime()));
+
+        position.add(velocity.mul(ts.getTime(), new Vector2f()));
 
         if (time > smokeNextEmitTime) {
             smokeParticle.position.set(position);

@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Level {
-    private Player player;
+    private final Player player;
     private boolean gameOver;
     private float pillarTarget;
     private int pillarIndex;
-    private Vector3f pillarHSV;
-    private List<Pillar> pillars;
+    private final Vector3f pillarHSV;
+    private final List<Pillar> pillars;
     private Texture2D triangleTexture;
 
     public Level() {
@@ -27,64 +27,63 @@ public class Level {
         this.pillarIndex = 0;
         this.pillarHSV = new Vector3f(0.0f, 0.8f, 0.8f);
         this.pillars = new ArrayList<>();
-
     }
 
     private static Vector4f hsvToRgb(Vector3f hsv) {
-        int H = (int) (hsv.x * 360.0f);
-        double S = hsv.y;
-        double V = hsv.z;
+        int h = (int) (hsv.x * 360.0f);
+        double s = hsv.y;
+        double v = hsv.z;
 
-        double C = S * V;
-        double X = C * (1 - Math.abs(((H / 60.0) % 2) - 1));
-        double m = V - C;
-        double Rs, Gs, Bs;
+        double c = s * v;
+        double x = c * (1 - Math.abs(((h / 60.0) % 2) - 1));
+        double m = v - c;
+        double rs, gs, bs;
 
-        if (H >= 0 && H < 60) {
-            Rs = C;
-            Gs = X;
-            Bs = 0;
-        } else if (H >= 60 && H < 120) {
-            Rs = X;
-            Gs = C;
-            Bs = 0;
-        } else if (H >= 120 && H < 180) {
-            Rs = 0;
-            Gs = C;
-            Bs = X;
-        } else if (H >= 180 && H < 240) {
-            Rs = 0;
-            Gs = X;
-            Bs = C;
-        } else if (H >= 240 && H < 300) {
-            Rs = X;
-            Gs = 0;
-            Bs = C;
+        if (h >= 0 && h < 60) {
+            rs = c;
+            gs = x;
+            bs = 0;
+        } else if (h >= 60 && h < 120) {
+            rs = x;
+            gs = c;
+            bs = 0;
+        } else if (h >= 120 && h < 180) {
+            rs = 0;
+            gs = c;
+            bs = x;
+        } else if (h >= 180 && h < 240) {
+            rs = 0;
+            gs = x;
+            bs = c;
+        } else if (h >= 240 && h < 300) {
+            rs = x;
+            gs = 0;
+            bs = c;
         } else {
-            Rs = C;
-            Gs = 0;
-            Bs = X;
+            rs = c;
+            gs = 0;
+            bs = x;
         }
-        return new Vector4f((float) (Rs + m), (float) (Gs + m), (float) (Bs + m), 1.0f);
+        return new Vector4f((float) (rs + m), (float) (gs + m), (float) (bs + m), 1.0f);
     }
 
     private static boolean pointInTri(Vector2f p, Vector2f p0, Vector2f p1, Vector2f p2) {
         float s = p0.y * p2.x - p0.x * p2.y + (p2.y - p0.y) * p.x + (p0.x - p2.x) * p.y;
         float t = p0.x * p1.y - p0.y * p1.x + (p0.y - p1.y) * p.x + (p1.x - p0.x) * p.y;
 
-        if ((s < 0) != (t < 0))
+        if ((s < 0) != (t < 0)) {
             return false;
+        }
 
-        float A = -p1.y * p2.x + p0.y * (p2.x - p1.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y;
+        float a = -p1.y * p2.x + p0.y * (p2.x - p1.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y;
 
-        return A < 0 ?
-                (s <= 0 && s + t >= A) :
-                (s >= 0 && s + t <= A);
+        return a < 0 ? (s <= 0 && s + t >= a) : (s >= 0 && s + t <= a);
     }
 
     public void init() {
         this.triangleTexture = Texture2D.create(Path.of("assets/textures/Triangle.png"));
         this.player.loadAssets();
+
         while (pillars.size() < 5) {
             pillars.add(new Pillar());
         }
@@ -124,7 +123,7 @@ public class Level {
 
         for (Pillar pillar : pillars) {
             Renderer2D.drawRotatedQuad(pillar.topPosition, pillar.topScale, Math.toRadians(180.0f), triangleTexture, 1.0f, color);
-            Renderer2D.drawRotatedQuad(pillar.bottomPosition, pillar.bottomScale, Math.toRadians(0.0f), triangleTexture, 1.0f, color);
+            Renderer2D.drawRotatedQuad(pillar.bottomPosition, pillar.bottomScale, 0.0f, triangleTexture, 1.0f, color);
         }
         player.onRender();
 
@@ -200,8 +199,9 @@ public class Level {
             }
 
             for (Vector4f vert : playerTransformedVerts) {
-                if (pointInTri(new Vector2f(vert.x, vert.y), tri[0], tri[1], tri[2]))
+                if (pointInTri(new Vector2f(vert.x, vert.y), tri[0], tri[1], tri[2])) {
                     return true;
+                }
             }
 
             for (int i = 0; i < 3; i++) {
@@ -210,8 +210,9 @@ public class Level {
             }
 
             for (Vector4f vert : playerTransformedVerts) {
-                if (pointInTri(new Vector2f(vert.x, vert.y), tri[0], tri[1], tri[2]))
+                if (pointInTri(new Vector2f(vert.x, vert.y), tri[0], tri[1], tri[2])) {
                     return true;
+                }
             }
 
         }
