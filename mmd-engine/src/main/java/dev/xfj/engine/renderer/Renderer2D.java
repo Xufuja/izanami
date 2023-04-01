@@ -72,7 +72,7 @@ public class Renderer2D {
         renderer2DStorage.textureShader.setFloat4("u_Color", color);
         renderer2DStorage.whiteTexture.bind();
 
-        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
         renderer2DStorage.textureShader.setMat4("u_Transform", transform);
 
         renderer2DStorage.quadVertexArray.bind();
@@ -104,7 +104,7 @@ public class Renderer2D {
         renderer2DStorage.textureShader.setFloat("u_TilingFactor", tilingFactor);
         texture.bind();
 
-        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
         renderer2DStorage.textureShader.setMat4("u_Transform", transform);
 
         renderer2DStorage.quadVertexArray.bind();
@@ -120,7 +120,7 @@ public class Renderer2D {
         renderer2DStorage.textureShader.setFloat("u_TilingFactor", 1.0f);
         renderer2DStorage.whiteTexture.bind();
 
-        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
         renderer2DStorage.textureShader.setMat4("u_Transform", transform);
 
         renderer2DStorage.quadVertexArray.bind();
@@ -151,7 +151,7 @@ public class Renderer2D {
         renderer2DStorage.textureShader.setFloat("u_TilingFactor", tilingFactor);
         texture.bind();
 
-        Matrix4f transform = new Matrix4f().translate(position.x, position.y, 0.0f).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().rotate(rotation, new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
         renderer2DStorage.textureShader.setMat4("u_Transform", transform);
 
         renderer2DStorage.quadVertexArray.bind();
