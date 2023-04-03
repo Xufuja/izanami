@@ -1,7 +1,7 @@
 package dev.xfj.engine.renderer;
 
+import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.renderer.shader.Shader;
-import dev.xfj.platform.opengl.OpenGLShader;
 import org.joml.Matrix4f;
 
 public class Renderer {

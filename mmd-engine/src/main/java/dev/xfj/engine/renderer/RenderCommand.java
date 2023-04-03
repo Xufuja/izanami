@@ -28,4 +28,7 @@ public class RenderCommand {
     public static void drawIndexed(VertexArray vertexArray) {
         rendererAPI.drawIndexed(vertexArray);
     }
+    public static void drawIndexed(VertexArray vertexArray, int indexCount) {
+        rendererAPI.drawIndexed(vertexArray, indexCount);
+    }
 }
