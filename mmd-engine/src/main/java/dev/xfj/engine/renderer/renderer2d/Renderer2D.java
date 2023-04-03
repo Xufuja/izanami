@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class Renderer2D {
     private static Renderer2DData renderer2DData = new Renderer2DData();
@@ -83,13 +84,12 @@ public class Renderer2D {
     public static void endScene() {
         float[] temp = new float[renderer2DData.quadVertexBufferPtr * QuadVertex.getQuadVertexSize()];
         ArrayList<Float> list = new ArrayList<>();
+        //Surely there must be a better way than to do this
         for (int i = 0; i < renderer2DData.quadVertexBufferPtr; i++) {
             list.addAll(renderer2DData.quadVertexBufferBase.get(i).toList());
         }
-        //Surely there must be a better way than to do this
-        for (int i = 0; i < list.size(); i++) {
-            temp[i] = list.get(i);
-        }
+        
+        IntStream.range(0, list.size()).forEach(i -> temp[i] = list.get(i));
         renderer2DData.quadVertexBuffer.setData(temp);
         flush();
     }
