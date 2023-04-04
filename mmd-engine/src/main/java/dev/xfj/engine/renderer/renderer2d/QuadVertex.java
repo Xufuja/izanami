@@ -14,6 +14,9 @@ public class QuadVertex {
     public float texIndex;
     public float tilingFactor;
 
+    public QuadVertex() {
+
+    }
     public QuadVertex(Vector3f position, Vector4f color, Vector2f texCoord, float texIndex, float tilingFactor) {
         this.position = position;
         this.color = color;
@@ -34,7 +37,7 @@ public class QuadVertex {
             }
             if (fieldValue != null) {
                 Class<?> fieldValueClass = fieldValue.getClass();
-                if (fieldValueClass.equals(Float.class) || fieldValueClass.equals(float.class)) {
+                if (fieldValueClass.equals(float.class) || fieldValueClass.equals(Float.class)) {
                     list.add((Float) fieldValue);
                 } else if (fieldValueClass.equals(Vector2f.class)) {
                     list.add(((Vector2f) fieldValue).x);
@@ -59,8 +62,7 @@ public class QuadVertex {
         int size = 0;
         for (Field field : QuadVertex.class.getDeclaredFields()) {
             Class<?> fieldType = field.getType();
-
-            if (fieldType.equals(float.class) || fieldType.equals(Float.class) ) {
+            if (fieldType.equals(float.class) || fieldType.equals(Float.class)) {
                 size += 1;
             } else if (fieldType.equals(Vector2f.class)) {
                 size += 2;
