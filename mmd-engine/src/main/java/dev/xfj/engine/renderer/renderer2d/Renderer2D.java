@@ -32,7 +32,9 @@ public class Renderer2D {
         renderer2DData.quadVertexBuffer.setLayout(new BufferLayout(
                 new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position"),
                 new BufferElement(BufferElement.ShaderDataType.Float4, "a_Color"),
-                new BufferElement(BufferElement.ShaderDataType.Float2, "a_TexCoord")));
+                new BufferElement(BufferElement.ShaderDataType.Float2, "a_TexCoord"),
+                new BufferElement(BufferElement.ShaderDataType.Float, "a_TexIndex"),
+                new BufferElement(BufferElement.ShaderDataType.Float, "a_TilingFactor")));
 
         renderer2DData.quadVertexArray.addVertexBuffer(renderer2DData.quadVertexBuffer);
 
@@ -62,9 +64,17 @@ public class Renderer2D {
             data.asIntBuffer().put(whiteTextureData);
             renderer2DData.whiteTexture.setData(data, Integer.BYTES);
 
+            int[] samplers = new int[Renderer2DData.maxTextureSlots];
+
+            for (int i = 0; i < Renderer2DData.maxTextureSlots; i++) {
+                samplers[i] = i;
+            }
+
             renderer2DData.textureShader = Shader.create(Path.of("assets/shaders/Texture.glsl"));
             renderer2DData.textureShader.bind();
-            renderer2DData.textureShader.setInt("u_Texture", 0);
+            renderer2DData.textureShader.setIntArray("u_Textures", samplers);
+
+            renderer2DData.textureSlots[0] = renderer2DData.whiteTexture;
         } catch (IOException e) {
             Log.error(e.toString());
         }
@@ -77,8 +87,11 @@ public class Renderer2D {
     public static void beginScene(OrthographicCamera camera) {
         renderer2DData.textureShader.bind();
         renderer2DData.textureShader.setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
+
         renderer2DData.quadIndexCount = 0;
         renderer2DData.quadVertexBufferPtr = 0;
+
+        renderer2DData.textureSlotIndex = 1;
     }
 
     public static void endScene() {
@@ -88,13 +101,16 @@ public class Renderer2D {
         for (int i = 0; i < renderer2DData.quadVertexBufferPtr; i++) {
             list.addAll(renderer2DData.quadVertexBufferBase.get(i).toList());
         }
-        
+
         IntStream.range(0, list.size()).forEach(i -> temp[i] = list.get(i));
         renderer2DData.quadVertexBuffer.setData(temp);
         flush();
     }
 
     public static void flush() {
+        for (int i = 0; i < renderer2DData.textureSlotIndex; i++) {
+            renderer2DData.textureSlots[i].bind(i);
+        }
         RenderCommand.drawIndexed(renderer2DData.quadVertexArray, renderer2DData.quadIndexCount);
     }
 
@@ -103,16 +119,19 @@ public class Renderer2D {
     }
 
     public static void drawQuad(Vector3f position, Vector2f size, Vector4f color) {
-        renderer2DData.quadVertexBufferBase.add(new QuadVertex(position, color, new Vector2f(0.0f, 0.0f)));
+        float texIndex = 0.0f;
+        float tilingFactor = 1.0f;
+
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(position, color, new Vector2f(0.0f, 0.0f), texIndex, tilingFactor));
         renderer2DData.quadVertexBufferPtr++;
 
-        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x + size.x, position.y, 0.0f), color, new Vector2f(1.0f, 0.0f)));
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x + size.x, position.y, 0.0f), color, new Vector2f(1.0f, 0.0f), texIndex, tilingFactor));
         renderer2DData.quadVertexBufferPtr++;
 
-        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x + size.x, position.y + size.y, 0.0f), color, new Vector2f(1.0f, 1.0f)));
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x + size.x, position.y + size.y, 0.0f), color, new Vector2f(1.0f, 1.0f), texIndex, tilingFactor));
         renderer2DData.quadVertexBufferPtr++;
 
-        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x, position.y + size.y, 0.0f), color, new Vector2f(0.0f, 1.0f)));
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x, position.y + size.y, 0.0f), color, new Vector2f(0.0f, 1.0f), texIndex, tilingFactor));
         renderer2DData.quadVertexBufferPtr++;
 
         renderer2DData.quadIndexCount += 6;
@@ -148,7 +167,37 @@ public class Renderer2D {
     }
 
     public static void drawQuad(Vector3f position, Vector2f size, Texture2D texture, float tilingFactor, Vector4f tintColor) {
-        renderer2DData.textureShader.setFloat4("u_Color", tintColor);
+        Vector4f color = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+        float textureIndex = 0.0f;
+        for (int i = 1; i < renderer2DData.textureSlotIndex; i++) {
+            if (renderer2DData.textureSlots[i].equals(texture)) {
+                textureIndex = (float) i;
+                break;
+            }
+        }
+
+        if (textureIndex == 0.0f) {
+            textureIndex = (float) renderer2DData.textureSlotIndex;
+            renderer2DData.textureSlots[renderer2DData.textureSlotIndex] = texture;
+            renderer2DData.textureSlotIndex++;
+        }
+
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(position, color, new Vector2f(0.0f, 0.0f), textureIndex, tilingFactor));
+        renderer2DData.quadVertexBufferPtr++;
+
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x + size.x, position.y, 0.0f), color, new Vector2f(1.0f, 0.0f), textureIndex, tilingFactor));
+        renderer2DData.quadVertexBufferPtr++;
+
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x + size.x, position.y + size.y, 0.0f), color, new Vector2f(1.0f, 1.0f), textureIndex, tilingFactor));
+        renderer2DData.quadVertexBufferPtr++;
+
+        renderer2DData.quadVertexBufferBase.add(new QuadVertex(new Vector3f(position.x, position.y + size.y, 0.0f), color, new Vector2f(0.0f, 1.0f), textureIndex, tilingFactor));
+        renderer2DData.quadVertexBufferPtr++;
+
+        renderer2DData.quadIndexCount += 6;
+
+        /*renderer2DData.textureShader.setFloat4("u_Color", tintColor);
         renderer2DData.textureShader.setFloat("u_TilingFactor", tilingFactor);
         texture.bind();
 
@@ -156,7 +205,7 @@ public class Renderer2D {
         renderer2DData.textureShader.setMat4("u_Transform", transform);
 
         renderer2DData.quadVertexArray.bind();
-        RenderCommand.drawIndexed(renderer2DData.quadVertexArray);
+        RenderCommand.drawIndexed(renderer2DData.quadVertexArray);*/
     }
 
     public static void drawRotatedQuad(Vector2f position, Vector2f size, float rotation, Vector4f color) {

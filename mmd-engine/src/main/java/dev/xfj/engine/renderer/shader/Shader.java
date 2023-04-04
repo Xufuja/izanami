@@ -44,6 +44,7 @@ public interface Shader {
     void unbind();
 
     void setInt(String name, int value);
+    void setIntArray(String name, int[] values);
 
     void setFloat(String name, float value);
 

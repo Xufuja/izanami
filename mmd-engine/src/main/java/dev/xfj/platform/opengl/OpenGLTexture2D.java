@@ -1,6 +1,7 @@
 package dev.xfj.platform.opengl;
 
 import dev.xfj.engine.core.Log;
+import dev.xfj.engine.renderer.Texture;
 import dev.xfj.engine.renderer.Texture2D;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL45;
@@ -98,9 +99,14 @@ public class OpenGLTexture2D extends Texture2D {
         int bpp = this.dataFormat == GL_RGBA ? 4 : 3;
         //Some sort of exception
         if (size != this.width * this.width * bpp) {
-            Log.error( "Data must be entire texture!");
+            Log.error("Data must be entire texture!");
         }
         GL45.glTextureSubImage2D(this.renderId, 0, 0, 0, this.width, this.height, this.dataFormat, GL45.GL_UNSIGNED_BYTE, data);
+    }
+
+    @Override
+    public boolean equals(Texture other) {
+        return renderId == ((OpenGLTexture2D) other).renderId;
     }
 
     @Override

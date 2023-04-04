@@ -163,6 +163,11 @@ public class OpenGLShader implements Shader {
     }
 
     @Override
+    public void setIntArray(String name, int[] values) {
+        uploadUniformIntArray(name, values);
+    }
+
+    @Override
     public void setFloat(String name, float value) {
         uploadUniformFloat(name, value);
     }
@@ -185,6 +190,11 @@ public class OpenGLShader implements Shader {
     public void uploadUniformInt(String name, int value) {
         int location = GL45.glGetUniformLocation(renderId, name);
         GL45.glUniform1i(location, value);
+    }
+
+    public void uploadUniformIntArray(String name, int[] values) {
+        int location = GL45.glGetUniformLocation(renderId, name);
+        GL45.glUniform1iv(location, values);
     }
 
     public void uploadUniformFloat(String name, float value) {

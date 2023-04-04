@@ -8,6 +8,7 @@ public interface Texture {
     int getHeight();
 
     void setData(ByteBuffer data, int size);
+    boolean equals(Texture other);
 
     void bind();
     void bind(int slot);
