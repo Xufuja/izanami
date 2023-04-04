@@ -38,8 +38,6 @@ public class Renderer2D {
 
         renderer2DData.quadVertexArray.addVertexBuffer(renderer2DData.quadVertexBuffer);
 
-        renderer2DData.quadVertexBufferBase = new ArrayList<>(renderer2DData.maxIndices);
-
         int[] quadIndices = new int[renderer2DData.maxIndices];
         int offset = 0;
         for (int i = 0; i < renderer2DData.maxIndices; i += 6) {
@@ -90,7 +88,7 @@ public class Renderer2D {
 
         renderer2DData.quadIndexCount = 0;
         renderer2DData.quadVertexBufferPtr = 0;
-
+        renderer2DData.quadVertexBufferBase = new ArrayList<>(renderer2DData.maxIndices);
         renderer2DData.textureSlotIndex = 1;
     }
 
@@ -112,7 +110,6 @@ public class Renderer2D {
             renderer2DData.textureSlots[i].bind(i);
         }
         RenderCommand.drawIndexed(renderer2DData.quadVertexArray, renderer2DData.quadIndexCount);
-        renderer2DData.quadVertexBufferBase = new ArrayList<>(renderer2DData.maxIndices);
     }
 
     public static void drawQuad(Vector2f position, Vector2f size, Vector4f color) {
