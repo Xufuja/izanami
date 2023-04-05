@@ -79,10 +79,10 @@ public class Application {
             ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
             while (it.hasPrevious()) {
                 Layer layer = it.previous();
-                layer.onEvent(event);
                 if (event.isHandled()) {
                     break;
                 }
+                layer.onEvent(event);
             }
         }
     }
