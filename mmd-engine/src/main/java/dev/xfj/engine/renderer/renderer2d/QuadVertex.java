@@ -14,10 +14,7 @@ public class QuadVertex {
     public float texIndex;
     public float tilingFactor;
 
-    public QuadVertex() {
-
-    }
-    public QuadVertex(Vector3f position, Vector4f color, Vector2f texCoord, float texIndex, float tilingFactor) {
+    public void setQuadVertex(Vector3f position, Vector4f color, Vector2f texCoord, float texIndex, float tilingFactor) {
         this.position = position;
         this.color = color;
         this.texCoord = texCoord;
