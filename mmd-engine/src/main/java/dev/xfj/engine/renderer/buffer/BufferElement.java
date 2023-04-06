@@ -41,14 +41,14 @@ public class BufferElement {
         };
     }
 
-    public int getComponent() {
+    public int getComponentCount() {
         return switch (type) {
             case Float, Int, Bool -> 1;
             case Float2, Int2 -> 2;
             case Float3, Int3 -> 3;
             case Float4, Int4 -> 4;
-            case Mat3 -> 3 * 3;
-            case Mat4 -> 4 * 4;
+            case Mat3 -> 3;
+            case Mat4 -> 4;
             default -> {
                 Log.error("Unknown ShaderDataType!");
                 yield 0;

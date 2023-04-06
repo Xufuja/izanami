@@ -199,6 +199,10 @@ public class Renderer2D {
         }
 
         if (textureIndex == 0.0f) {
+            if (data.textureSlotIndex >= Renderer2DData.maxTextureSlots) {
+                flushAndReset();
+            }
+
             textureIndex = (float) data.textureSlotIndex;
             data.textureSlots[data.textureSlotIndex] = texture;
             data.textureSlotIndex++;
@@ -279,6 +283,10 @@ public class Renderer2D {
         }
 
         if (textureIndex == 0.0f) {
+            if (data.textureSlotIndex >= Renderer2DData.maxTextureSlots) {
+                flushAndReset();
+            }
+
             textureIndex = (float) data.textureSlotIndex;
             data.textureSlots[data.textureSlotIndex] = texture;
             data.textureSlotIndex++;
