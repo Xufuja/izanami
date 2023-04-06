@@ -9,10 +9,10 @@ import org.joml.Vector4f;
 import java.util.List;
 
 public class Renderer2DData {
-    public static int maxTextureSlots = 32;
-    public final int maxQuads = 10000;
-    public final int maxVertices = maxQuads * 4;
-    public final int maxIndices = maxQuads * 6;
+    public static final int maxQuads = 20000;
+    public static final int maxVertices = maxQuads * 4;
+    public static final int maxIndices = maxQuads * 6;
+    public static final int maxTextureSlots = 32;
 
     public VertexArray quadVertexArray;
     public VertexBuffer quadVertexBuffer;
@@ -26,5 +26,7 @@ public class Renderer2DData {
     public int textureSlotIndex = 1;
 
     public Vector4f[] quadVertexPositions = new Vector4f[4];
+
+    public Statistics stats = new Statistics();
 
 }
