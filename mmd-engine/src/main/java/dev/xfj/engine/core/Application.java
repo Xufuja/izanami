@@ -69,6 +69,10 @@ public class Application {
         Renderer.shutdown();
     }
 
+    public void close() {
+        this.running = false;
+    }
+
     public void onEvent(Event event) {
         EventDispatcher eventDispatcher = new EventDispatcher(event);
         eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);

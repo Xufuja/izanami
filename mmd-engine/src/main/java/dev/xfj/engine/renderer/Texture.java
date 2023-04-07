@@ -7,6 +7,8 @@ public interface Texture {
 
     int getHeight();
 
+    int getRendererId();
+
     void setData(ByteBuffer data, int size);
     boolean equals(Texture other);
 

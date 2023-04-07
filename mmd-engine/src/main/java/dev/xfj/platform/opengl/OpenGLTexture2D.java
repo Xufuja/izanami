@@ -95,6 +95,12 @@ public class OpenGLTexture2D extends Texture2D {
     }
 
     @Override
+    public int getRendererId() {
+        return this.renderId;
+    }
+
+
+    @Override
     public void setData(ByteBuffer data, int size) {
         int bpp = this.dataFormat == GL_RGBA ? 4 : 3;
         //Some sort of exception
