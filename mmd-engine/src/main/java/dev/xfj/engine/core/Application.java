@@ -55,14 +55,16 @@ public class Application {
             TimeStep timeStep = new TimeStep(time - lastFrameTime);
             lastFrameTime = time;
 
-            for (Layer layer : layerStack.getLayers()) {
-                layer.onUpdate(timeStep);
+            if (!minimized) {
+                for (Layer layer : layerStack.getLayers()) {
+                    layer.onUpdate(timeStep);
+                }
+                imGuiLayer.begin();
+                for (Layer layer : layerStack.getLayers()) {
+                    layer.onImGuiRender();
+                }
+                imGuiLayer.end();
             }
-            imGuiLayer.begin();
-            for (Layer layer : layerStack.getLayers()) {
-                layer.onImGuiRender();
-            }
-            imGuiLayer.end();
             window.onUpdate();
         }
         window.shutdown();
@@ -79,16 +81,16 @@ public class Application {
         eventDispatcher.dispatch(WindowResizeEvent.class, this::onWindowResize);
 
         Log.trace(event.toString());
-        if (!minimized) {
-            ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
-            while (it.hasPrevious()) {
-                Layer layer = it.previous();
-                if (event.isHandled()) {
-                    break;
-                }
-                layer.onEvent(event);
+
+        ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
+        while (it.hasPrevious()) {
+            Layer layer = it.previous();
+            if (event.isHandled()) {
+                break;
             }
+            layer.onEvent(event);
         }
+
     }
 
     public void pushLayer(Layer layer) {

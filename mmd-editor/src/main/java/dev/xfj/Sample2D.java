@@ -8,6 +8,8 @@ import dev.xfj.engine.renderer.OrthographicCameraController;
 import dev.xfj.engine.renderer.RenderCommand;
 import dev.xfj.engine.renderer.Texture2D;
 import dev.xfj.engine.renderer.VertexArray;
+import dev.xfj.engine.renderer.framebuffer.Framebuffer;
+import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
@@ -27,7 +29,7 @@ import java.nio.file.Path;
 
 public class Sample2D extends Layer {
     private static float rotation = 0.0f;
-    private static boolean dockingEnabled = false;
+    private static boolean dockingEnabled = true;
     private static boolean dockspaceOpen = true;
     private static boolean opt_fullscreen_persistant = true;
     private static int dockspace_flags = ImGuiDockNodeFlags.None;
@@ -35,6 +37,7 @@ public class Sample2D extends Layer {
     private final OrthographicCameraController cameraController;
     private Shader flatColorShader;
     private VertexArray squareVA;
+    private Framebuffer framebuffer;
     private Texture2D checkerBoardTexture;
     private Vector4f squareColor;
 
@@ -47,6 +50,11 @@ public class Sample2D extends Layer {
     @Override
     public void onAttach() {
         checkerBoardTexture = Texture2D.create(Path.of("assets/textures/Checkerboard.png"));
+
+        FramebufferSpecification fbSpec = new FramebufferSpecification();
+        fbSpec.width = 1280;
+        fbSpec.height = 720;
+        framebuffer = Framebuffer.create(fbSpec);
     }
 
     @Override
@@ -59,6 +67,7 @@ public class Sample2D extends Layer {
         cameraController.onUpdate(ts);
 
         Renderer2D.resetStats();
+        framebuffer.bind();
 
         RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
         RenderCommand.clear();
@@ -80,6 +89,7 @@ public class Sample2D extends Layer {
             }
         }
         Renderer2D.endScene();
+        framebuffer.unbind();
     }
 
     @Override
@@ -140,8 +150,8 @@ public class Sample2D extends Layer {
             ImGui.colorEdit4("Square Color", newColor);
             squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
 
-            int textureId = checkerBoardTexture.getRendererId();
-            ImGui.image(textureId, 256.0f, 256.0f);
+            int textureId = framebuffer.getColorAttachmentRendererId();
+            ImGui.image(textureId, 1280, 720);
             ImGui.end();
 
             ImGui.end();
@@ -161,7 +171,7 @@ public class Sample2D extends Layer {
             squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
 
             int textureId = checkerBoardTexture.getRendererId();
-            ImGui.image(textureId, 256.0f, 256.0f);
+            ImGui.image(textureId, 1280, 720);
 
             ImGui.end();
         }
