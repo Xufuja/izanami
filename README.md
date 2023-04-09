@@ -11,7 +11,8 @@ MRs performed by other contributors will be handled before the next video, if an
 ## Submodules
 
 * mmd-engine is the equivalent of the "Hazel" project
-* mmd-editor is the equivalent of the "Sandbox" project
+* mmd-editor is the equivalent of the "Hazel Editor" project
+* sandbox is the equivalent of the "Sandbox" project
 
 ## Set-up
 
@@ -23,5 +24,13 @@ MRs performed by other contributors will be handled before the next video, if an
 
 * LWJGL provides GLFW bindings, also replaces glad
 * JOML replaces GLM
+
+## Skipped
+
+There are a few parts that I have not been able to implement for various reasons:
+
+* Destructors
+* Reference counting system
+* Instrumentation
 
 ---
