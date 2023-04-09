@@ -151,7 +151,7 @@ public class EditorLayer extends Layer {
             squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
 
             int textureId = framebuffer.getColorAttachmentRendererId();
-            ImGui.image(textureId, 1280, 720);
+            ImGui.image(textureId, 1280, 720, 0, 1, 1, 0);
             ImGui.end();
 
             ImGui.end();
@@ -171,7 +171,7 @@ public class EditorLayer extends Layer {
             squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
 
             int textureId = checkerBoardTexture.getRendererId();
-            ImGui.image(textureId, 1280, 720);
+            ImGui.image(textureId, 1280, 720, 0, 1, 1, 0);
 
             ImGui.end();
         }

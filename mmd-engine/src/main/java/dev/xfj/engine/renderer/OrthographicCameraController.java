@@ -44,12 +44,12 @@ public class OrthographicCameraController {
             cameraPosition.y += Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
         }
         if (Input.isKeyPressed(MMD_KEY_W)) {
-            cameraPosition.x += Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
-            cameraPosition.y -= Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.x += -Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.y += Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
 
         } else if (Input.isKeyPressed(MMD_KEY_S)) {
-            cameraPosition.x -= Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
-            cameraPosition.y += Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.x -= -Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
+            cameraPosition.y -= Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
         }
 
         if (this.rotation) {
