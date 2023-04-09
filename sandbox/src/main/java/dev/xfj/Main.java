@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Log.init();
         Log.info("Loggers created");
-        Application application = Editor.createApplication();
+        Application application = Sandbox.createApplication();
         application.run();
     }
 }

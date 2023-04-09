@@ -1,14 +1,13 @@
 package dev.xfj.engine.core;
 
+import dev.xfj.engine.core.window.Window;
+import dev.xfj.engine.core.window.WindowProps;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.application.WindowCloseEvent;
 import dev.xfj.engine.events.application.WindowResizeEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.renderer.Renderer;
-import dev.xfj.engine.core.window.Window;
-import dev.xfj.platform.windows.WindowsInput;
-import dev.xfj.platform.windows.WindowsWindow;
 
 import java.util.ListIterator;
 
@@ -30,13 +29,17 @@ public class Application {
     }
 
     public Application() {
+        this("MMD Application");
+    }
+
+    public Application(String name) {
         if (application == null) {
             application = this;
         } else {
             Log.error("Application already exists!");
         }
 
-        window = Window.create();
+        window = Window.create(new WindowProps(name));
         running = true;
         minimized = false;
         layerStack = new LayerStack();

@@ -5,8 +5,9 @@ public class WindowProps {
     public int width;
     public int height;
 
-    public WindowProps() {
-        this("MMD Editor", 1280, 720);
+
+    public WindowProps(String name) {
+        this(name, 1280, 720);
     }
 
     public WindowProps(String title, int width, int height) {

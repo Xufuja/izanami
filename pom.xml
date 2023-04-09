@@ -12,6 +12,7 @@
     <modules>
         <module>mmd-engine</module>
         <module>mmd-editor</module>
+        <module>sandbox</module>
     </modules>
 
 </project>

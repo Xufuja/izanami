@@ -3,11 +3,10 @@ package dev.xfj.engine.core.window;
 import dev.xfj.platform.windows.WindowsWindow;
 
 public interface Window {
-    static Window create() {
+    static Window create(WindowProps props) {
         String os = System.getProperty("os.name").toLowerCase();
-        WindowProps windowProps = new WindowProps();
         if (os.contains("win")) {
-            return new WindowsWindow(windowProps);
+            return new WindowsWindow(props);
         } else {
             throw new RuntimeException("Unknown platform!");
         }

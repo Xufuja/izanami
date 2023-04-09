@@ -27,7 +27,7 @@ import org.joml.Vector4f;
 
 import java.nio.file.Path;
 
-public class Sample2D extends Layer {
+public class EditorLayer extends Layer {
     private static float rotation = 0.0f;
     private static boolean dockingEnabled = true;
     private static boolean dockspaceOpen = true;
@@ -41,7 +41,7 @@ public class Sample2D extends Layer {
     private Texture2D checkerBoardTexture;
     private Vector4f squareColor;
 
-    public Sample2D() {
+    public EditorLayer() {
         super("Sample 2D");
         this.cameraController = new OrthographicCameraController(1280.0f / 720.0f, true);
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
