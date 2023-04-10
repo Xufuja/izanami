@@ -23,6 +23,8 @@ public interface Framebuffer {
 
     void unbind();
 
+    void resize(int width, int height);
+
     int getColorAttachmentRendererId();
     FramebufferSpecification getSpecification();
 

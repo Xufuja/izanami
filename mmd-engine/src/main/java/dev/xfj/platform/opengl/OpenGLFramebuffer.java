@@ -15,13 +15,19 @@ public class OpenGLFramebuffer implements Framebuffer {
     private final FramebufferSpecification specification;
 
     public OpenGLFramebuffer(FramebufferSpecification specification) {
-        this.specification = specification;
+        this.renderId = 0;
         this.colorAttachment = new int[1];
         this.depthAttachment = new int[1];
+        this.specification = specification;
         invalidate();
     }
 
     public void invalidate() {
+        if (renderId != 0) {
+            GL45.glDeleteFramebuffers(renderId);
+            GL45.glDeleteTextures(colorAttachment);
+            GL45.glDeleteTextures(depthAttachment);
+        }
         renderId = GL45.glCreateFramebuffers();
         GL45.glBindFramebuffer(GL_FRAMEBUFFER, renderId);
 
@@ -51,11 +57,20 @@ public class OpenGLFramebuffer implements Framebuffer {
     @Override
     public void bind() {
         GL45.glBindFramebuffer(GL_FRAMEBUFFER, renderId);
+        GL45.glViewport(0, 0, specification.width, specification.height);
     }
 
     @Override
     public void unbind() {
         GL45.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        specification.width = width;
+        specification.height = height;
+
+        invalidate();
     }
 
     @Override

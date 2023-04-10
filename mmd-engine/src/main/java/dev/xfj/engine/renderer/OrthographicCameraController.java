@@ -89,6 +89,11 @@ public class OrthographicCameraController {
         this.zoomLevel = zoomLevel;
     }
 
+    public void onResize(float width, float height) {
+        aspectRatio = width / height;
+        camera.setProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+    }
+
     private boolean onMouseScrolled(MouseScrolledEvent event) {
         zoomLevel -= event.getyOffset() * 0.25f;
         zoomLevel = Math.max(zoomLevel, 0.25f);
@@ -97,8 +102,7 @@ public class OrthographicCameraController {
     }
 
     private boolean onWindowResized(WindowResizeEvent event) {
-        aspectRatio = (float) event.getWidth() / (float) event.getHeight();
-        camera.setProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+        onResize((float) event.getWidth(), (float) event.getHeight());
         return false;
     }
 }

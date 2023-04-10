@@ -16,6 +16,7 @@ import dev.xfj.engine.renderer.shader.Shader;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
+import imgui.ImVec2;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiStyleVar;
@@ -29,8 +30,6 @@ import java.nio.file.Path;
 
 public class EditorLayer extends Layer {
     private static float rotation = 0.0f;
-    private static boolean dockingEnabled = true;
-    private static boolean dockspaceOpen = true;
     private static boolean opt_fullscreen_persistant = true;
     private static int dockspace_flags = ImGuiDockNodeFlags.None;
 
@@ -39,11 +38,13 @@ public class EditorLayer extends Layer {
     private VertexArray squareVA;
     private Framebuffer framebuffer;
     private Texture2D checkerBoardTexture;
+    private Vector2f viewPortSize;
     private Vector4f squareColor;
 
     public EditorLayer() {
         super("Sample 2D");
         this.cameraController = new OrthographicCameraController(1280.0f / 720.0f, true);
+        this.viewPortSize = new Vector2f(0.0f, 0.0f);
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
     }
 
@@ -94,87 +95,81 @@ public class EditorLayer extends Layer {
 
     @Override
     public void onImGuiRender() {
-        if (dockingEnabled) {
-            boolean dockspaceOpen = true;
-            boolean opt_fullscreen = opt_fullscreen_persistant;
 
-            int window_flags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
-            if (opt_fullscreen) {
-                ImGuiViewport viewport = ImGui.getMainViewport();
-                ImGui.setNextWindowPos(viewport.getPosX(), viewport.getPosY());
-                ImGui.setNextWindowSize(viewport.getSizeX(), viewport.getSizeX());
-                ImGui.setNextWindowViewport(viewport.getID());
-                ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
-                ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-                window_flags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
-                window_flags |= ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
-            }
+        boolean dockspaceOpen = true;
+        boolean opt_fullscreen = opt_fullscreen_persistant;
 
-            if ((dockspace_flags & ImGuiDockNodeFlags.PassthruCentralNode) != 0) {
-                window_flags |= ImGuiWindowFlags.NoBackground;
-            }
-
-            ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
-            ImGui.begin("DockSpace Demo", new ImBoolean(dockspaceOpen), window_flags);
-            ImGui.popStyleVar();
-
-            if (opt_fullscreen) {
-                ImGui.popStyleVar(2);
-            }
-
-            final ImGuiIO io = ImGui.getIO();
-            if (io.hasConfigFlags(ImGuiConfigFlags.DockingEnable)) {
-                int dockspace_id = ImGui.getID("MyDockSpace");
-                ImGui.dockSpace(dockspace_id, 0.0f, 0.0f, dockspace_flags);
-            }
-
-            if (ImGui.beginMenuBar()) {
-                if (ImGui.beginMenu("File")) {
-                    if (ImGui.menuItem("Exit")) {
-                        Application.getApplication().close();
-                    }
-                    ImGui.endMenu();
-                }
-                ImGui.endMenuBar();
-            }
-            ImGui.begin("Settings");
-            Statistics stats = Renderer2D.getStats();
-            ImGui.text("Renderer2D Stats:");
-            ImGui.text(String.format("Draw Calls: %1$d", stats.drawCalls));
-            ImGui.text(String.format("Quads: %1$d", stats.quadCount));
-            ImGui.text(String.format("Vertices: %1$d", stats.getTotalVertexCount()));
-            ImGui.text(String.format("Indices: %1$d", stats.getTotalIndexCount()));
-
-            //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
-            float[] newColor = {squareColor.x, squareColor.y, squareColor.z, squareColor.w};
-            ImGui.colorEdit4("Square Color", newColor);
-            squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
-
-            int textureId = framebuffer.getColorAttachmentRendererId();
-            ImGui.image(textureId, 1280, 720, 0, 1, 1, 0);
-            ImGui.end();
-
-            ImGui.end();
-
-        } else {
-            ImGui.begin("Settings");
-            Statistics stats = Renderer2D.getStats();
-            ImGui.text("Renderer2D Stats:");
-            ImGui.text(String.format("Draw Calls: %1$d", stats.drawCalls));
-            ImGui.text(String.format("Quads: %1$d", stats.quadCount));
-            ImGui.text(String.format("Vertices: %1$d", stats.getTotalVertexCount()));
-            ImGui.text(String.format("Indices: %1$d", stats.getTotalIndexCount()));
-
-            //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
-            float[] newColor = {squareColor.x, squareColor.y, squareColor.z, squareColor.w};
-            ImGui.colorEdit4("Square Color", newColor);
-            squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
-
-            int textureId = checkerBoardTexture.getRendererId();
-            ImGui.image(textureId, 1280, 720, 0, 1, 1, 0);
-
-            ImGui.end();
+        int window_flags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
+        if (opt_fullscreen) {
+            ImGuiViewport viewport = ImGui.getMainViewport();
+            ImGui.setNextWindowPos(viewport.getPosX(), viewport.getPosY());
+            ImGui.setNextWindowSize(viewport.getSizeX(), viewport.getSizeX());
+            ImGui.setNextWindowViewport(viewport.getID());
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            window_flags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
+            window_flags |= ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
         }
+
+        if ((dockspace_flags & ImGuiDockNodeFlags.PassthruCentralNode) != 0) {
+            window_flags |= ImGuiWindowFlags.NoBackground;
+        }
+
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
+        ImGui.begin("DockSpace Demo", new ImBoolean(dockspaceOpen), window_flags);
+        ImGui.popStyleVar();
+
+        if (opt_fullscreen) {
+            ImGui.popStyleVar(2);
+        }
+
+        final ImGuiIO io = ImGui.getIO();
+        if (io.hasConfigFlags(ImGuiConfigFlags.DockingEnable)) {
+            int dockspace_id = ImGui.getID("MyDockSpace");
+            ImGui.dockSpace(dockspace_id, 0.0f, 0.0f, dockspace_flags);
+        }
+
+        if (ImGui.beginMenuBar()) {
+            if (ImGui.beginMenu("File")) {
+                if (ImGui.menuItem("Exit")) {
+                    Application.getApplication().close();
+                }
+                ImGui.endMenu();
+            }
+            ImGui.endMenuBar();
+        }
+        ImGui.begin("Settings");
+        Statistics stats = Renderer2D.getStats();
+        ImGui.text("Renderer2D Stats:");
+        ImGui.text(String.format("Draw Calls: %1$d", stats.drawCalls));
+        ImGui.text(String.format("Quads: %1$d", stats.quadCount));
+        ImGui.text(String.format("Vertices: %1$d", stats.getTotalVertexCount()));
+        ImGui.text(String.format("Indices: %1$d", stats.getTotalIndexCount()));
+
+        //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
+        float[] newColor = {squareColor.x, squareColor.y, squareColor.z, squareColor.w};
+        ImGui.colorEdit4("Square Color", newColor);
+        squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
+
+        ImGui.end();
+
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
+        ImGui.begin("Viewport");
+        ImVec2 viewportPanelSize = ImGui.getContentRegionAvail();
+
+        if (viewPortSize.x != viewportPanelSize.x || viewPortSize.y != viewportPanelSize.y) {
+            framebuffer.resize((int) viewportPanelSize.x, (int) viewportPanelSize.y);
+            viewPortSize.x = viewportPanelSize.x;
+            viewPortSize.y = viewportPanelSize.y;
+            cameraController.onResize(viewportPanelSize.x, viewportPanelSize.y);
+        }
+
+        int textureId = framebuffer.getColorAttachmentRendererId();
+        ImGui.image(textureId, viewPortSize.x, viewPortSize.y, 0, 1, 1, 0);
+        ImGui.end();
+        ImGui.popStyleVar();
+
+        ImGui.end();
     }
 
     @Override
