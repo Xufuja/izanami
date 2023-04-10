@@ -28,7 +28,6 @@ public class ImGuiLayer extends Layer {
     public void onAttach() {
         ImGui.createContext();
         final ImGuiIO io = ImGui.getIO();
-        io.setIniFilename(null);
         io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);
         //io.addConfigFlags(ImGuiConfigFlags.NavEnableGamepad);
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);

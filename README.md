@@ -31,6 +31,10 @@ There are a few parts that I have not been able to implement for various reasons
 
 * Single entry point
     * Both mmd-editor and sandbox have their own main functions
+* Macros
+    * They have mostly been made into methods, or just ignored
+* Templates
+    * Mostly the same as macros
 * Destructors
 * Reference counting system
 * Instrumentation
