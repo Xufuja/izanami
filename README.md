@@ -36,7 +36,7 @@ There are a few parts that I have not been able to implement for various reasons
 * Templates
     * Mostly the same as macros
 * Destructors
-* Reference counting system
+* Reference counting
 * Instrumentation
-
+* Refactored Input since you cannot have abstract static methods in Java
 ---
