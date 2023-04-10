@@ -29,6 +29,8 @@ MRs performed by other contributors will be handled before the next video, if an
 
 There are a few parts that I have not been able to implement for various reasons:
 
+* Single entry point
+    * Both mmd-editor and sandbox have their own main functions
 * Destructors
 * Reference counting system
 * Instrumentation
