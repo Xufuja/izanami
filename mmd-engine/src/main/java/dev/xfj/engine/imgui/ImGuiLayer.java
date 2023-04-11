@@ -16,12 +16,13 @@ import static org.lwjgl.glfw.GLFW.glfwGetCurrentContext;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 public class ImGuiLayer extends Layer {
-
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
+    private boolean blockEvents;
 
     public ImGuiLayer() {
         super("ImGuiLayer");
+        blockEvents = true;
     }
 
     @Override
@@ -84,6 +85,10 @@ public class ImGuiLayer extends Layer {
         }
     }
 
+    public void blockEvents(boolean block) {
+        blockEvents = block;
+    }
+
     @Override
     public void onImGuiRender() {
         //ImGui.showDemoWindow();
@@ -96,11 +101,13 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void onEvent(Event event) {
-        final ImGuiIO io = ImGui.getIO();
-        boolean handled = event.isHandled();
-        handled |= event.isInCategory(Event.EventCategory.EventCategoryMouse) & io.getWantCaptureMouse();
-        handled |= event.isInCategory(Event.EventCategory.EventCategoryKeyboard) & io.getWantCaptureKeyboard();
-        event.setHandled(handled);
+        if (blockEvents) {
+            final ImGuiIO io = ImGui.getIO();
+            boolean handled = event.isHandled();
+            handled |= event.isInCategory(Event.EventCategory.EventCategoryMouse) & io.getWantCaptureMouse();
+            handled |= event.isInCategory(Event.EventCategory.EventCategoryKeyboard) & io.getWantCaptureKeyboard();
+            event.setHandled(handled);
+        }
     }
 }
 

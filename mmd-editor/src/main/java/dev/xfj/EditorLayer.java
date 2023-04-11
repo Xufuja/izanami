@@ -38,13 +38,17 @@ public class EditorLayer extends Layer {
     private VertexArray squareVA;
     private Framebuffer framebuffer;
     private Texture2D checkerBoardTexture;
-    private Vector2f viewPortSize;
+    private boolean viewportFocused;
+    private boolean viewportHovered;
+    private final Vector2f viewportSize;
     private Vector4f squareColor;
 
     public EditorLayer() {
         super("Sample 2D");
         this.cameraController = new OrthographicCameraController(1280.0f / 720.0f, true);
-        this.viewPortSize = new Vector2f(0.0f, 0.0f);
+        this.viewportFocused = false;
+        this.viewportHovered = false;
+        this.viewportSize = new Vector2f(0.0f, 0.0f);
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
     }
 
@@ -65,7 +69,9 @@ public class EditorLayer extends Layer {
 
     @Override
     public void onUpdate(TimeStep ts) {
-        cameraController.onUpdate(ts);
+        if (viewportFocused) {
+            cameraController.onUpdate(ts);
+        }
 
         Renderer2D.resetStats();
         framebuffer.bind();
@@ -95,7 +101,6 @@ public class EditorLayer extends Layer {
 
     @Override
     public void onImGuiRender() {
-
         boolean dockspaceOpen = true;
         boolean opt_fullscreen = opt_fullscreen_persistant;
 
@@ -155,17 +160,22 @@ public class EditorLayer extends Layer {
 
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
         ImGui.begin("Viewport");
+
+        viewportFocused = ImGui.isWindowFocused();
+        viewportHovered = ImGui.isWindowHovered();
+        Application.getApplication().getImGuiLayer().blockEvents(!viewportFocused || !viewportHovered);
+
         ImVec2 viewportPanelSize = ImGui.getContentRegionAvail();
 
-        if (viewPortSize.x != viewportPanelSize.x || viewPortSize.y != viewportPanelSize.y) {
+        if (viewportSize.x != viewportPanelSize.x || viewportSize.y != viewportPanelSize.y) {
             framebuffer.resize((int) viewportPanelSize.x, (int) viewportPanelSize.y);
-            viewPortSize.x = viewportPanelSize.x;
-            viewPortSize.y = viewportPanelSize.y;
+            viewportSize.x = viewportPanelSize.x;
+            viewportSize.y = viewportPanelSize.y;
             cameraController.onResize(viewportPanelSize.x, viewportPanelSize.y);
         }
 
         int textureId = framebuffer.getColorAttachmentRendererId();
-        ImGui.image(textureId, viewPortSize.x, viewPortSize.y, 0, 1, 1, 0);
+        ImGui.image(textureId, viewportSize.x, viewportSize.y, 0, 1, 1, 0);
         ImGui.end();
         ImGui.popStyleVar();
 

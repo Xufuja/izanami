@@ -78,6 +78,10 @@ public class Application {
         this.running = false;
     }
 
+    public ImGuiLayer getImGuiLayer() {
+        return imGuiLayer;
+    }
+
     public void onEvent(Event event) {
         EventDispatcher eventDispatcher = new EventDispatcher(event);
         eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);
