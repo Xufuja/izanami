@@ -69,6 +69,12 @@ public class EditorLayer extends Layer {
 
     @Override
     public void onUpdate(TimeStep ts) {
+        FramebufferSpecification spec = framebuffer.getSpecification();
+        if (viewportSize.x > 0.0f && viewportSize.y > 0.0f && (spec.width != viewportSize.x || spec.height != viewportSize.y)) {
+            framebuffer.resize((int) viewportSize.x, (int) viewportSize.y);
+            cameraController.onResize(viewportSize.x, viewportSize.y);
+        }
+
         if (viewportFocused) {
             cameraController.onUpdate(ts);
         }
@@ -167,12 +173,8 @@ public class EditorLayer extends Layer {
 
         ImVec2 viewportPanelSize = ImGui.getContentRegionAvail();
 
-        if (viewportSize.x != viewportPanelSize.x || viewportSize.y != viewportPanelSize.y) {
-            framebuffer.resize((int) viewportPanelSize.x, (int) viewportPanelSize.y);
-            viewportSize.x = viewportPanelSize.x;
-            viewportSize.y = viewportPanelSize.y;
-            cameraController.onResize(viewportPanelSize.x, viewportPanelSize.y);
-        }
+        viewportSize.x = viewportPanelSize.x;
+        viewportSize.y = viewportPanelSize.y;
 
         int textureId = framebuffer.getColorAttachmentRendererId();
         ImGui.image(textureId, viewportSize.x, viewportSize.y, 0, 1, 1, 0);
