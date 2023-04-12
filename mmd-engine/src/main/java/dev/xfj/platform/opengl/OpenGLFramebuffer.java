@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class OpenGLFramebuffer implements Framebuffer {
+    private static final int maxFramebufferSize = 8192;
     private int renderId;
     private final int[] colorAttachment;
     private final int[] depthAttachment;
@@ -67,6 +68,11 @@ public class OpenGLFramebuffer implements Framebuffer {
 
     @Override
     public void resize(int width, int height) {
+        if (width == 0 || height == 0 || width > maxFramebufferSize || height > maxFramebufferSize)
+        {
+            Log.warn(String.format("Attempted to rezize framebuffer to %1$s, %2$s", width, height));
+            return;
+        }
         specification.width = width;
         specification.height = height;
 

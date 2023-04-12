@@ -138,28 +138,8 @@ public class Renderer2D {
     }
 
     public static void drawQuad(Vector3f position, Vector2f size, Vector4f color) {
-        if (data.quadIndexCount >= Renderer2DData.maxIndices) {
-            flushAndReset();
-        }
-
-        int quadVertexCount = 4;
-        float textureIndex = 0.0f;
-        Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
-        float tilingFactor = 1.0f;
-
-        for (int i = 0; i < quadVertexCount; i++) {
-            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(position.x, position.y, position.z, size.x, size.y, i), color, textureCoords[i], textureIndex, tilingFactor);
-            data.quadVertexBufferPtr++;
-        }
-
-        data.quadIndexCount += 6;
-        data.stats.quadCount++;
-    }
-
-    public static Vector3f transformPosition(float posX, float posY, float posZ, float sizeX, float sizeY, int quadVertexPosition) {
-        Matrix4f transform = new Matrix4f().translate(posX, posY, posZ).mul(new Matrix4f().scale(sizeX, sizeY, 1.0f));
-        Vector4f transformedPosition = transform.transform(data.quadVertexPositions[quadVertexPosition], new Vector4f());
-        return new Vector3f(transformedPosition.x, transformedPosition.y, transformedPosition.z);
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        drawQuad(transform, color);
     }
 
     public static void drawQuad(Vector2f position, Vector2f size, Texture2D texture) {
@@ -183,13 +163,51 @@ public class Renderer2D {
     }
 
     public static void drawQuad(Vector3f position, Vector2f size, Texture2D texture, float tilingFactor, Vector4f tintColor) {
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        drawQuad(transform, texture, tilingFactor, tintColor);
+    }
+
+    public static Vector3f transformPosition(Matrix4f transform, int quadVertexPosition) {
+        Vector4f transformedPosition = transform.transform(data.quadVertexPositions[quadVertexPosition], new Vector4f());
+        return new Vector3f(transformedPosition.x, transformedPosition.y, transformedPosition.z);
+    }
+
+
+    public static void drawQuad(Matrix4f transform, Vector4f color) {
+        int quadVertexCount = 4;
+        float textureIndex = 0.0f;
+        Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
+        float tilingFactor = 1.0f;
+
         if (data.quadIndexCount >= Renderer2DData.maxIndices) {
             flushAndReset();
         }
 
+        for (int i = 0; i < quadVertexCount; i++) {
+            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(transform, i), color, textureCoords[i], textureIndex, tilingFactor);
+            data.quadVertexBufferPtr++;
+        }
+
+        data.quadIndexCount += 6;
+        data.stats.quadCount++;
+    }
+
+    public static void drawQuad(Matrix4f transform, Texture2D texture) {
+        drawQuad(transform, texture, 1.0f, new Vector4f(1.0f));
+    }
+
+    public static void drawQuad(Matrix4f transform, Texture2D texture, float tilingFactor) {
+        drawQuad(transform, texture, tilingFactor, new Vector4f(1.0f));
+    }
+
+    public static void drawQuad(Matrix4f transform, Texture2D texture, float tilingFactor, Vector4f tintColor) {
         int quadVertexCount = 4;
         float textureIndex = 0.0f;
         Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
+
+        if (data.quadIndexCount >= Renderer2DData.maxIndices) {
+            flushAndReset();
+        }
 
         for (int i = 1; i < data.textureSlotIndex; i++) {
             if (data.textureSlots[i].equals(texture)) {
@@ -209,7 +227,7 @@ public class Renderer2D {
         }
 
         for (int i = 0; i < quadVertexCount; i++) {
-            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(position.x, position.y, position.z, size.x, size.y, i), tintColor, textureCoords[i], textureIndex, tilingFactor);
+            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(transform, i), tintColor, textureCoords[i], textureIndex, tilingFactor);
             data.quadVertexBufferPtr++;
         }
 
