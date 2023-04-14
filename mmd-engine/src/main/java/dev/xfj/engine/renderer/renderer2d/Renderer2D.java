@@ -172,7 +172,6 @@ public class Renderer2D {
         return new Vector3f(transformedPosition.x, transformedPosition.y, transformedPosition.z);
     }
 
-
     public static void drawQuad(Matrix4f transform, Vector4f color) {
         int quadVertexCount = 4;
         float textureIndex = 0.0f;
@@ -240,28 +239,8 @@ public class Renderer2D {
     }
 
     public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Vector4f color) {
-        if (data.quadIndexCount >= Renderer2DData.maxIndices) {
-            flushAndReset();
-        }
-
-        int quadVertexCount = 4;
-        float textureIndex = 0.0f;
-        Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
-        float tilingFactor = 1.0f;
-
-        for (int i = 0; i < quadVertexCount; i++) {
-            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformRotatedPosition(position.x, position.y, position.z, rotation, size.x, size.y, i), color, textureCoords[i], textureIndex, tilingFactor);
-            data.quadVertexBufferPtr++;
-        }
-
-        data.quadIndexCount += 6;
-        data.stats.quadCount++;
-    }
-
-    public static Vector3f transformRotatedPosition(float posX, float posY, float posZ, float rotation, float sizeX, float sizeY, int quadVertexPosition) {
-        Matrix4f transform = new Matrix4f().translate(posX, posY, posZ).mul(new Matrix4f().rotate((float) Math.toRadians(rotation), new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(sizeX, sizeY, 1.0f));
-        Vector4f transformedPosition = transform.transform(data.quadVertexPositions[quadVertexPosition], new Vector4f());
-        return new Vector3f(transformedPosition.x, transformedPosition.y, transformedPosition.z);
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().rotate((float) Math.toRadians(rotation), new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        drawQuad(transform, color);
     }
 
     public static void drawRotatedQuad(Vector2f position, Vector2f size, float rotation, Texture2D texture) {
@@ -285,38 +264,8 @@ public class Renderer2D {
     }
 
     public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Texture2D texture, float tilingFactor, Vector4f tintColor) {
-        if (data.quadIndexCount >= Renderer2DData.maxIndices) {
-            flushAndReset();
-        }
-
-        int quadVertexCount = 4;
-        float textureIndex = 0.0f;
-        Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
-
-        for (int i = 1; i < data.textureSlotIndex; i++) {
-            if (data.textureSlots[i].equals(texture)) {
-                textureIndex = (float) i;
-                break;
-            }
-        }
-
-        if (textureIndex == 0.0f) {
-            if (data.textureSlotIndex >= Renderer2DData.maxTextureSlots) {
-                flushAndReset();
-            }
-
-            textureIndex = (float) data.textureSlotIndex;
-            data.textureSlots[data.textureSlotIndex] = texture;
-            data.textureSlotIndex++;
-        }
-
-        for (int i = 0; i < quadVertexCount; i++) {
-            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformRotatedPosition(position.x, position.y, position.z, rotation, size.x, size.y, i), tintColor, textureCoords[i], textureIndex, tilingFactor);
-            data.quadVertexBufferPtr++;
-        }
-
-        data.quadIndexCount += 6;
-        data.stats.quadCount++;
+        Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().rotate((float) Math.toRadians(rotation), new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
+        drawQuad(transform, texture, tilingFactor, tintColor);
     }
 
     public static void resetStats() {
