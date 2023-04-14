@@ -1,10 +1,8 @@
 package dev.xfj;
 
-import dev.dominion.ecs.api.Composition;
-import dev.dominion.ecs.api.Dominion;
-import dev.dominion.ecs.api.Entity;
 import dev.xfj.engine.core.Application;
 import dev.xfj.engine.core.Layer;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.renderer.OrthographicCameraController;
@@ -16,9 +14,10 @@ import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
+import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.components.SpriteRendererComponent;
-import dev.xfj.engine.scene.components.TransformComponent;
+import dev.xfj.engine.scene.components.TagComponent;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
@@ -29,7 +28,6 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.nio.file.Path;
@@ -77,10 +75,8 @@ public class EditorLayer extends Layer {
 
         activeScene = new Scene();
 
-        Entity square = activeScene.createEntity();
-        square.add(new TransformComponent());
-        square.add(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
-
+        Entity square = activeScene.createEntity("Green Square");
+        square.addComponent(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
         squareEntity = square;
 
     }
@@ -185,12 +181,19 @@ public class EditorLayer extends Layer {
         ImGui.text(String.format("Vertices: %1$d", stats.getTotalVertexCount()));
         ImGui.text(String.format("Indices: %1$d", stats.getTotalIndexCount()));
 
-        //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
-        squareColor = ((SpriteRendererComponent) squareEntity.get(SpriteRendererComponent.class)).color;
-        float[] newColor = {squareColor.x, squareColor.y, squareColor.z, squareColor.w};
-        ImGui.colorEdit4("Square Color", newColor);
-        squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
-        ((SpriteRendererComponent) squareEntity.get(SpriteRendererComponent.class)).color = squareColor;
+        if (squareEntity != null) {
+            ImGui.separator();
+            String tag = squareEntity.getComponent(TagComponent.class).tag;
+            ImGui.text(tag);
+
+            //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
+            squareColor = squareEntity.getComponent(SpriteRendererComponent.class).color;
+            float[] newColor = {squareColor.x, squareColor.y, squareColor.z, squareColor.w};
+            ImGui.colorEdit4("Square Color", newColor);
+            squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
+            squareEntity.getComponent(SpriteRendererComponent.class).color = squareColor;
+            ImGui.separator();
+        }
 
         ImGui.end();
 
