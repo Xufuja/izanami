@@ -24,6 +24,7 @@ MRs performed by other contributors will be handled before the next video, if an
 
 * LWJGL provides GLFW bindings, also replaces glad
 * JOML replaces GLM
+* Dominion replaces EnTT
 
 ## Skipped
 
