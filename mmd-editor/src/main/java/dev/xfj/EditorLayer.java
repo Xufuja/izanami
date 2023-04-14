@@ -1,5 +1,8 @@
 package dev.xfj;
 
+import dev.dominion.ecs.api.Composition;
+import dev.dominion.ecs.api.Dominion;
+import dev.dominion.ecs.api.Entity;
 import dev.xfj.engine.core.Application;
 import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.core.TimeStep;
@@ -13,6 +16,9 @@ import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
+import dev.xfj.engine.scene.Scene;
+import dev.xfj.engine.scene.components.SpriteRendererComponent;
+import dev.xfj.engine.scene.components.TransformComponent;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
@@ -37,11 +43,19 @@ public class EditorLayer extends Layer {
     private Shader flatColorShader;
     private VertexArray squareVA;
     private Framebuffer framebuffer;
+    private Scene activeScene;
+    private Entity squareEntity;
     private Texture2D checkerBoardTexture;
     private boolean viewportFocused;
     private boolean viewportHovered;
     private final Vector2f viewportSize;
     private Vector4f squareColor;
+
+    static {
+        System.setProperty("dominion.show-banner", "false");
+        System.setProperty("dominion.logging-level", "INFO");
+        System.setProperty("dominion.dominion-1.logging-level", "INFO");
+    }
 
     public EditorLayer() {
         super("Sample 2D");
@@ -60,6 +74,15 @@ public class EditorLayer extends Layer {
         fbSpec.width = 1280;
         fbSpec.height = 720;
         framebuffer = Framebuffer.create(fbSpec);
+
+        activeScene = new Scene();
+
+        Entity square = activeScene.createEntity();
+        square.add(new TransformComponent());
+        square.add(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
+
+        squareEntity = square;
+
     }
 
     @Override
@@ -81,10 +104,10 @@ public class EditorLayer extends Layer {
 
         Renderer2D.resetStats();
         framebuffer.bind();
-
         RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
         RenderCommand.clear();
-        rotation += ts.getTime() * 50.0f;
+
+        /*rotation += ts.getTime() * 50.0f;
 
         Renderer2D.beginScene(cameraController.getCamera());
         Renderer2D.drawRotatedQuad(new Vector2f(1.0f, 0.0f), new Vector2f(0.8f, 0.8f), -45.0f, new Vector4f(0.8f, 0.2f, 0.3f, 1.0f));
@@ -100,8 +123,13 @@ public class EditorLayer extends Layer {
                 Vector4f color = new Vector4f((x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f);
                 Renderer2D.drawQuad(new Vector2f(x, y), new Vector2f(0.45f, 0.45f), color);
             }
-        }
+        }*/
+        Renderer2D.beginScene(cameraController.getCamera());
+
+        activeScene.onUpdate(ts);
+
         Renderer2D.endScene();
+
         framebuffer.unbind();
     }
 
@@ -158,9 +186,11 @@ public class EditorLayer extends Layer {
         ImGui.text(String.format("Indices: %1$d", stats.getTotalIndexCount()));
 
         //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
+        squareColor = ((SpriteRendererComponent) squareEntity.get(SpriteRendererComponent.class)).color;
         float[] newColor = {squareColor.x, squareColor.y, squareColor.z, squareColor.w};
         ImGui.colorEdit4("Square Color", newColor);
         squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
+        ((SpriteRendererComponent) squareEntity.get(SpriteRendererComponent.class)).color = squareColor;
 
         ImGui.end();
 
