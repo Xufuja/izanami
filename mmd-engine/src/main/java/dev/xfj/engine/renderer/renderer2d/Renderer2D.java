@@ -1,10 +1,7 @@
 package dev.xfj.engine.renderer.renderer2d;
 
 import dev.xfj.engine.core.Log;
-import dev.xfj.engine.renderer.OrthographicCamera;
-import dev.xfj.engine.renderer.RenderCommand;
-import dev.xfj.engine.renderer.Texture2D;
-import dev.xfj.engine.renderer.VertexArray;
+import dev.xfj.engine.renderer.*;
 import dev.xfj.engine.renderer.buffer.BufferElement;
 import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
@@ -20,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class Renderer2D {
@@ -92,12 +90,24 @@ public class Renderer2D {
         data = null;
     }
 
+    public static void beginScene(Camera camera, Matrix4f transform) {
+        Matrix4f viewProjection = camera.getProjection().mul(new Matrix4f(transform.get(new Matrix4f()).invert()), new Matrix4f());
+        data.textureShader.bind();
+        data.textureShader.setMat4("u_ViewProjection", viewProjection);
+
+        data.quadIndexCount = 0;
+        data.quadVertexBufferPtr = 0;
+
+        data.textureSlotIndex = 1;
+    }
+
     public static void beginScene(OrthographicCamera camera) {
         data.textureShader.bind();
         data.textureShader.setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
 
         data.quadIndexCount = 0;
         data.quadVertexBufferPtr = 0;
+
         data.textureSlotIndex = 1;
     }
 

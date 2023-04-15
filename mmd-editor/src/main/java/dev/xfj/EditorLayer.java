@@ -2,7 +2,6 @@ package dev.xfj;
 
 import dev.xfj.engine.core.Application;
 import dev.xfj.engine.core.Layer;
-import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.renderer.OrthographicCameraController;
@@ -16,8 +15,10 @@ import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
+import dev.xfj.engine.scene.components.CameraComponent;
 import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import dev.xfj.engine.scene.components.TagComponent;
+import dev.xfj.engine.scene.components.TransformComponent;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
@@ -27,6 +28,7 @@ import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -43,6 +45,9 @@ public class EditorLayer extends Layer {
     private Framebuffer framebuffer;
     private Scene activeScene;
     private Entity squareEntity;
+    private Entity cameraEntity;
+    private Entity secondCamera;
+    private boolean primaryCamera;
     private Texture2D checkerBoardTexture;
     private boolean viewportFocused;
     private boolean viewportHovered;
@@ -62,6 +67,7 @@ public class EditorLayer extends Layer {
         this.viewportHovered = false;
         this.viewportSize = new Vector2f(0.0f, 0.0f);
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
+        this.primaryCamera = true;
     }
 
     @Override
@@ -79,6 +85,12 @@ public class EditorLayer extends Layer {
         square.addComponent(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
         squareEntity = square;
 
+        cameraEntity = activeScene.createEntity("Camera Entity");
+        cameraEntity.addComponent(new CameraComponent(new Matrix4f().ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f)));
+
+        secondCamera = activeScene.createEntity("Clip-Space Entity");
+        secondCamera.addComponent(new CameraComponent(new Matrix4f().ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f)));
+        secondCamera.getComponent(CameraComponent.class).primary = false;
     }
 
     @Override
@@ -119,12 +131,11 @@ public class EditorLayer extends Layer {
                 Vector4f color = new Vector4f((x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f);
                 Renderer2D.drawQuad(new Vector2f(x, y), new Vector2f(0.45f, 0.45f), color);
             }
-        }*/
-        Renderer2D.beginScene(cameraController.getCamera());
+        }
+
+        Renderer2D.endScene();*/
 
         activeScene.onUpdate(ts);
-
-        Renderer2D.endScene();
 
         framebuffer.unbind();
     }
@@ -193,6 +204,17 @@ public class EditorLayer extends Layer {
             squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
             squareEntity.getComponent(SpriteRendererComponent.class).color = squareColor;
             ImGui.separator();
+        }
+
+        Vector4f cameraTransform = cameraEntity.getComponent(TransformComponent.class).transform.getColumn(3, new Vector4f());
+        float[] newCameraTransform = {cameraTransform.x, cameraTransform.y, cameraTransform.z};
+        ImGui.dragFloat3("Camera Transform", newCameraTransform);
+        cameraEntity.getComponent(TransformComponent.class).transform.setColumn(3, new Vector4f(newCameraTransform[0], newCameraTransform[1], newCameraTransform[2], cameraTransform.w));
+
+        if (ImGui.checkbox("Camera A", primaryCamera)) {
+            primaryCamera = !primaryCamera;
+            cameraEntity.getComponent(CameraComponent.class).primary = primaryCamera;
+            secondCamera.getComponent(CameraComponent.class).primary = !primaryCamera;
         }
 
         ImGui.end();

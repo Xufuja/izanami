@@ -56,6 +56,6 @@ public class OrthographicCamera {
     private void recalculateViewMatrix() {
         Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).rotate((float) Math.toRadians(rotation), 0, 0, 1);
         viewMatrix = new Matrix4f(transform).invert();
-        viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
+        viewProjectionMatrix = projectionMatrix.mul(viewMatrix, new Matrix4f());
     }
 }
