@@ -1,7 +1,6 @@
 package dev.xfj.engine.scene;
 
 import dev.dominion.ecs.api.Dominion;
-import dev.dominion.ecs.api.Results;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -11,13 +10,15 @@ import dev.xfj.engine.scene.components.TagComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
 import org.joml.Matrix4f;
 
-import java.util.Iterator;
-
 public class Scene {
     private final Dominion registry;
+    private int viewportWidth;
+    private int viewportHeight;
 
     public Scene() {
         this.registry = Dominion.create();
+        this.viewportWidth = 0;
+        this.viewportHeight = 0;
     }
 
     public Entity createEntity(String name) {
@@ -54,5 +55,18 @@ public class Scene {
 
             Renderer2D.endScene();
         }
+    }
+
+    public void onViewportResize(int width, int height) {
+        viewportWidth = width;
+        viewportHeight = height;
+
+        registry.findEntitiesWith(CameraComponent.class)
+                .stream().forEach(entity -> {
+                    CameraComponent cameraComponent = entity.comp();
+                    if (!cameraComponent.fixedAspectRatio) {
+                        cameraComponent.camera.setViewportSize(width, height);
+                    }
+                });
     }
 }

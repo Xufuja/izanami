@@ -4,10 +4,7 @@ import dev.xfj.engine.core.Application;
 import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
-import dev.xfj.engine.renderer.OrthographicCameraController;
-import dev.xfj.engine.renderer.RenderCommand;
-import dev.xfj.engine.renderer.Texture2D;
-import dev.xfj.engine.renderer.VertexArray;
+import dev.xfj.engine.renderer.*;
 import dev.xfj.engine.renderer.framebuffer.Framebuffer;
 import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -15,6 +12,7 @@ import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
+import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.CameraComponent;
 import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import dev.xfj.engine.scene.components.TagComponent;
@@ -86,10 +84,10 @@ public class EditorLayer extends Layer {
         squareEntity = square;
 
         cameraEntity = activeScene.createEntity("Camera Entity");
-        cameraEntity.addComponent(new CameraComponent(new Matrix4f().ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f)));
+        cameraEntity.addComponent(new CameraComponent());
 
         secondCamera = activeScene.createEntity("Clip-Space Entity");
-        secondCamera.addComponent(new CameraComponent(new Matrix4f().ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f)));
+        secondCamera.addComponent(new CameraComponent());
         secondCamera.getComponent(CameraComponent.class).primary = false;
     }
 
@@ -104,6 +102,7 @@ public class EditorLayer extends Layer {
         if (viewportSize.x > 0.0f && viewportSize.y > 0.0f && (spec.width != viewportSize.x || spec.height != viewportSize.y)) {
             framebuffer.resize((int) viewportSize.x, (int) viewportSize.y);
             cameraController.onResize(viewportSize.x, viewportSize.y);
+            activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
         }
 
         if (viewportFocused) {
@@ -215,6 +214,12 @@ public class EditorLayer extends Layer {
             primaryCamera = !primaryCamera;
             cameraEntity.getComponent(CameraComponent.class).primary = primaryCamera;
             secondCamera.getComponent(CameraComponent.class).primary = !primaryCamera;
+        }
+
+        SceneCamera camera = secondCamera.getComponent(CameraComponent.class).camera;
+        float[] orthoSize = new float[]{camera.getOrthographicSize()};
+        if (ImGui.dragFloat("Second Camera Ortho Size", orthoSize)) {
+            camera.setOrthographicSize(orthoSize[0]);
         }
 
         ImGui.end();
