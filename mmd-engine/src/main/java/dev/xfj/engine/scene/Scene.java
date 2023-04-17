@@ -29,7 +29,7 @@ public class Scene {
     public void onUpdate(TimeStep ts) {
         registry.findEntitiesWith(NativeScriptComponent.class)
                 .stream().forEach(entity -> {
-                    NativeScriptComponent nsc = entity.comp();
+                    NativeScriptComponent<?> nsc = entity.comp();
                     if (nsc.instance == null) {
                         nsc.instantiateFunction.run();
                         nsc.instance.entity = new Entity(entity.entity(), this);

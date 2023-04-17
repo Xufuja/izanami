@@ -66,6 +66,7 @@ public class EditorLayer extends Layer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onAttach() {
         checkerBoardTexture = Texture2D.create(Path.of("assets/textures/Checkerboard.png"));
 
