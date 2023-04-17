@@ -1,6 +1,7 @@
 package dev.xfj.engine.core;
 
 import dev.xfj.platform.windows.WindowsInput;
+import org.joml.Vector2f;
 
 import java.util.AbstractMap;
 
@@ -22,7 +23,7 @@ public abstract class Input {
     public static boolean isMouseButtonPressed(int button) {
         return input.isMouseButtonPressedImpl(button);
     }
-    public static AbstractMap.SimpleEntry<Float, Float> getMousePosition() {
+    public static Vector2f getMousePosition() {
         return input.getMousePositionImpl();
     }
     public static float getMouseX(){
@@ -33,7 +34,7 @@ public abstract class Input {
     }
     protected abstract boolean isKeyPressedImpl(int keyCode);
     protected abstract boolean isMouseButtonPressedImpl(int button);
-    protected abstract AbstractMap.SimpleEntry<Float, Float> getMousePositionImpl();
+    protected abstract Vector2f getMousePositionImpl();
     protected abstract float getMouseXImpl();
     protected abstract float getMouseYImpl();
 

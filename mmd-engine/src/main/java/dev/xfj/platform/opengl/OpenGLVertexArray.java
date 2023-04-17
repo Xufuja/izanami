@@ -68,7 +68,7 @@ public class OpenGLVertexArray implements VertexArray {
                     int count = element.getComponentCount();
                     for (int i = 0; i < count; i++) {
                         GL45.glEnableVertexAttribArray(vertexBufferIndex);
-                        GL45.glVertexAttribPointer(vertexBufferIndex, count, shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), Float.BYTES * count * i);
+                        GL45.glVertexAttribPointer(vertexBufferIndex, count, shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), element.offset + Float.BYTES * count * i);
                         GL45.glVertexAttribDivisor(vertexBufferIndex, 1);
                         vertexBufferIndex++;
                     }

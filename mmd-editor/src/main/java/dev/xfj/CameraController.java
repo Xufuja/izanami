@@ -26,16 +26,16 @@ public class CameraController extends ScriptableEntity {
         Matrix4f transform = getComponent(TransformComponent.class).transform;
         float speed = 5.0f;
 
-        if (Input.isKeyPressed(KeyCodes.MMD_KEY_A)) {
+        if (Input.isKeyPressed(KeyCodes.A)) {
             transform.set(3, 0, transform.get(3, 0) - speed * ts.getTime());
         }
-        if (Input.isKeyPressed(KeyCodes.MMD_KEY_D)) {
+        if (Input.isKeyPressed(KeyCodes.D)) {
             transform.set(3, 0, transform.get(3, 0) + speed * ts.getTime());
         }
-        if (Input.isKeyPressed(KeyCodes.MMD_KEY_W)) {
+        if (Input.isKeyPressed(KeyCodes.W)) {
             transform.set(3, 1, transform.get(3, 1) + speed * ts.getTime());
         }
-        if (Input.isKeyPressed(KeyCodes.MMD_KEY_S)) {
+        if (Input.isKeyPressed(KeyCodes.S)) {
             transform.set(3, 1, transform.get(3, 1) - speed * ts.getTime());
         }
     }

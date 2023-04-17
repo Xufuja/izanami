@@ -1,14 +1,13 @@
 package dev.xfj.engine.renderer;
 
 import dev.xfj.engine.core.Input;
+import dev.xfj.engine.core.KeyCodes;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.application.WindowResizeEvent;
 import dev.xfj.engine.events.mouse.MouseScrolledEvent;
 import org.joml.Vector3f;
-
-import static dev.xfj.engine.core.KeyCodes.*;
 
 public class OrthographicCameraController {
     private float aspectRatio;
@@ -36,27 +35,27 @@ public class OrthographicCameraController {
     }
 
     public void onUpdate(TimeStep ts) {
-        if (Input.isKeyPressed(MMD_KEY_A)) {
+        if (Input.isKeyPressed(KeyCodes.A)) {
             cameraPosition.x -= Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
             cameraPosition.y -= Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
-        } else if (Input.isKeyPressed(MMD_KEY_D)) {
+        } else if (Input.isKeyPressed(KeyCodes.D)) {
             cameraPosition.x += Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
             cameraPosition.y += Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
         }
-        if (Input.isKeyPressed(MMD_KEY_W)) {
+        if (Input.isKeyPressed(KeyCodes.W)) {
             cameraPosition.x += -Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
             cameraPosition.y += Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
 
-        } else if (Input.isKeyPressed(MMD_KEY_S)) {
+        } else if (Input.isKeyPressed(KeyCodes.S)) {
             cameraPosition.x -= -Math.sin(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
             cameraPosition.y -= Math.cos(Math.toRadians(cameraRotation)) * cameraTranslationSpeed * ts.getTime();
         }
 
         if (this.rotation) {
-            if (Input.isKeyPressed(MMD_KEY_Q)) {
+            if (Input.isKeyPressed(KeyCodes.Q)) {
                 cameraRotation += cameraRotationSpeed * ts.getTime();
             }
-            if (Input.isKeyPressed(MMD_KEY_E)) {
+            if (Input.isKeyPressed(KeyCodes.E)) {
                 cameraRotation -= cameraRotationSpeed * ts.getTime();
             }
             if (cameraRotation > 180.0f) {
