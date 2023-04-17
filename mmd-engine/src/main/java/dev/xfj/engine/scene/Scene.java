@@ -4,10 +4,7 @@ import dev.dominion.ecs.api.Dominion;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
-import dev.xfj.engine.scene.components.CameraComponent;
-import dev.xfj.engine.scene.components.SpriteRendererComponent;
-import dev.xfj.engine.scene.components.TagComponent;
-import dev.xfj.engine.scene.components.TransformComponent;
+import dev.xfj.engine.scene.components.*;
 import org.joml.Matrix4f;
 
 public class Scene {
@@ -30,6 +27,21 @@ public class Scene {
     }
 
     public void onUpdate(TimeStep ts) {
+        registry.findEntitiesWith(NativeScriptComponent.class)
+                .stream().forEach(entity -> {
+                    NativeScriptComponent nsc = entity.comp();
+                    if (nsc.instance == null) {
+                        nsc.instantiateFunction.run();
+                        nsc.instance.entity = new Entity(entity.entity(), this);
+                        if (nsc.onCreateFunction != null) {
+                            nsc.onCreateFunction.accept(nsc.instance);
+                        }
+                    }
+                    if (nsc.onUpdateFunction != null) {
+                        nsc.onUpdateFunction.accept(nsc.instance, ts);
+                    }
+                });
+
         Camera mainCamera = null;
         Matrix4f cameraTransform = null;
 

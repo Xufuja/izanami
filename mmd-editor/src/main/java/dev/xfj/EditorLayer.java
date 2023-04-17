@@ -13,10 +13,7 @@ import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
-import dev.xfj.engine.scene.components.CameraComponent;
-import dev.xfj.engine.scene.components.SpriteRendererComponent;
-import dev.xfj.engine.scene.components.TagComponent;
-import dev.xfj.engine.scene.components.TransformComponent;
+import dev.xfj.engine.scene.components.*;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
@@ -89,6 +86,9 @@ public class EditorLayer extends Layer {
         secondCamera = activeScene.createEntity("Clip-Space Entity");
         secondCamera.addComponent(new CameraComponent());
         secondCamera.getComponent(CameraComponent.class).primary = false;
+
+        cameraEntity.addComponent(new NativeScriptComponent<CameraController>());
+        cameraEntity.getComponent(NativeScriptComponent.class).bind(CameraController.class);
     }
 
     @Override
