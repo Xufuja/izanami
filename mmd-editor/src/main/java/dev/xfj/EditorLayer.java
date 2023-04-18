@@ -4,7 +4,10 @@ import dev.xfj.engine.core.Application;
 import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
-import dev.xfj.engine.renderer.*;
+import dev.xfj.engine.renderer.OrthographicCameraController;
+import dev.xfj.engine.renderer.RenderCommand;
+import dev.xfj.engine.renderer.Texture2D;
+import dev.xfj.engine.renderer.VertexArray;
 import dev.xfj.engine.renderer.framebuffer.Framebuffer;
 import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -23,7 +26,6 @@ import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -90,6 +92,9 @@ public class EditorLayer extends Layer {
 
         cameraEntity.addComponent(new NativeScriptComponent<CameraController>());
         cameraEntity.getComponent(NativeScriptComponent.class).bind(CameraController.class);
+
+        secondCamera.addComponent(new NativeScriptComponent<CameraController>());
+        secondCamera.getComponent(NativeScriptComponent.class).bind(CameraController.class);
     }
 
     @Override

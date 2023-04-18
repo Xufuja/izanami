@@ -1,6 +1,7 @@
 package dev.xfj.engine.scene;
 
 import dev.dominion.ecs.api.Dominion;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -26,20 +27,17 @@ public class Scene {
         return entity;
     }
 
+    @SuppressWarnings("unchecked")
     public void onUpdate(TimeStep ts) {
         registry.findEntitiesWith(NativeScriptComponent.class)
                 .stream().forEach(entity -> {
-                    NativeScriptComponent<?> nsc = entity.comp();
+                    NativeScriptComponent<ScriptableEntity> nsc = entity.comp();
                     if (nsc.instance == null) {
-                        nsc.instantiateFunction.run();
+                        nsc.instance = nsc.instantiateScript.get();
                         nsc.instance.entity = new Entity(entity.entity(), this);
-                        if (nsc.onCreateFunction != null) {
-                            nsc.onCreateFunction.accept(nsc.instance);
-                        }
+                        nsc.instance.onCreate();
                     }
-                    if (nsc.onUpdateFunction != null) {
-                        nsc.onUpdateFunction.accept(nsc.instance, ts);
-                    }
+                    nsc.instance.onUpdate(ts);
                 });
 
         Camera mainCamera = null;

@@ -6,6 +6,9 @@ import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.scene.ScriptableEntity;
 import dev.xfj.engine.scene.components.TransformComponent;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
+
+import java.util.Random;
 
 public class CameraController extends ScriptableEntity {
     public CameraController() {
@@ -14,6 +17,8 @@ public class CameraController extends ScriptableEntity {
 
     @Override
     public void onCreate() {
+        Matrix4f transform = getComponent(TransformComponent.class).transform;
+        transform.set(3, 0, new Random().nextInt(10) - 5.0f);
     }
 
     @Override
@@ -23,20 +28,22 @@ public class CameraController extends ScriptableEntity {
 
     @Override
     public void onUpdate(TimeStep ts) {
-        Matrix4f transform = getComponent(TransformComponent.class).transform;
+        Vector4f cameraTransform = getComponent(TransformComponent.class).transform.getColumn(3, new Vector4f());
         float speed = 5.0f;
+        float[] newCameraTransform = {cameraTransform.x, cameraTransform.y, cameraTransform.z};
 
         if (Input.isKeyPressed(KeyCodes.A)) {
-            transform.set(3, 0, transform.get(3, 0) - speed * ts.getTime());
+            newCameraTransform[0] = newCameraTransform[0] - speed * ts.getTime();
         }
         if (Input.isKeyPressed(KeyCodes.D)) {
-            transform.set(3, 0, transform.get(3, 0) + speed * ts.getTime());
+            newCameraTransform[0] = newCameraTransform[0] + speed * ts.getTime();
         }
         if (Input.isKeyPressed(KeyCodes.W)) {
-            transform.set(3, 1, transform.get(3, 1) + speed * ts.getTime());
+            newCameraTransform[1] = newCameraTransform[1] + speed * ts.getTime();
         }
         if (Input.isKeyPressed(KeyCodes.S)) {
-            transform.set(3, 1, transform.get(3, 1) - speed * ts.getTime());
+            newCameraTransform[1] = newCameraTransform[1] - speed * ts.getTime();
         }
+        getComponent(TransformComponent.class).transform.setColumn(3, new Vector4f(newCameraTransform[0], newCameraTransform[1], newCameraTransform[2], cameraTransform.w));
     }
 }

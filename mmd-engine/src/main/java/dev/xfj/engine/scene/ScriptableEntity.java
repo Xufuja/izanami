@@ -9,7 +9,7 @@ public abstract class ScriptableEntity {
         return entity.getComponent(componentType);
     }
 
-    public abstract void onCreate();
-    public abstract void onDestroy();
-    public abstract void onUpdate(TimeStep ts);
+    protected abstract void onCreate();
+    protected abstract void onDestroy();
+    protected abstract void onUpdate(TimeStep ts);
 }
