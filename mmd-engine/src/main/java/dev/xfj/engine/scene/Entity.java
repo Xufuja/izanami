@@ -1,12 +1,13 @@
 package dev.xfj.engine.scene;
 
+import dev.dominion.ecs.engine.IntEntity;
 import dev.xfj.engine.core.Log;
 
 public class Entity {
     private final dev.dominion.ecs.api.Entity entityHandle;
-    private Scene scene;
+    private final Scene scene;
 
-        public Entity(dev.dominion.ecs.api.Entity entityHandle, Scene scene) {
+    public Entity(dev.dominion.ecs.api.Entity entityHandle, Scene scene) {
         this.entityHandle = entityHandle;
         this.scene = scene;
     }
@@ -33,5 +34,14 @@ public class Entity {
             Log.error("Entity does not have component!");
         }
         entityHandle.remove(getComponent(componentType));
+    }
+
+    //The entityId is not available from the interface so perhaps that it is not supposed to be accessed?
+    public int getId() {
+        return ((IntEntity) entityHandle).getId();
+    }
+
+    public boolean equals(Entity other) {
+        return entityHandle.equals(other.entityHandle) && scene.equals(other.scene);
     }
 }

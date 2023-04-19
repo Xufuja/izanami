@@ -1,7 +1,6 @@
 package dev.xfj.engine.scene;
 
 import dev.dominion.ecs.api.Dominion;
-import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -78,5 +77,9 @@ public class Scene {
                         cameraComponent.camera.setViewportSize(width, height);
                     }
                 });
+    }
+
+    public Dominion getRegistry() {
+        return registry;
     }
 }

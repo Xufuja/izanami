@@ -17,6 +17,7 @@ import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.*;
+import dev.xfj.panels.SceneHierarchyPanel;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiViewport;
@@ -51,6 +52,8 @@ public class EditorLayer extends Layer {
     private final Vector2f viewportSize;
     private Vector4f squareColor;
 
+    private SceneHierarchyPanel sceneHierarchyPanel;
+
     static {
         System.setProperty("dominion.show-banner", "false");
         System.setProperty("dominion.logging-level", "INFO");
@@ -65,6 +68,7 @@ public class EditorLayer extends Layer {
         this.viewportSize = new Vector2f(0.0f, 0.0f);
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
         this.primaryCamera = true;
+        this.sceneHierarchyPanel = new SceneHierarchyPanel();
     }
 
     @Override
@@ -95,6 +99,8 @@ public class EditorLayer extends Layer {
 
         secondCamera.addComponent(new NativeScriptComponent<CameraController>());
         secondCamera.getComponent(NativeScriptComponent.class).bind(CameraController.class);
+
+        sceneHierarchyPanel.setContext(activeScene);
     }
 
     @Override
@@ -189,6 +195,9 @@ public class EditorLayer extends Layer {
             }
             ImGui.endMenuBar();
         }
+
+        sceneHierarchyPanel.onImGuiRender();
+
         ImGui.begin("Settings");
         Statistics stats = Renderer2D.getStats();
         ImGui.text("Renderer2D Stats:");
