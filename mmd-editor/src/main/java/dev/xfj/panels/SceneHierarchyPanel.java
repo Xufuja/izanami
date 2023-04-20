@@ -110,19 +110,19 @@ public class SceneHierarchyPanel {
                 }
 
                 if (camera.getProjectionType() == SceneCamera.ProjectionType.Perspective) {
-                    float[] verticalFov = new float[]{(float) Math.toDegrees(camera.getPerspectiveVerticalFoV())};
-                    if (ImGui.dragFloat("Vertical FoV", verticalFov)) {
-                        camera.setPerspectiveVerticalFoV((float) Math.toRadians(verticalFov[0]));
+                    float[] perspectiveVerticalFoV  = new float[]{(float) Math.toDegrees(camera.getPerspectiveVerticalFoV())};
+                    if (ImGui.dragFloat("Vertical FoV", perspectiveVerticalFoV )) {
+                        camera.setPerspectiveVerticalFoV((float) Math.toRadians(perspectiveVerticalFoV [0]));
                     }
 
-                    float[] orthoNear = new float[]{camera.getPerspectiveNearClip()};
-                    if (ImGui.dragFloat("Near", orthoNear)) {
-                        camera.setPerspectiveNearClip(orthoNear[0]);
+                    float[] perspectiveNear = new float[]{camera.getPerspectiveNearClip()};
+                    if (ImGui.dragFloat("Near", perspectiveNear)) {
+                        camera.setPerspectiveNearClip(perspectiveNear[0]);
                     }
 
-                    float[] orthoFar = new float[]{camera.getPerspectiveFarClip()};
-                    if (ImGui.dragFloat("Far", orthoFar)) {
-                        camera.setPerspectiveFarClip(orthoFar[0]);
+                    float[] perspectiveFar = new float[]{camera.getPerspectiveFarClip()};
+                    if (ImGui.dragFloat("Far", perspectiveFar)) {
+                        camera.setPerspectiveFarClip(perspectiveFar[0]);
                     }
                 }
 
