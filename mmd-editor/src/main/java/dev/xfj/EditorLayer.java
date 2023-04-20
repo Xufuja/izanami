@@ -87,6 +87,9 @@ public class EditorLayer extends Layer {
         square.addComponent(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
         squareEntity = square;
 
+        Entity redSquare = activeScene.createEntity("Red Square");
+        redSquare.addComponent(new SpriteRendererComponent(new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
+
         cameraEntity = activeScene.createEntity("Camera Entity");
         cameraEntity.addComponent(new CameraComponent());
 
