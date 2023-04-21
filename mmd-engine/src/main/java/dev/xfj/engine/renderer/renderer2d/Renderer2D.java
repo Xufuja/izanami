@@ -17,7 +17,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class Renderer2D {
@@ -95,23 +94,33 @@ public class Renderer2D {
         data.textureShader.bind();
         data.textureShader.setMat4("u_ViewProjection", viewProjection);
 
-        data.quadIndexCount = 0;
-        data.quadVertexBufferPtr = 0;
-
-        data.textureSlotIndex = 1;
+        startBatch();
     }
 
     public static void beginScene(OrthographicCamera camera) {
         data.textureShader.bind();
         data.textureShader.setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
 
+        startBatch();
+    }
+
+    public static void endScene() {
+
+        flush();
+    }
+
+    public static void startBatch() {
         data.quadIndexCount = 0;
         data.quadVertexBufferPtr = 0;
 
         data.textureSlotIndex = 1;
     }
 
-    public static void endScene() {
+    public static void flush() {
+        if (data.quadIndexCount == 0) {
+            return;
+        }
+
         float[] temp = new float[data.quadVertexBufferPtr * QuadVertex.getQuadVertexSize()];
         ArrayList<Float> list = new ArrayList<>();
         //Surely there must be a better way than to do this
@@ -121,13 +130,7 @@ public class Renderer2D {
 
         IntStream.range(0, list.size()).forEach(i -> temp[i] = list.get(i));
         data.quadVertexBuffer.setData(temp);
-        flush();
-    }
 
-    public static void flush() {
-        if (data.quadIndexCount == 0) {
-            return;
-        }
         for (int i = 0; i < data.textureSlotIndex; i++) {
             data.textureSlots[i].bind(i);
         }
@@ -135,12 +138,9 @@ public class Renderer2D {
         data.stats.drawCalls++;
     }
 
-    private static void flushAndReset() {
-        endScene();
-
-        data.quadIndexCount = 0;
-        data.quadVertexBufferPtr = 0;
-        data.textureSlotIndex = 1;
+    private static void nextBatch() {
+        flush();
+        startBatch();
     }
 
     public static void drawQuad(Vector2f position, Vector2f size, Vector4f color) {
@@ -189,7 +189,7 @@ public class Renderer2D {
         float tilingFactor = 1.0f;
 
         if (data.quadIndexCount >= Renderer2DData.maxIndices) {
-            flushAndReset();
+            nextBatch();
         }
 
         for (int i = 0; i < quadVertexCount; i++) {
@@ -215,7 +215,7 @@ public class Renderer2D {
         Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
 
         if (data.quadIndexCount >= Renderer2DData.maxIndices) {
-            flushAndReset();
+            nextBatch();
         }
 
         for (int i = 1; i < data.textureSlotIndex; i++) {
@@ -227,7 +227,7 @@ public class Renderer2D {
 
         if (textureIndex == 0.0f) {
             if (data.textureSlotIndex >= Renderer2DData.maxTextureSlots) {
-                flushAndReset();
+                nextBatch();
             }
 
             textureIndex = (float) data.textureSlotIndex;

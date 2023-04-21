@@ -18,7 +18,7 @@ public class EventDispatcher {
         try {
             Method getStaticEventType = eventType.getDeclaredMethod("getStaticType");
             if (event.getEventType() == getStaticEventType.invoke(null)) {
-                event.handled = func.apply((T) event);
+                event.handled |= func.apply((T) event);
                 return true;
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
