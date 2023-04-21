@@ -4,6 +4,7 @@ import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.CameraComponent;
+import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import dev.xfj.engine.scene.components.TagComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
 import imgui.ImGui;
@@ -146,6 +147,16 @@ public class SceneHierarchyPanel {
                         cameraComponent.fixedAspectRatio = !cameraComponent.fixedAspectRatio;
                     }
                 }
+                ImGui.treePop();
+            }
+        }
+        if (entity.hasComponent(SpriteRendererComponent.class)) {
+            if (ImGui.treeNodeEx(SpriteRendererComponent.class.hashCode(), ImGuiTreeNodeFlags.DefaultOpen, "Sprite Renderer")) {
+                //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
+                SpriteRendererComponent src = entity.getComponent(SpriteRendererComponent.class);
+                float[] newColor = {src.color.x, src.color.y, src.color.z, src.color.w};
+                ImGui.colorEdit4("Color", newColor);
+                src.color = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
                 ImGui.treePop();
             }
         }

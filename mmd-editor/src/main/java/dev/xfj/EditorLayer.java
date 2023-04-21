@@ -90,10 +90,10 @@ public class EditorLayer extends Layer {
         Entity redSquare = activeScene.createEntity("Red Square");
         redSquare.addComponent(new SpriteRendererComponent(new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
 
-        cameraEntity = activeScene.createEntity("Camera Entity");
+        cameraEntity = activeScene.createEntity("Camera A");
         cameraEntity.addComponent(new CameraComponent());
 
-        secondCamera = activeScene.createEntity("Clip-Space Entity");
+        secondCamera = activeScene.createEntity("Camera B");
         secondCamera.addComponent(new CameraComponent());
         secondCamera.getComponent(CameraComponent.class).primary = false;
 
@@ -201,44 +201,13 @@ public class EditorLayer extends Layer {
 
         sceneHierarchyPanel.onImGuiRender();
 
-        ImGui.begin("Settings");
+        ImGui.begin("Stats");
         Statistics stats = Renderer2D.getStats();
         ImGui.text("Renderer2D Stats:");
         ImGui.text(String.format("Draw Calls: %1$d", stats.drawCalls));
         ImGui.text(String.format("Quads: %1$d", stats.quadCount));
         ImGui.text(String.format("Vertices: %1$d", stats.getTotalVertexCount()));
         ImGui.text(String.format("Indices: %1$d", stats.getTotalIndexCount()));
-
-        if (squareEntity != null) {
-            ImGui.separator();
-            String tag = squareEntity.getComponent(TagComponent.class).tag;
-            ImGui.text(tag);
-
-            //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
-            squareColor = squareEntity.getComponent(SpriteRendererComponent.class).color;
-            float[] newColor = {squareColor.x, squareColor.y, squareColor.z, squareColor.w};
-            ImGui.colorEdit4("Square Color", newColor);
-            squareColor = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
-            squareEntity.getComponent(SpriteRendererComponent.class).color = squareColor;
-            ImGui.separator();
-        }
-
-        Vector4f cameraTransform = cameraEntity.getComponent(TransformComponent.class).transform.getColumn(3, new Vector4f());
-        float[] newCameraTransform = {cameraTransform.x, cameraTransform.y, cameraTransform.z};
-        ImGui.dragFloat3("Camera Transform", newCameraTransform);
-        cameraEntity.getComponent(TransformComponent.class).transform.setColumn(3, new Vector4f(newCameraTransform[0], newCameraTransform[1], newCameraTransform[2], cameraTransform.w));
-
-        if (ImGui.checkbox("Camera A", primaryCamera)) {
-            primaryCamera = !primaryCamera;
-            cameraEntity.getComponent(CameraComponent.class).primary = primaryCamera;
-            secondCamera.getComponent(CameraComponent.class).primary = !primaryCamera;
-        }
-
-        SceneCamera camera = secondCamera.getComponent(CameraComponent.class).camera;
-        float[] orthoSize = new float[]{camera.getOrthographicSize()};
-        if (ImGui.dragFloat("Second Camera Ortho Size", orthoSize)) {
-            camera.setOrthographicSize(orthoSize[0]);
-        }
 
         ImGui.end();
 
