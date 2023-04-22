@@ -1,14 +1,25 @@
 package dev.xfj.engine.scene.components;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class TransformComponent {
-    public Matrix4f transform;
+    public Vector3f translation;
+    public Vector3f rotation;
+    public Vector3f scale;
 
     public TransformComponent() {
-        this(new Matrix4f().identity());
+        this(new Vector3f(0.0f, 0.0f, 0.0f));
     }
-    public TransformComponent(Matrix4f transform) {
-        this.transform = transform;
+
+    public TransformComponent(Vector3f translation) {
+        this.translation = translation;
+        this.rotation = new Vector3f(0.0f, 0.0f, 0.0f);
+        this.scale = new Vector3f(1.0f, 1.0f, 1.0f);
+    }
+
+    public Matrix4f getTransform() {
+        Matrix4f rotation = new Matrix4f().rotateX(this.rotation.x).rotateY(this.rotation.y).rotateZ(this.rotation.z);
+        return new Matrix4f().translate(translation).mul(rotation).mul(new Matrix4f().scale(scale));
     }
 }

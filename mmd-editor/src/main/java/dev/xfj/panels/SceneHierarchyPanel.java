@@ -8,8 +8,13 @@ import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import dev.xfj.engine.scene.components.TagComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
 import imgui.ImGui;
+import imgui.ImVec2;
+import imgui.ImVec4;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.type.ImString;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 public class SceneHierarchyPanel {
@@ -64,6 +69,80 @@ public class SceneHierarchyPanel {
         }
     }
 
+    private static void drawVec3Control(String label, Vector3f values) {
+        drawVec3Control(label, values, 0.0f, 100.0f);
+    }
+
+    private static void drawVec3Control(String label, Vector3f values, float resetValue) {
+        drawVec3Control(label, values, resetValue, 100.0f);
+    }
+
+    private static void drawVec3Control(String label, Vector3f values, float resetValue, float columWidth) {
+        ImGui.pushID(label);
+
+        ImGui.columns(2);
+        ImGui.setColumnWidth(0, columWidth);
+        ImGui.text(label);
+        ImGui.nextColumn();
+
+        //There do not appear to be bindings for ImGui::PushMultiItemsWidths() so doing it the manual way
+        ImGui.pushItemWidth(ImGui.calcItemWidth() / 3);
+        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0);
+
+        float lineHeight = ImGui.getFont().getFontSize() + ImGui.getStyle().getFramePaddingY() * 2.0f;
+        ImVec2 buttonSize = new ImVec2(lineHeight + 3.0f, lineHeight);
+
+        ImGui.pushStyleColor(ImGuiCol.Button, 0.8f, 0.1f, 0.15f, 1.0f);
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.9f, 0.2f, 0.2f, 1.0f);
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.8f, 0.1f, 0.15f, 1.0f);
+
+        if (ImGui.button("X", buttonSize.x, buttonSize.y)) {
+            values.x = resetValue;
+        }
+        ImGui.popStyleColor(3);
+
+        ImGui.sameLine();
+        float[] newX = new float[]{values.x};
+        ImGui.dragFloat("##X", newX, 0.1f, 0.0f, 0.0f, "%.2f");
+        values.x = newX[0];
+        ImGui.sameLine();
+
+        ImGui.pushStyleColor(ImGuiCol.Button, 0.2f, 0.7f, 0.2f, 1.0f);
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.3f, 0.8f, 0.3f, 1.0f);
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.2f, 0.7f, 0.2f, 1.0f);
+
+        if (ImGui.button("Y", buttonSize.x, buttonSize.y)) {
+            values.y = resetValue;
+        }
+        ImGui.popStyleColor(3);
+
+        ImGui.sameLine();
+        float[] newY = new float[]{values.y};
+        ImGui.dragFloat("##Y", newY, 0.1f, 0.0f, 0.0f, "%.2f");
+        values.y = newY[0];
+        ImGui.sameLine();
+
+        ImGui.pushStyleColor(ImGuiCol.Button, 0.1f, 0.25f, 0.8f, 1.0f);
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.2f, 0.35f, 0.9f, 1.0f);
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.25f, 0.8f, 1.0f);
+
+        if (ImGui.button("Z", buttonSize.x, buttonSize.y)) {
+            values.z = resetValue;
+        }
+        ImGui.popStyleColor(3);
+
+        ImGui.sameLine();
+        float[] newZ = new float[]{values.z};
+        ImGui.dragFloat("##Z", newZ, 0.1f, 0.0f, 0.0f, "%.2f");
+        values.z = newZ[0];
+        ImGui.popItemWidth();
+
+        ImGui.popStyleVar();
+        ImGui.columns(1);
+
+        ImGui.popID();
+    }
+
     private void drawComponents(Entity entity) {
         if (entity.hasComponent(TagComponent.class)) {
             TagComponent tagComponent = entity.getComponent(TagComponent.class);
@@ -74,12 +153,16 @@ public class SceneHierarchyPanel {
         }
 
         if (entity.hasComponent(TransformComponent.class)) {
-            TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
             if (ImGui.treeNodeEx(TransformComponent.class.hashCode(), ImGuiTreeNodeFlags.DefaultOpen, "Transform")) {
-                Vector4f transform = transformComponent.transform.getColumn(3, new Vector4f());
-                float[] newTransform = {transform.x, transform.y, transform.z};
-                ImGui.dragFloat3("Position", newTransform, 0.1f);
-                transformComponent.transform.setColumn(3, new Vector4f(newTransform[0], newTransform[1], newTransform[2], transform.w));
+                TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
+
+                drawVec3Control("Translation", transformComponent.translation);
+
+                Vector3f rotation = transformComponent.rotation.mul((float) Math.toDegrees(1.0), new Vector3f());
+                drawVec3Control("Rotation", rotation);
+                transformComponent.rotation = rotation.mul((float) Math.toRadians(1.0), new Vector3f());
+
+                drawVec3Control("Scale", transformComponent.scale, 1.0f);
 
                 ImGui.treePop();
             }
@@ -111,9 +194,9 @@ public class SceneHierarchyPanel {
                 }
 
                 if (camera.getProjectionType() == SceneCamera.ProjectionType.Perspective) {
-                    float[] perspectiveVerticalFoV  = new float[]{(float) Math.toDegrees(camera.getPerspectiveVerticalFoV())};
-                    if (ImGui.dragFloat("Vertical FoV", perspectiveVerticalFoV )) {
-                        camera.setPerspectiveVerticalFoV((float) Math.toRadians(perspectiveVerticalFoV [0]));
+                    float[] perspectiveVerticalFoV = new float[]{(float) Math.toDegrees(camera.getPerspectiveVerticalFoV())};
+                    if (ImGui.dragFloat("Vertical FoV", perspectiveVerticalFoV)) {
+                        camera.setPerspectiveVerticalFoV((float) Math.toRadians(perspectiveVerticalFoV[0]));
                     }
 
                     float[] perspectiveNear = new float[]{camera.getPerspectiveNearClip()};

@@ -48,7 +48,7 @@ public class Scene {
             CameraComponent camera = entity.comp2();
             if (camera.primary) {
                 mainCamera = camera.camera;
-                cameraTransform = transform.transform;
+                cameraTransform = transform.getTransform();
                 break;
             }
         }
@@ -59,7 +59,7 @@ public class Scene {
                     .stream().forEach(entity -> {
                         TransformComponent transform = entity.comp1();
                         SpriteRendererComponent sprite = entity.comp2();
-                        Renderer2D.drawQuad(transform.transform, sprite.color);
+                        Renderer2D.drawQuad(transform.getTransform(), sprite.color);
                     });
 
             Renderer2D.endScene();
