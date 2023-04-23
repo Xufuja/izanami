@@ -1,6 +1,6 @@
 package dev.xfj.engine.scene.components;
 
-public class TagComponent {
+public class TagComponent implements Component {
     public String tag;
 
     public TagComponent() {

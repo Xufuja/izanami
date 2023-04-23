@@ -9,8 +9,8 @@ import dev.xfj.engine.scene.components.TagComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
 import imgui.ImGui;
 import imgui.ImVec2;
-import imgui.ImVec4;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.type.ImString;
@@ -43,10 +43,32 @@ public class SceneHierarchyPanel {
         if (ImGui.isMouseDown(0) && ImGui.isWindowHovered()) {
             selectionContext = null;
         }
+        if (ImGui.beginPopupContextWindow("0", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems)) {
+            if (ImGui.menuItem("Create Empty Entity")) {
+                context.createEntity("Empty Entity");
+            }
+            ImGui.endPopup();
+        }
         ImGui.end();
         ImGui.begin("Properties");
         if (selectionContext != null) {
             drawComponents(selectionContext);
+
+            if (ImGui.button("Add Component")) {
+                ImGui.openPopup("AddComponent");
+            }
+
+            if (ImGui.beginPopup("AddComponent")) {
+                if (ImGui.menuItem("Camera")) {
+                    selectionContext.addComponent(new CameraComponent());
+                    ImGui.closeCurrentPopup();
+                }
+                if (ImGui.menuItem("Sprite Renderer")) {
+                    selectionContext.addComponent(new SpriteRendererComponent());
+                    ImGui.closeCurrentPopup();
+                }
+                ImGui.endPopup();
+            }
         }
         ImGui.end();
     }
@@ -59,6 +81,15 @@ public class SceneHierarchyPanel {
         if (ImGui.isItemClicked()) {
             selectionContext = entity;
         }
+
+        boolean entityDeleted = false;
+        if (ImGui.beginPopupContextItem()) {
+            if (ImGui.menuItem("Delete Entity")) {
+                entityDeleted = true;
+            }
+            ImGui.endPopup();
+        }
+
         if (opened) {
             int flag = ImGuiTreeNodeFlags.OpenOnArrow;
             boolean open = ImGui.treeNodeEx(9817239, flag, tag);
@@ -66,6 +97,13 @@ public class SceneHierarchyPanel {
                 ImGui.treePop();
             }
             ImGui.treePop();
+        }
+        if (entityDeleted) {
+            context.destroyEntity(entity.getEntity());
+            //I suppose in the C++ version the selectionContext is empty rather than null so there this is not needed
+            if (selectionContext != null && selectionContext.equals(entity)) {
+                selectionContext = null;
+            }
         }
     }
 
@@ -152,8 +190,11 @@ public class SceneHierarchyPanel {
             }
         }
 
+        int treeNodeFlags = ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.AllowItemOverlap;
+
         if (entity.hasComponent(TransformComponent.class)) {
-            if (ImGui.treeNodeEx(TransformComponent.class.hashCode(), ImGuiTreeNodeFlags.DefaultOpen, "Transform")) {
+            boolean open = ImGui.treeNodeEx(TransformComponent.class.hashCode(), treeNodeFlags, "Transform");
+            if (open) {
                 TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
 
                 drawVec3Control("Translation", transformComponent.translation);
@@ -168,7 +209,7 @@ public class SceneHierarchyPanel {
             }
         }
         if (entity.hasComponent(CameraComponent.class)) {
-            if (ImGui.treeNodeEx(CameraComponent.class.hashCode(), ImGuiTreeNodeFlags.DefaultOpen, "Camera")) {
+            if (ImGui.treeNodeEx(CameraComponent.class.hashCode(), treeNodeFlags, "Camera")) {
                 CameraComponent cameraComponent = entity.getComponent(CameraComponent.class);
                 SceneCamera camera = cameraComponent.camera;
 
@@ -234,13 +275,34 @@ public class SceneHierarchyPanel {
             }
         }
         if (entity.hasComponent(SpriteRendererComponent.class)) {
-            if (ImGui.treeNodeEx(SpriteRendererComponent.class.hashCode(), ImGuiTreeNodeFlags.DefaultOpen, "Sprite Renderer")) {
+            ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4, 4);
+            boolean open = ImGui.treeNodeEx(SpriteRendererComponent.class.hashCode(), treeNodeFlags, "Sprite Renderer");
+            ImGui.sameLine(ImGui.getWindowWidth() - 25.0f);
+
+            if (ImGui.button("+", 20, 20)) {
+                ImGui.openPopup("ComponentSettings");
+            }
+
+            ImGui.popStyleVar();
+            boolean removeComponent = false;
+
+            if (ImGui.beginPopup("ComponentSettings")) {
+                if (ImGui.menuItem("Remove component")) {
+                    removeComponent = true;
+                }
+                ImGui.endPopup();
+            }
+
+            if (open) {
                 //There is no equivalent to glm::value_ptr(m_SquareColor) so doing it this way
                 SpriteRendererComponent src = entity.getComponent(SpriteRendererComponent.class);
                 float[] newColor = {src.color.x, src.color.y, src.color.z, src.color.w};
                 ImGui.colorEdit4("Color", newColor);
                 src.color = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
                 ImGui.treePop();
+            }
+            if (removeComponent) {
+                entity.removeComponent(SpriteRendererComponent.class);
             }
         }
     }

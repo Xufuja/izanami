@@ -6,7 +6,7 @@ import dev.xfj.engine.scene.ScriptableEntity;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class NativeScriptComponent<T extends ScriptableEntity> {
+public class NativeScriptComponent<T extends ScriptableEntity> implements Component {
     //Doing it this way to replace the templating logic in C++
     public T instance;
 

@@ -1,6 +1,7 @@
 package dev.xfj.engine.scene;
 
 import dev.dominion.ecs.api.Dominion;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -24,6 +25,10 @@ public class Scene {
         entity.addComponent(new TagComponent());
         entity.getComponent(TagComponent.class).tag = name.isEmpty() ? "Entity" : name;
         return entity;
+    }
+
+    public void destroyEntity(dev.dominion.ecs.api.Entity entity) {
+        registry.deleteEntity(entity);
     }
 
     @SuppressWarnings("unchecked")
@@ -81,5 +86,16 @@ public class Scene {
 
     public Dominion getRegistry() {
         return registry;
+    }
+
+    protected <T extends Component> void onComponentAdded(Entity entity, T component) {
+        switch (component) {
+            case TransformComponent tfc -> Log.trace("TransformComponent Unimplemented");
+            case CameraComponent cc -> ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
+            case SpriteRendererComponent src ->  Log.trace("SpriteRendererComponent Unimplemented");
+            case TagComponent tc ->  Log.trace("TagComponent Unimplemented");
+            case NativeScriptComponent<?> nsc ->  Log.trace("NativeScriptComponent<?> Unimplemented");
+            default -> Log.error("Invalid component type");
+        }
     }
 }

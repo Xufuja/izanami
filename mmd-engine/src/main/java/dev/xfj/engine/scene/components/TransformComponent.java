@@ -3,7 +3,7 @@ package dev.xfj.engine.scene.components;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class TransformComponent {
+public class TransformComponent implements Component {
     public Vector3f translation;
     public Vector3f rotation;
     public Vector3f scale;

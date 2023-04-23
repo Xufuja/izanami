@@ -2,6 +2,7 @@ package dev.xfj.engine.scene;
 
 import dev.dominion.ecs.engine.IntEntity;
 import dev.xfj.engine.core.Log;
+import dev.xfj.engine.scene.components.Component;
 
 public class Entity {
     private final dev.dominion.ecs.api.Entity entityHandle;
@@ -12,8 +13,9 @@ public class Entity {
         this.scene = scene;
     }
 
-    public void addComponent(Object a) {
-        entityHandle.add(a);
+    public void addComponent(Object component) {
+        entityHandle.add(component);
+        scene.onComponentAdded(this, (Component) entityHandle.get(component.getClass()));
     }
 
     public <T> T getComponent(Class<T> componentType) {
@@ -43,5 +45,9 @@ public class Entity {
 
     public boolean equals(Entity other) {
         return entityHandle.equals(other.entityHandle) && scene.equals(other.scene);
+    }
+
+    public dev.dominion.ecs.api.Entity getEntity() {
+        return entityHandle;
     }
 }
