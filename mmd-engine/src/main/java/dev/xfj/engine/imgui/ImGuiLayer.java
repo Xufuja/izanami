@@ -7,6 +7,7 @@ import dev.xfj.engine.events.Event;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiStyle;
+import imgui.ImVec4;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
@@ -35,6 +36,9 @@ public class ImGuiLayer extends Layer {
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         //io.setConfigViewportsNoTaskBarIcon(true);
         //io.setConfigViewportsNoAutoMerge(true);
+        io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f);
+        io.setFontDefault(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f));
+
         ImGui.styleColorsDark();
 
         ImGuiStyle imGuiStyle = ImGui.getStyle();
@@ -44,6 +48,8 @@ public class ImGuiLayer extends Layer {
             colors[ImGuiCol.WindowBg][3] = 1.0f;
             imGuiStyle.setColors(colors);
         }
+
+        setDarkThemeColors();
 
         Application application = Application.getApplication();
         long window = application.getWindow().getNativeWindow();
@@ -108,6 +114,37 @@ public class ImGuiLayer extends Layer {
             handled |= event.isInCategory(Event.EventCategory.EventCategoryKeyboard) & io.getWantCaptureKeyboard();
             event.setHandled(handled);
         }
+    }
+
+    public void setDarkThemeColors() {
+        ImGuiStyle style = ImGui.getStyle();
+        
+        float[][] colors = style.getColors();
+        colors[ImGuiCol.WindowBg] = new float[]{0.1f, 0.105f, 0.11f, 1.0f};
+
+        colors[ImGuiCol.Header] = new float[]{0.2f, 0.205f, 0.21f, 1.0f};
+        colors[ImGuiCol.HeaderHovered] = new float[]{0.3f, 0.305f, 0.31f, 1.0f};
+        colors[ImGuiCol.HeaderActive] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+
+        colors[ImGuiCol.Button] = new float[]{0.2f, 0.205f, 0.21f, 1.0f};
+        colors[ImGuiCol.ButtonHovered] = new float[]{0.3f, 0.305f, 0.31f, 1.0f};
+        colors[ImGuiCol.ButtonActive] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+
+        colors[ImGuiCol.FrameBg] = new float[]{0.2f, 0.205f, 0.21f, 1.0f};
+        colors[ImGuiCol.FrameBgHovered] = new float[]{0.3f, 0.305f, 0.31f, 1.0f};
+        colors[ImGuiCol.FrameBgActive] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+
+        colors[ImGuiCol.Tab] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+        colors[ImGuiCol.TabHovered] = new float[]{0.38f, 0.3805f, 0.381f, 1.0f};
+        colors[ImGuiCol.TabActive] = new float[]{0.28f, 0.2805f, 0.281f, 1.0f};
+        colors[ImGuiCol.TabUnfocused] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+        colors[ImGuiCol.TabUnfocusedActive] = new float[]{0.2f, 0.205f, 0.21f, 1.0f};
+
+        colors[ImGuiCol.TitleBg] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+        colors[ImGuiCol.TitleBgActive] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+        colors[ImGuiCol.TitleBgCollapsed] = new float[]{0.15f, 0.1505f, 0.151f, 1.0f};
+
+        style.setColors(colors);
     }
 }
 

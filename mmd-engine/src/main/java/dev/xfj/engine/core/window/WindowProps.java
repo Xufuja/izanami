@@ -7,7 +7,7 @@ public class WindowProps {
 
 
     public WindowProps(String name) {
-        this(name, 1280, 720);
+        this(name, 1600, 900);
     }
 
     public WindowProps(String title, int width, int height) {
