@@ -4,19 +4,21 @@ import dev.xfj.engine.core.Application;
 import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
-import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.ImGuiStyle;
-import imgui.ImVec4;
+import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 
+import java.util.ArrayList;
+
 import static org.lwjgl.glfw.GLFW.glfwGetCurrentContext;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 public class ImGuiLayer extends Layer {
+    //There must be a better way but the Java version does not seem to have an equivalent to io.Fonts->Fonts[0];
+    public static ArrayList<ImFont> fonts = new ArrayList<>();
+
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private boolean blockEvents;
@@ -36,8 +38,9 @@ public class ImGuiLayer extends Layer {
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         //io.setConfigViewportsNoTaskBarIcon(true);
         //io.setConfigViewportsNoAutoMerge(true);
-        io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f);
-        io.setFontDefault(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f));
+        fonts.add(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f));
+        fonts.add(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f));
+        io.setFontDefault(fonts.get(1));
 
         ImGui.styleColorsDark();
 

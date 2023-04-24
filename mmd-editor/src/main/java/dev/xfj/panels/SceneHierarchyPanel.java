@@ -1,5 +1,6 @@
 package dev.xfj.panels;
 
+import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
@@ -100,8 +101,7 @@ public class SceneHierarchyPanel {
     }
 
     private static void drawVec3Control(String label, Vector3f values, float resetValue, float columWidth) {
-        ImGuiIO io = ImGui.getIO();
-        //io.getFonts();
+        ImFont boldFont = ImGuiLayer.fonts.get(0);
         ImGui.pushID(label);
 
         ImGui.columns(2);
@@ -120,11 +120,11 @@ public class SceneHierarchyPanel {
         ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.9f, 0.2f, 0.2f, 1.0f);
         ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.8f, 0.1f, 0.15f, 1.0f);
 
-        //ImGui.pushFont(boldFont);
+        ImGui.pushFont(boldFont);
         if (ImGui.button("X", buttonSize.x, buttonSize.y)) {
             values.x = resetValue;
         }
-        //ImGui.popFont();
+        ImGui.popFont();
         ImGui.popStyleColor(3);
 
         ImGui.sameLine();
@@ -137,11 +137,11 @@ public class SceneHierarchyPanel {
         ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.3f, 0.8f, 0.3f, 1.0f);
         ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.2f, 0.7f, 0.2f, 1.0f);
 
-        //ImGui.pushFont(boldFont);
+        ImGui.pushFont(boldFont);
         if (ImGui.button("Y", buttonSize.x, buttonSize.y)) {
             values.y = resetValue;
         }
-        //mGui.popFont();
+        ImGui.popFont();
         ImGui.popStyleColor(3);
 
         ImGui.sameLine();
@@ -154,11 +154,11 @@ public class SceneHierarchyPanel {
         ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 0.2f, 0.35f, 0.9f, 1.0f);
         ImGui.pushStyleColor(ImGuiCol.ButtonActive, 0.1f, 0.25f, 0.8f, 1.0f);
 
-        //ImGui.pushFont(boldFont);
+        ImGui.pushFont(boldFont);
         if (ImGui.button("Z", buttonSize.x, buttonSize.y)) {
             values.z = resetValue;
         }
-        //ImGui.popFont();
+        ImGui.popFont();
         ImGui.popStyleColor(3);
 
         ImGui.sameLine();
