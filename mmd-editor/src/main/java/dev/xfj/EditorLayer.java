@@ -18,10 +18,7 @@ import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.*;
 import dev.xfj.panels.SceneHierarchyPanel;
-import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.ImGuiViewport;
-import imgui.ImVec2;
+import imgui.*;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiStyleVar;
@@ -184,10 +181,16 @@ public class EditorLayer extends Layer {
         }
 
         final ImGuiIO io = ImGui.getIO();
+        ImGuiStyle style = ImGui.getStyle();
+        ImVec2 minWinSize = style.getWindowMinSize();
+        float minWinSizeX = minWinSize.x;
+        style.setWindowMinSize(370.0f, minWinSize.y);
+
         if (io.hasConfigFlags(ImGuiConfigFlags.DockingEnable)) {
             int dockspace_id = ImGui.getID("MyDockSpace");
             ImGui.dockSpace(dockspace_id, 0.0f, 0.0f, dockspace_flags);
         }
+        style.setWindowMinSize(minWinSizeX, style.getWindowMinSizeY());
 
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {

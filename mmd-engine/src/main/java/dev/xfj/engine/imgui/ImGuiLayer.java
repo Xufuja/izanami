@@ -37,7 +37,7 @@ public class ImGuiLayer extends Layer {
         //io.setConfigViewportsNoTaskBarIcon(true);
         //io.setConfigViewportsNoAutoMerge(true);
         io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f);
-        io.setFontDefault(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f));
+        io.setFontDefault(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f));
 
         ImGui.styleColorsDark();
 
@@ -118,7 +118,7 @@ public class ImGuiLayer extends Layer {
 
     public void setDarkThemeColors() {
         ImGuiStyle style = ImGui.getStyle();
-        
+
         float[][] colors = style.getColors();
         colors[ImGuiCol.WindowBg] = new float[]{0.1f, 0.105f, 0.11f, 1.0f};
 
