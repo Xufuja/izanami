@@ -17,7 +17,7 @@ import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 public class ImGuiLayer extends Layer {
     //There must be a better way but the Java version does not seem to have an equivalent to io.Fonts->Fonts[0];
-    public static ArrayList<ImFont> fonts = new ArrayList<>();
+    public static ImFont[] fonts;
 
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
@@ -38,9 +38,11 @@ public class ImGuiLayer extends Layer {
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         //io.setConfigViewportsNoTaskBarIcon(true);
         //io.setConfigViewportsNoAutoMerge(true);
-        fonts.add(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f));
-        fonts.add(io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f));
-        io.setFontDefault(fonts.get(1));
+        fonts = new ImFont[]{
+                io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f),
+                io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f)
+        };
+        io.setFontDefault(fonts[1]);
 
         ImGui.styleColorsDark();
 

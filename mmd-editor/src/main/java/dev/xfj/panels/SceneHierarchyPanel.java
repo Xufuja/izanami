@@ -101,7 +101,7 @@ public class SceneHierarchyPanel {
     }
 
     private static void drawVec3Control(String label, Vector3f values, float resetValue, float columWidth) {
-        ImFont boldFont = ImGuiLayer.fonts.get(0);
+        ImFont boldFont = ImGuiLayer.fonts[0];
         ImGui.pushID(label);
 
         ImGui.columns(2);
