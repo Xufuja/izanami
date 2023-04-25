@@ -173,13 +173,14 @@ public class SceneHierarchyPanel {
         ImGui.popID();
     }
 
-    private static <T> void drawComponent(Class<T> componentType, String name, Entity entity, Consumer<T> uiConsumer) {
+    private static <T> void drawComponent(Class<T> componentType, String name, Entity entity, Consumer<T> uiHandler) {
         int treeNodeFlags = ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.Framed | ImGuiTreeNodeFlags.SpanAvailWidth | ImGuiTreeNodeFlags.AllowItemOverlap | ImGuiTreeNodeFlags.FramePadding;
 
         if (entity.hasComponent(componentType)) {
             var component = entity.getComponent(componentType);
 
             ImVec2 contentRegionAvailable = ImGui.getContentRegionAvail();
+
             ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4, 4);
             float lineHeight = ImGui.getFont().getFontSize() + ImGui.getStyle().getFramePaddingY() * 2.0f;
             ImGui.separator();
@@ -201,7 +202,7 @@ public class SceneHierarchyPanel {
             }
 
             if (open) {
-                uiConsumer.accept(component);
+                uiHandler.accept(component);
                 ImGui.treePop();
             }
 
