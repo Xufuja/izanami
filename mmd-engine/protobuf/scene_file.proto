@@ -41,12 +41,12 @@ message TransformComponent {
   Vector3f scale = 3;
 }
 
-enum ProjectionType {
-  Perspective = 0;
-  Orthographic = 1;
-}
 
 message CameraComponent {
+  enum ProjectionType {
+    Perspective = 0;
+    Orthographic = 1;
+  }
   ProjectionType projection_type = 1;
   float perspective_fov = 2;
   float perspective_near = 3;
