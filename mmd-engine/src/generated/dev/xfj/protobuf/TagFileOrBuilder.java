@@ -3,8 +3,8 @@
 
 package dev.xfj.protobuf;
 
-public interface TagComponentOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:dev.xfj.protobuf.TagComponent)
+public interface TagFileOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:dev.xfj.protobuf.TagFile)
     com.google.protobuf.MessageOrBuilder {
 
   /**

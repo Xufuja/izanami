@@ -4,18 +4,18 @@
 package dev.xfj.protobuf;
 
 /**
- * Protobuf type {@code dev.xfj.protobuf.CameraComponent}
+ * Protobuf type {@code dev.xfj.protobuf.CameraFile}
  */
-public final class CameraComponent extends
+public final class CameraFile extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.CameraComponent)
-    CameraComponentOrBuilder {
+    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.CameraFile)
+    CameraFileOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use CameraComponent.newBuilder() to construct.
-  private CameraComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use CameraFile.newBuilder() to construct.
+  private CameraFile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private CameraComponent() {
+  private CameraFile() {
     projectionType_ = 0;
   }
 
@@ -23,38 +23,146 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new CameraComponent();
+    return new CameraFile();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_CameraComponent_descriptor;
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_CameraFile_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_CameraComponent_fieldAccessorTable
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_CameraFile_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            dev.xfj.protobuf.CameraComponent.class, dev.xfj.protobuf.CameraComponent.Builder.class);
+            dev.xfj.protobuf.CameraFile.class, dev.xfj.protobuf.CameraFile.Builder.class);
+  }
+
+  /**
+   * Protobuf enum {@code dev.xfj.protobuf.CameraFile.ProjectionType}
+   */
+  public enum ProjectionType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>Perspective = 0;</code>
+     */
+    Perspective(0),
+    /**
+     * <code>Orthographic = 1;</code>
+     */
+    Orthographic(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>Perspective = 0;</code>
+     */
+    public static final int Perspective_VALUE = 0;
+    /**
+     * <code>Orthographic = 1;</code>
+     */
+    public static final int Orthographic_VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ProjectionType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static ProjectionType forNumber(int value) {
+      switch (value) {
+        case 0: return Perspective;
+        case 1: return Orthographic;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ProjectionType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        ProjectionType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ProjectionType>() {
+            public ProjectionType findValueByNumber(int number) {
+              return ProjectionType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return dev.xfj.protobuf.CameraFile.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final ProjectionType[] VALUES = values();
+
+    public static ProjectionType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private ProjectionType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:dev.xfj.protobuf.CameraFile.ProjectionType)
   }
 
   public static final int PROJECTION_TYPE_FIELD_NUMBER = 1;
   private int projectionType_ = 0;
   /**
-   * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+   * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
    * @return The enum numeric value on the wire for projectionType.
    */
   @java.lang.Override public int getProjectionTypeValue() {
     return projectionType_;
   }
   /**
-   * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+   * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
    * @return The projectionType.
    */
-  @java.lang.Override public dev.xfj.protobuf.ProjectionType getProjectionType() {
-    dev.xfj.protobuf.ProjectionType result = dev.xfj.protobuf.ProjectionType.forNumber(projectionType_);
-    return result == null ? dev.xfj.protobuf.ProjectionType.UNRECOGNIZED : result;
+  @java.lang.Override public dev.xfj.protobuf.CameraFile.ProjectionType getProjectionType() {
+    dev.xfj.protobuf.CameraFile.ProjectionType result = dev.xfj.protobuf.CameraFile.ProjectionType.forNumber(projectionType_);
+    return result == null ? dev.xfj.protobuf.CameraFile.ProjectionType.UNRECOGNIZED : result;
   }
 
   public static final int PERSPECTIVE_FOV_FIELD_NUMBER = 2;
@@ -170,7 +278,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (projectionType_ != dev.xfj.protobuf.ProjectionType.Perspective.getNumber()) {
+    if (projectionType_ != dev.xfj.protobuf.CameraFile.ProjectionType.Perspective.getNumber()) {
       output.writeEnum(1, projectionType_);
     }
     if (java.lang.Float.floatToRawIntBits(perspectiveFov_) != 0) {
@@ -209,7 +317,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (projectionType_ != dev.xfj.protobuf.ProjectionType.Perspective.getNumber()) {
+    if (projectionType_ != dev.xfj.protobuf.CameraFile.ProjectionType.Perspective.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, projectionType_);
     }
@@ -259,10 +367,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof dev.xfj.protobuf.CameraComponent)) {
+    if (!(obj instanceof dev.xfj.protobuf.CameraFile)) {
       return super.equals(obj);
     }
-    dev.xfj.protobuf.CameraComponent other = (dev.xfj.protobuf.CameraComponent) obj;
+    dev.xfj.protobuf.CameraFile other = (dev.xfj.protobuf.CameraFile) obj;
 
     if (projectionType_ != other.projectionType_) return false;
     if (java.lang.Float.floatToIntBits(getPerspectiveFov())
@@ -335,69 +443,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(byte[] data)
+  public static dev.xfj.protobuf.CameraFile parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.CameraFile parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.CameraComponent parseDelimitedFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.CameraFile parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.CameraComponent parseDelimitedFrom(
+  public static dev.xfj.protobuf.CameraFile parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.CameraComponent parseFrom(
+  public static dev.xfj.protobuf.CameraFile parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -410,7 +518,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(dev.xfj.protobuf.CameraComponent prototype) {
+  public static Builder newBuilder(dev.xfj.protobuf.CameraFile prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -426,26 +534,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code dev.xfj.protobuf.CameraComponent}
+   * Protobuf type {@code dev.xfj.protobuf.CameraFile}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.CameraComponent)
-      dev.xfj.protobuf.CameraComponentOrBuilder {
+      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.CameraFile)
+      dev.xfj.protobuf.CameraFileOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_CameraComponent_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_CameraFile_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_CameraComponent_fieldAccessorTable
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_CameraFile_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              dev.xfj.protobuf.CameraComponent.class, dev.xfj.protobuf.CameraComponent.Builder.class);
+              dev.xfj.protobuf.CameraFile.class, dev.xfj.protobuf.CameraFile.Builder.class);
     }
 
-    // Construct using dev.xfj.protobuf.CameraComponent.newBuilder()
+    // Construct using dev.xfj.protobuf.CameraFile.newBuilder()
     private Builder() {
 
     }
@@ -475,17 +583,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_CameraComponent_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_CameraFile_descriptor;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.CameraComponent getDefaultInstanceForType() {
-      return dev.xfj.protobuf.CameraComponent.getDefaultInstance();
+    public dev.xfj.protobuf.CameraFile getDefaultInstanceForType() {
+      return dev.xfj.protobuf.CameraFile.getDefaultInstance();
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.CameraComponent build() {
-      dev.xfj.protobuf.CameraComponent result = buildPartial();
+    public dev.xfj.protobuf.CameraFile build() {
+      dev.xfj.protobuf.CameraFile result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -493,14 +601,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.CameraComponent buildPartial() {
-      dev.xfj.protobuf.CameraComponent result = new dev.xfj.protobuf.CameraComponent(this);
+    public dev.xfj.protobuf.CameraFile buildPartial() {
+      dev.xfj.protobuf.CameraFile result = new dev.xfj.protobuf.CameraFile(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(dev.xfj.protobuf.CameraComponent result) {
+    private void buildPartial0(dev.xfj.protobuf.CameraFile result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.projectionType_ = projectionType_;
@@ -536,16 +644,16 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof dev.xfj.protobuf.CameraComponent) {
-        return mergeFrom((dev.xfj.protobuf.CameraComponent)other);
+      if (other instanceof dev.xfj.protobuf.CameraFile) {
+        return mergeFrom((dev.xfj.protobuf.CameraFile)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(dev.xfj.protobuf.CameraComponent other) {
-      if (other == dev.xfj.protobuf.CameraComponent.getDefaultInstance()) return this;
+    public Builder mergeFrom(dev.xfj.protobuf.CameraFile other) {
+      if (other == dev.xfj.protobuf.CameraFile.getDefaultInstance()) return this;
       if (other.projectionType_ != 0) {
         setProjectionTypeValue(other.getProjectionTypeValue());
       }
@@ -671,14 +779,14 @@ private static final long serialVersionUID = 0L;
 
     private int projectionType_ = 0;
     /**
-     * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+     * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
      * @return The enum numeric value on the wire for projectionType.
      */
     @java.lang.Override public int getProjectionTypeValue() {
       return projectionType_;
     }
     /**
-     * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+     * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
      * @param value The enum numeric value on the wire for projectionType to set.
      * @return This builder for chaining.
      */
@@ -689,20 +797,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+     * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
      * @return The projectionType.
      */
     @java.lang.Override
-    public dev.xfj.protobuf.ProjectionType getProjectionType() {
-      dev.xfj.protobuf.ProjectionType result = dev.xfj.protobuf.ProjectionType.forNumber(projectionType_);
-      return result == null ? dev.xfj.protobuf.ProjectionType.UNRECOGNIZED : result;
+    public dev.xfj.protobuf.CameraFile.ProjectionType getProjectionType() {
+      dev.xfj.protobuf.CameraFile.ProjectionType result = dev.xfj.protobuf.CameraFile.ProjectionType.forNumber(projectionType_);
+      return result == null ? dev.xfj.protobuf.CameraFile.ProjectionType.UNRECOGNIZED : result;
     }
     /**
-     * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+     * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
      * @param value The projectionType to set.
      * @return This builder for chaining.
      */
-    public Builder setProjectionType(dev.xfj.protobuf.ProjectionType value) {
+    public Builder setProjectionType(dev.xfj.protobuf.CameraFile.ProjectionType value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -712,7 +820,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+     * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearProjectionType() {
@@ -1022,23 +1130,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.CameraComponent)
+    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.CameraFile)
   }
 
-  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.CameraComponent)
-  private static final dev.xfj.protobuf.CameraComponent DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.CameraFile)
+  private static final dev.xfj.protobuf.CameraFile DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new dev.xfj.protobuf.CameraComponent();
+    DEFAULT_INSTANCE = new dev.xfj.protobuf.CameraFile();
   }
 
-  public static dev.xfj.protobuf.CameraComponent getDefaultInstance() {
+  public static dev.xfj.protobuf.CameraFile getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<CameraComponent>
-      PARSER = new com.google.protobuf.AbstractParser<CameraComponent>() {
+  private static final com.google.protobuf.Parser<CameraFile>
+      PARSER = new com.google.protobuf.AbstractParser<CameraFile>() {
     @java.lang.Override
-    public CameraComponent parsePartialFrom(
+    public CameraFile parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1057,17 +1165,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<CameraComponent> parser() {
+  public static com.google.protobuf.Parser<CameraFile> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<CameraComponent> getParserForType() {
+  public com.google.protobuf.Parser<CameraFile> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public dev.xfj.protobuf.CameraComponent getDefaultInstanceForType() {
+  public dev.xfj.protobuf.CameraFile getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

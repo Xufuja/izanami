@@ -4,45 +4,31 @@ package dev.xfj.protobuf;
 
 option java_multiple_files = true;
 option java_package = "dev.xfj.protobuf";
-option java_outer_classname = "SceneFile";
+option java_outer_classname = "Scene";
 
-message Scene {
+message SceneFile {
   string name = 1;
-  repeated Entity entities = 2;
+  repeated EntityFile entities = 2;
 }
 
-message Vector3f {
-  float f1 = 1;
-  float f2 = 2;
-  float f3 = 3;
+message EntityFile {
+  TagFile tag = 1;
+  TransformFile transform = 2;
+  SpriteRendererFile sprite_renderer = 3;
+  CameraFile camera = 4;
 }
 
-message Vector4f {
-  float f1 = 1;
-  float f2 = 2;
-  float f3 = 3;
-  float f4 = 4;
-}
-
-message Entity {
-  TagComponent tag = 1;
-  TransformComponent transform = 2;
-  SpriteRendererComponent sprite_renderer = 3;
-  CameraComponent camera = 4;
-}
-
-message TagComponent {
+message TagFile {
   string tag = 1;
 }
 
-message TransformComponent {
-  Vector3f translation = 1;
-  Vector3f rotation = 2;
-  Vector3f scale = 3;
+message TransformFile {
+  repeated float translation = 1;
+  repeated float rotation = 2;
+  repeated float scale = 3;
 }
 
-
-message CameraComponent {
+message CameraFile {
   enum ProjectionType {
     Perspective = 0;
     Orthographic = 1;
@@ -59,6 +45,6 @@ message CameraComponent {
   bool fixed_aspect_ratio = 10;
 }
 
-message SpriteRendererComponent {
-  Vector4f color = 1;
+message SpriteRendererFile {
+  repeated float color = 1;
 }

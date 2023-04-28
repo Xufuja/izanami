@@ -4,44 +4,44 @@
 package dev.xfj.protobuf;
 
 /**
- * Protobuf type {@code dev.xfj.protobuf.Entity}
+ * Protobuf type {@code dev.xfj.protobuf.EntityFile}
  */
-public final class Entity extends
+public final class EntityFile extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.Entity)
-    EntityOrBuilder {
+    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.EntityFile)
+    EntityFileOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use Entity.newBuilder() to construct.
-  private Entity(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use EntityFile.newBuilder() to construct.
+  private EntityFile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private Entity() {
+  private EntityFile() {
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new Entity();
+    return new EntityFile();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Entity_descriptor;
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_EntityFile_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Entity_fieldAccessorTable
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_EntityFile_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            dev.xfj.protobuf.Entity.class, dev.xfj.protobuf.Entity.Builder.class);
+            dev.xfj.protobuf.EntityFile.class, dev.xfj.protobuf.EntityFile.Builder.class);
   }
 
   public static final int TAG_FIELD_NUMBER = 1;
-  private dev.xfj.protobuf.TagComponent tag_;
+  private dev.xfj.protobuf.TagFile tag_;
   /**
-   * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+   * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
    * @return Whether the tag field is set.
    */
   @java.lang.Override
@@ -49,25 +49,25 @@ private static final long serialVersionUID = 0L;
     return tag_ != null;
   }
   /**
-   * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+   * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
    * @return The tag.
    */
   @java.lang.Override
-  public dev.xfj.protobuf.TagComponent getTag() {
-    return tag_ == null ? dev.xfj.protobuf.TagComponent.getDefaultInstance() : tag_;
+  public dev.xfj.protobuf.TagFile getTag() {
+    return tag_ == null ? dev.xfj.protobuf.TagFile.getDefaultInstance() : tag_;
   }
   /**
-   * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+   * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
    */
   @java.lang.Override
-  public dev.xfj.protobuf.TagComponentOrBuilder getTagOrBuilder() {
-    return tag_ == null ? dev.xfj.protobuf.TagComponent.getDefaultInstance() : tag_;
+  public dev.xfj.protobuf.TagFileOrBuilder getTagOrBuilder() {
+    return tag_ == null ? dev.xfj.protobuf.TagFile.getDefaultInstance() : tag_;
   }
 
   public static final int TRANSFORM_FIELD_NUMBER = 2;
-  private dev.xfj.protobuf.TransformComponent transform_;
+  private dev.xfj.protobuf.TransformFile transform_;
   /**
-   * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+   * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
    * @return Whether the transform field is set.
    */
   @java.lang.Override
@@ -75,25 +75,25 @@ private static final long serialVersionUID = 0L;
     return transform_ != null;
   }
   /**
-   * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+   * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
    * @return The transform.
    */
   @java.lang.Override
-  public dev.xfj.protobuf.TransformComponent getTransform() {
-    return transform_ == null ? dev.xfj.protobuf.TransformComponent.getDefaultInstance() : transform_;
+  public dev.xfj.protobuf.TransformFile getTransform() {
+    return transform_ == null ? dev.xfj.protobuf.TransformFile.getDefaultInstance() : transform_;
   }
   /**
-   * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+   * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
    */
   @java.lang.Override
-  public dev.xfj.protobuf.TransformComponentOrBuilder getTransformOrBuilder() {
-    return transform_ == null ? dev.xfj.protobuf.TransformComponent.getDefaultInstance() : transform_;
+  public dev.xfj.protobuf.TransformFileOrBuilder getTransformOrBuilder() {
+    return transform_ == null ? dev.xfj.protobuf.TransformFile.getDefaultInstance() : transform_;
   }
 
   public static final int SPRITE_RENDERER_FIELD_NUMBER = 3;
-  private dev.xfj.protobuf.SpriteRendererComponent spriteRenderer_;
+  private dev.xfj.protobuf.SpriteRendererFile spriteRenderer_;
   /**
-   * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+   * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
    * @return Whether the spriteRenderer field is set.
    */
   @java.lang.Override
@@ -101,25 +101,25 @@ private static final long serialVersionUID = 0L;
     return spriteRenderer_ != null;
   }
   /**
-   * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+   * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
    * @return The spriteRenderer.
    */
   @java.lang.Override
-  public dev.xfj.protobuf.SpriteRendererComponent getSpriteRenderer() {
-    return spriteRenderer_ == null ? dev.xfj.protobuf.SpriteRendererComponent.getDefaultInstance() : spriteRenderer_;
+  public dev.xfj.protobuf.SpriteRendererFile getSpriteRenderer() {
+    return spriteRenderer_ == null ? dev.xfj.protobuf.SpriteRendererFile.getDefaultInstance() : spriteRenderer_;
   }
   /**
-   * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+   * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
    */
   @java.lang.Override
-  public dev.xfj.protobuf.SpriteRendererComponentOrBuilder getSpriteRendererOrBuilder() {
-    return spriteRenderer_ == null ? dev.xfj.protobuf.SpriteRendererComponent.getDefaultInstance() : spriteRenderer_;
+  public dev.xfj.protobuf.SpriteRendererFileOrBuilder getSpriteRendererOrBuilder() {
+    return spriteRenderer_ == null ? dev.xfj.protobuf.SpriteRendererFile.getDefaultInstance() : spriteRenderer_;
   }
 
   public static final int CAMERA_FIELD_NUMBER = 4;
-  private dev.xfj.protobuf.CameraComponent camera_;
+  private dev.xfj.protobuf.CameraFile camera_;
   /**
-   * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+   * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
    * @return Whether the camera field is set.
    */
   @java.lang.Override
@@ -127,19 +127,19 @@ private static final long serialVersionUID = 0L;
     return camera_ != null;
   }
   /**
-   * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+   * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
    * @return The camera.
    */
   @java.lang.Override
-  public dev.xfj.protobuf.CameraComponent getCamera() {
-    return camera_ == null ? dev.xfj.protobuf.CameraComponent.getDefaultInstance() : camera_;
+  public dev.xfj.protobuf.CameraFile getCamera() {
+    return camera_ == null ? dev.xfj.protobuf.CameraFile.getDefaultInstance() : camera_;
   }
   /**
-   * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+   * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
    */
   @java.lang.Override
-  public dev.xfj.protobuf.CameraComponentOrBuilder getCameraOrBuilder() {
-    return camera_ == null ? dev.xfj.protobuf.CameraComponent.getDefaultInstance() : camera_;
+  public dev.xfj.protobuf.CameraFileOrBuilder getCameraOrBuilder() {
+    return camera_ == null ? dev.xfj.protobuf.CameraFile.getDefaultInstance() : camera_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -203,10 +203,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof dev.xfj.protobuf.Entity)) {
+    if (!(obj instanceof dev.xfj.protobuf.EntityFile)) {
       return super.equals(obj);
     }
-    dev.xfj.protobuf.Entity other = (dev.xfj.protobuf.Entity) obj;
+    dev.xfj.protobuf.EntityFile other = (dev.xfj.protobuf.EntityFile) obj;
 
     if (hasTag() != other.hasTag()) return false;
     if (hasTag()) {
@@ -260,69 +260,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(byte[] data)
+  public static dev.xfj.protobuf.EntityFile parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.EntityFile parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Entity parseDelimitedFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.EntityFile parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.Entity parseDelimitedFrom(
+  public static dev.xfj.protobuf.EntityFile parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.Entity parseFrom(
+  public static dev.xfj.protobuf.EntityFile parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -335,7 +335,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(dev.xfj.protobuf.Entity prototype) {
+  public static Builder newBuilder(dev.xfj.protobuf.EntityFile prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -351,26 +351,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code dev.xfj.protobuf.Entity}
+   * Protobuf type {@code dev.xfj.protobuf.EntityFile}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.Entity)
-      dev.xfj.protobuf.EntityOrBuilder {
+      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.EntityFile)
+      dev.xfj.protobuf.EntityFileOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Entity_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_EntityFile_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Entity_fieldAccessorTable
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_EntityFile_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              dev.xfj.protobuf.Entity.class, dev.xfj.protobuf.Entity.Builder.class);
+              dev.xfj.protobuf.EntityFile.class, dev.xfj.protobuf.EntityFile.Builder.class);
     }
 
-    // Construct using dev.xfj.protobuf.Entity.newBuilder()
+    // Construct using dev.xfj.protobuf.EntityFile.newBuilder()
     private Builder() {
 
     }
@@ -410,17 +410,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Entity_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_EntityFile_descriptor;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.Entity getDefaultInstanceForType() {
-      return dev.xfj.protobuf.Entity.getDefaultInstance();
+    public dev.xfj.protobuf.EntityFile getDefaultInstanceForType() {
+      return dev.xfj.protobuf.EntityFile.getDefaultInstance();
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.Entity build() {
-      dev.xfj.protobuf.Entity result = buildPartial();
+    public dev.xfj.protobuf.EntityFile build() {
+      dev.xfj.protobuf.EntityFile result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -428,14 +428,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.Entity buildPartial() {
-      dev.xfj.protobuf.Entity result = new dev.xfj.protobuf.Entity(this);
+    public dev.xfj.protobuf.EntityFile buildPartial() {
+      dev.xfj.protobuf.EntityFile result = new dev.xfj.protobuf.EntityFile(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(dev.xfj.protobuf.Entity result) {
+    private void buildPartial0(dev.xfj.protobuf.EntityFile result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.tag_ = tagBuilder_ == null
@@ -461,16 +461,16 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof dev.xfj.protobuf.Entity) {
-        return mergeFrom((dev.xfj.protobuf.Entity)other);
+      if (other instanceof dev.xfj.protobuf.EntityFile) {
+        return mergeFrom((dev.xfj.protobuf.EntityFile)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(dev.xfj.protobuf.Entity other) {
-      if (other == dev.xfj.protobuf.Entity.getDefaultInstance()) return this;
+    public Builder mergeFrom(dev.xfj.protobuf.EntityFile other) {
+      if (other == dev.xfj.protobuf.EntityFile.getDefaultInstance()) return this;
       if (other.hasTag()) {
         mergeTag(other.getTag());
       }
@@ -554,31 +554,31 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private dev.xfj.protobuf.TagComponent tag_;
+    private dev.xfj.protobuf.TagFile tag_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.TagComponent, dev.xfj.protobuf.TagComponent.Builder, dev.xfj.protobuf.TagComponentOrBuilder> tagBuilder_;
+        dev.xfj.protobuf.TagFile, dev.xfj.protobuf.TagFile.Builder, dev.xfj.protobuf.TagFileOrBuilder> tagBuilder_;
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      * @return Whether the tag field is set.
      */
     public boolean hasTag() {
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      * @return The tag.
      */
-    public dev.xfj.protobuf.TagComponent getTag() {
+    public dev.xfj.protobuf.TagFile getTag() {
       if (tagBuilder_ == null) {
-        return tag_ == null ? dev.xfj.protobuf.TagComponent.getDefaultInstance() : tag_;
+        return tag_ == null ? dev.xfj.protobuf.TagFile.getDefaultInstance() : tag_;
       } else {
         return tagBuilder_.getMessage();
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      */
-    public Builder setTag(dev.xfj.protobuf.TagComponent value) {
+    public Builder setTag(dev.xfj.protobuf.TagFile value) {
       if (tagBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -592,10 +592,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      */
     public Builder setTag(
-        dev.xfj.protobuf.TagComponent.Builder builderForValue) {
+        dev.xfj.protobuf.TagFile.Builder builderForValue) {
       if (tagBuilder_ == null) {
         tag_ = builderForValue.build();
       } else {
@@ -606,13 +606,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      */
-    public Builder mergeTag(dev.xfj.protobuf.TagComponent value) {
+    public Builder mergeTag(dev.xfj.protobuf.TagFile value) {
       if (tagBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0) &&
           tag_ != null &&
-          tag_ != dev.xfj.protobuf.TagComponent.getDefaultInstance()) {
+          tag_ != dev.xfj.protobuf.TagFile.getDefaultInstance()) {
           getTagBuilder().mergeFrom(value);
         } else {
           tag_ = value;
@@ -625,7 +625,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      */
     public Builder clearTag() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -638,33 +638,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      */
-    public dev.xfj.protobuf.TagComponent.Builder getTagBuilder() {
+    public dev.xfj.protobuf.TagFile.Builder getTagBuilder() {
       bitField0_ |= 0x00000001;
       onChanged();
       return getTagFieldBuilder().getBuilder();
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      */
-    public dev.xfj.protobuf.TagComponentOrBuilder getTagOrBuilder() {
+    public dev.xfj.protobuf.TagFileOrBuilder getTagOrBuilder() {
       if (tagBuilder_ != null) {
         return tagBuilder_.getMessageOrBuilder();
       } else {
         return tag_ == null ?
-            dev.xfj.protobuf.TagComponent.getDefaultInstance() : tag_;
+            dev.xfj.protobuf.TagFile.getDefaultInstance() : tag_;
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.TagComponent tag = 1;</code>
+     * <code>.dev.xfj.protobuf.TagFile tag = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.TagComponent, dev.xfj.protobuf.TagComponent.Builder, dev.xfj.protobuf.TagComponentOrBuilder> 
+        dev.xfj.protobuf.TagFile, dev.xfj.protobuf.TagFile.Builder, dev.xfj.protobuf.TagFileOrBuilder> 
         getTagFieldBuilder() {
       if (tagBuilder_ == null) {
         tagBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            dev.xfj.protobuf.TagComponent, dev.xfj.protobuf.TagComponent.Builder, dev.xfj.protobuf.TagComponentOrBuilder>(
+            dev.xfj.protobuf.TagFile, dev.xfj.protobuf.TagFile.Builder, dev.xfj.protobuf.TagFileOrBuilder>(
                 getTag(),
                 getParentForChildren(),
                 isClean());
@@ -673,31 +673,31 @@ private static final long serialVersionUID = 0L;
       return tagBuilder_;
     }
 
-    private dev.xfj.protobuf.TransformComponent transform_;
+    private dev.xfj.protobuf.TransformFile transform_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.TransformComponent, dev.xfj.protobuf.TransformComponent.Builder, dev.xfj.protobuf.TransformComponentOrBuilder> transformBuilder_;
+        dev.xfj.protobuf.TransformFile, dev.xfj.protobuf.TransformFile.Builder, dev.xfj.protobuf.TransformFileOrBuilder> transformBuilder_;
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      * @return Whether the transform field is set.
      */
     public boolean hasTransform() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      * @return The transform.
      */
-    public dev.xfj.protobuf.TransformComponent getTransform() {
+    public dev.xfj.protobuf.TransformFile getTransform() {
       if (transformBuilder_ == null) {
-        return transform_ == null ? dev.xfj.protobuf.TransformComponent.getDefaultInstance() : transform_;
+        return transform_ == null ? dev.xfj.protobuf.TransformFile.getDefaultInstance() : transform_;
       } else {
         return transformBuilder_.getMessage();
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      */
-    public Builder setTransform(dev.xfj.protobuf.TransformComponent value) {
+    public Builder setTransform(dev.xfj.protobuf.TransformFile value) {
       if (transformBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -711,10 +711,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      */
     public Builder setTransform(
-        dev.xfj.protobuf.TransformComponent.Builder builderForValue) {
+        dev.xfj.protobuf.TransformFile.Builder builderForValue) {
       if (transformBuilder_ == null) {
         transform_ = builderForValue.build();
       } else {
@@ -725,13 +725,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      */
-    public Builder mergeTransform(dev.xfj.protobuf.TransformComponent value) {
+    public Builder mergeTransform(dev.xfj.protobuf.TransformFile value) {
       if (transformBuilder_ == null) {
         if (((bitField0_ & 0x00000002) != 0) &&
           transform_ != null &&
-          transform_ != dev.xfj.protobuf.TransformComponent.getDefaultInstance()) {
+          transform_ != dev.xfj.protobuf.TransformFile.getDefaultInstance()) {
           getTransformBuilder().mergeFrom(value);
         } else {
           transform_ = value;
@@ -744,7 +744,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      */
     public Builder clearTransform() {
       bitField0_ = (bitField0_ & ~0x00000002);
@@ -757,33 +757,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      */
-    public dev.xfj.protobuf.TransformComponent.Builder getTransformBuilder() {
+    public dev.xfj.protobuf.TransformFile.Builder getTransformBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
       return getTransformFieldBuilder().getBuilder();
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      */
-    public dev.xfj.protobuf.TransformComponentOrBuilder getTransformOrBuilder() {
+    public dev.xfj.protobuf.TransformFileOrBuilder getTransformOrBuilder() {
       if (transformBuilder_ != null) {
         return transformBuilder_.getMessageOrBuilder();
       } else {
         return transform_ == null ?
-            dev.xfj.protobuf.TransformComponent.getDefaultInstance() : transform_;
+            dev.xfj.protobuf.TransformFile.getDefaultInstance() : transform_;
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.TransformComponent transform = 2;</code>
+     * <code>.dev.xfj.protobuf.TransformFile transform = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.TransformComponent, dev.xfj.protobuf.TransformComponent.Builder, dev.xfj.protobuf.TransformComponentOrBuilder> 
+        dev.xfj.protobuf.TransformFile, dev.xfj.protobuf.TransformFile.Builder, dev.xfj.protobuf.TransformFileOrBuilder> 
         getTransformFieldBuilder() {
       if (transformBuilder_ == null) {
         transformBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            dev.xfj.protobuf.TransformComponent, dev.xfj.protobuf.TransformComponent.Builder, dev.xfj.protobuf.TransformComponentOrBuilder>(
+            dev.xfj.protobuf.TransformFile, dev.xfj.protobuf.TransformFile.Builder, dev.xfj.protobuf.TransformFileOrBuilder>(
                 getTransform(),
                 getParentForChildren(),
                 isClean());
@@ -792,31 +792,31 @@ private static final long serialVersionUID = 0L;
       return transformBuilder_;
     }
 
-    private dev.xfj.protobuf.SpriteRendererComponent spriteRenderer_;
+    private dev.xfj.protobuf.SpriteRendererFile spriteRenderer_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.SpriteRendererComponent, dev.xfj.protobuf.SpriteRendererComponent.Builder, dev.xfj.protobuf.SpriteRendererComponentOrBuilder> spriteRendererBuilder_;
+        dev.xfj.protobuf.SpriteRendererFile, dev.xfj.protobuf.SpriteRendererFile.Builder, dev.xfj.protobuf.SpriteRendererFileOrBuilder> spriteRendererBuilder_;
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      * @return Whether the spriteRenderer field is set.
      */
     public boolean hasSpriteRenderer() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      * @return The spriteRenderer.
      */
-    public dev.xfj.protobuf.SpriteRendererComponent getSpriteRenderer() {
+    public dev.xfj.protobuf.SpriteRendererFile getSpriteRenderer() {
       if (spriteRendererBuilder_ == null) {
-        return spriteRenderer_ == null ? dev.xfj.protobuf.SpriteRendererComponent.getDefaultInstance() : spriteRenderer_;
+        return spriteRenderer_ == null ? dev.xfj.protobuf.SpriteRendererFile.getDefaultInstance() : spriteRenderer_;
       } else {
         return spriteRendererBuilder_.getMessage();
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      */
-    public Builder setSpriteRenderer(dev.xfj.protobuf.SpriteRendererComponent value) {
+    public Builder setSpriteRenderer(dev.xfj.protobuf.SpriteRendererFile value) {
       if (spriteRendererBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -830,10 +830,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      */
     public Builder setSpriteRenderer(
-        dev.xfj.protobuf.SpriteRendererComponent.Builder builderForValue) {
+        dev.xfj.protobuf.SpriteRendererFile.Builder builderForValue) {
       if (spriteRendererBuilder_ == null) {
         spriteRenderer_ = builderForValue.build();
       } else {
@@ -844,13 +844,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      */
-    public Builder mergeSpriteRenderer(dev.xfj.protobuf.SpriteRendererComponent value) {
+    public Builder mergeSpriteRenderer(dev.xfj.protobuf.SpriteRendererFile value) {
       if (spriteRendererBuilder_ == null) {
         if (((bitField0_ & 0x00000004) != 0) &&
           spriteRenderer_ != null &&
-          spriteRenderer_ != dev.xfj.protobuf.SpriteRendererComponent.getDefaultInstance()) {
+          spriteRenderer_ != dev.xfj.protobuf.SpriteRendererFile.getDefaultInstance()) {
           getSpriteRendererBuilder().mergeFrom(value);
         } else {
           spriteRenderer_ = value;
@@ -863,7 +863,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      */
     public Builder clearSpriteRenderer() {
       bitField0_ = (bitField0_ & ~0x00000004);
@@ -876,33 +876,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      */
-    public dev.xfj.protobuf.SpriteRendererComponent.Builder getSpriteRendererBuilder() {
+    public dev.xfj.protobuf.SpriteRendererFile.Builder getSpriteRendererBuilder() {
       bitField0_ |= 0x00000004;
       onChanged();
       return getSpriteRendererFieldBuilder().getBuilder();
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      */
-    public dev.xfj.protobuf.SpriteRendererComponentOrBuilder getSpriteRendererOrBuilder() {
+    public dev.xfj.protobuf.SpriteRendererFileOrBuilder getSpriteRendererOrBuilder() {
       if (spriteRendererBuilder_ != null) {
         return spriteRendererBuilder_.getMessageOrBuilder();
       } else {
         return spriteRenderer_ == null ?
-            dev.xfj.protobuf.SpriteRendererComponent.getDefaultInstance() : spriteRenderer_;
+            dev.xfj.protobuf.SpriteRendererFile.getDefaultInstance() : spriteRenderer_;
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.SpriteRendererComponent sprite_renderer = 3;</code>
+     * <code>.dev.xfj.protobuf.SpriteRendererFile sprite_renderer = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.SpriteRendererComponent, dev.xfj.protobuf.SpriteRendererComponent.Builder, dev.xfj.protobuf.SpriteRendererComponentOrBuilder> 
+        dev.xfj.protobuf.SpriteRendererFile, dev.xfj.protobuf.SpriteRendererFile.Builder, dev.xfj.protobuf.SpriteRendererFileOrBuilder> 
         getSpriteRendererFieldBuilder() {
       if (spriteRendererBuilder_ == null) {
         spriteRendererBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            dev.xfj.protobuf.SpriteRendererComponent, dev.xfj.protobuf.SpriteRendererComponent.Builder, dev.xfj.protobuf.SpriteRendererComponentOrBuilder>(
+            dev.xfj.protobuf.SpriteRendererFile, dev.xfj.protobuf.SpriteRendererFile.Builder, dev.xfj.protobuf.SpriteRendererFileOrBuilder>(
                 getSpriteRenderer(),
                 getParentForChildren(),
                 isClean());
@@ -911,31 +911,31 @@ private static final long serialVersionUID = 0L;
       return spriteRendererBuilder_;
     }
 
-    private dev.xfj.protobuf.CameraComponent camera_;
+    private dev.xfj.protobuf.CameraFile camera_;
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.CameraComponent, dev.xfj.protobuf.CameraComponent.Builder, dev.xfj.protobuf.CameraComponentOrBuilder> cameraBuilder_;
+        dev.xfj.protobuf.CameraFile, dev.xfj.protobuf.CameraFile.Builder, dev.xfj.protobuf.CameraFileOrBuilder> cameraBuilder_;
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      * @return Whether the camera field is set.
      */
     public boolean hasCamera() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      * @return The camera.
      */
-    public dev.xfj.protobuf.CameraComponent getCamera() {
+    public dev.xfj.protobuf.CameraFile getCamera() {
       if (cameraBuilder_ == null) {
-        return camera_ == null ? dev.xfj.protobuf.CameraComponent.getDefaultInstance() : camera_;
+        return camera_ == null ? dev.xfj.protobuf.CameraFile.getDefaultInstance() : camera_;
       } else {
         return cameraBuilder_.getMessage();
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      */
-    public Builder setCamera(dev.xfj.protobuf.CameraComponent value) {
+    public Builder setCamera(dev.xfj.protobuf.CameraFile value) {
       if (cameraBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -949,10 +949,10 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      */
     public Builder setCamera(
-        dev.xfj.protobuf.CameraComponent.Builder builderForValue) {
+        dev.xfj.protobuf.CameraFile.Builder builderForValue) {
       if (cameraBuilder_ == null) {
         camera_ = builderForValue.build();
       } else {
@@ -963,13 +963,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      */
-    public Builder mergeCamera(dev.xfj.protobuf.CameraComponent value) {
+    public Builder mergeCamera(dev.xfj.protobuf.CameraFile value) {
       if (cameraBuilder_ == null) {
         if (((bitField0_ & 0x00000008) != 0) &&
           camera_ != null &&
-          camera_ != dev.xfj.protobuf.CameraComponent.getDefaultInstance()) {
+          camera_ != dev.xfj.protobuf.CameraFile.getDefaultInstance()) {
           getCameraBuilder().mergeFrom(value);
         } else {
           camera_ = value;
@@ -982,7 +982,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      */
     public Builder clearCamera() {
       bitField0_ = (bitField0_ & ~0x00000008);
@@ -995,33 +995,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      */
-    public dev.xfj.protobuf.CameraComponent.Builder getCameraBuilder() {
+    public dev.xfj.protobuf.CameraFile.Builder getCameraBuilder() {
       bitField0_ |= 0x00000008;
       onChanged();
       return getCameraFieldBuilder().getBuilder();
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      */
-    public dev.xfj.protobuf.CameraComponentOrBuilder getCameraOrBuilder() {
+    public dev.xfj.protobuf.CameraFileOrBuilder getCameraOrBuilder() {
       if (cameraBuilder_ != null) {
         return cameraBuilder_.getMessageOrBuilder();
       } else {
         return camera_ == null ?
-            dev.xfj.protobuf.CameraComponent.getDefaultInstance() : camera_;
+            dev.xfj.protobuf.CameraFile.getDefaultInstance() : camera_;
       }
     }
     /**
-     * <code>.dev.xfj.protobuf.CameraComponent camera = 4;</code>
+     * <code>.dev.xfj.protobuf.CameraFile camera = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        dev.xfj.protobuf.CameraComponent, dev.xfj.protobuf.CameraComponent.Builder, dev.xfj.protobuf.CameraComponentOrBuilder> 
+        dev.xfj.protobuf.CameraFile, dev.xfj.protobuf.CameraFile.Builder, dev.xfj.protobuf.CameraFileOrBuilder> 
         getCameraFieldBuilder() {
       if (cameraBuilder_ == null) {
         cameraBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            dev.xfj.protobuf.CameraComponent, dev.xfj.protobuf.CameraComponent.Builder, dev.xfj.protobuf.CameraComponentOrBuilder>(
+            dev.xfj.protobuf.CameraFile, dev.xfj.protobuf.CameraFile.Builder, dev.xfj.protobuf.CameraFileOrBuilder>(
                 getCamera(),
                 getParentForChildren(),
                 isClean());
@@ -1042,23 +1042,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.Entity)
+    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.EntityFile)
   }
 
-  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.Entity)
-  private static final dev.xfj.protobuf.Entity DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.EntityFile)
+  private static final dev.xfj.protobuf.EntityFile DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new dev.xfj.protobuf.Entity();
+    DEFAULT_INSTANCE = new dev.xfj.protobuf.EntityFile();
   }
 
-  public static dev.xfj.protobuf.Entity getDefaultInstance() {
+  public static dev.xfj.protobuf.EntityFile getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<Entity>
-      PARSER = new com.google.protobuf.AbstractParser<Entity>() {
+  private static final com.google.protobuf.Parser<EntityFile>
+      PARSER = new com.google.protobuf.AbstractParser<EntityFile>() {
     @java.lang.Override
-    public Entity parsePartialFrom(
+    public EntityFile parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1077,17 +1077,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<Entity> parser() {
+  public static com.google.protobuf.Parser<EntityFile> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<Entity> getParserForType() {
+  public com.google.protobuf.Parser<EntityFile> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public dev.xfj.protobuf.Entity getDefaultInstanceForType() {
+  public dev.xfj.protobuf.EntityFile getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

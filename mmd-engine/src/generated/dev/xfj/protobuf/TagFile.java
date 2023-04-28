@@ -4,18 +4,18 @@
 package dev.xfj.protobuf;
 
 /**
- * Protobuf type {@code dev.xfj.protobuf.TagComponent}
+ * Protobuf type {@code dev.xfj.protobuf.TagFile}
  */
-public final class TagComponent extends
+public final class TagFile extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.TagComponent)
-    TagComponentOrBuilder {
+    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.TagFile)
+    TagFileOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use TagComponent.newBuilder() to construct.
-  private TagComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use TagFile.newBuilder() to construct.
+  private TagFile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private TagComponent() {
+  private TagFile() {
     tag_ = "";
   }
 
@@ -23,20 +23,20 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new TagComponent();
+    return new TagFile();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_TagComponent_descriptor;
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_TagFile_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_TagComponent_fieldAccessorTable
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_TagFile_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            dev.xfj.protobuf.TagComponent.class, dev.xfj.protobuf.TagComponent.Builder.class);
+            dev.xfj.protobuf.TagFile.class, dev.xfj.protobuf.TagFile.Builder.class);
   }
 
   public static final int TAG_FIELD_NUMBER = 1;
@@ -117,10 +117,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof dev.xfj.protobuf.TagComponent)) {
+    if (!(obj instanceof dev.xfj.protobuf.TagFile)) {
       return super.equals(obj);
     }
-    dev.xfj.protobuf.TagComponent other = (dev.xfj.protobuf.TagComponent) obj;
+    dev.xfj.protobuf.TagFile other = (dev.xfj.protobuf.TagFile) obj;
 
     if (!getTag()
         .equals(other.getTag())) return false;
@@ -142,69 +142,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(byte[] data)
+  public static dev.xfj.protobuf.TagFile parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.TagFile parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.TagComponent parseDelimitedFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.TagFile parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.TagComponent parseDelimitedFrom(
+  public static dev.xfj.protobuf.TagFile parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.TagComponent parseFrom(
+  public static dev.xfj.protobuf.TagFile parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -217,7 +217,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(dev.xfj.protobuf.TagComponent prototype) {
+  public static Builder newBuilder(dev.xfj.protobuf.TagFile prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -233,26 +233,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code dev.xfj.protobuf.TagComponent}
+   * Protobuf type {@code dev.xfj.protobuf.TagFile}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.TagComponent)
-      dev.xfj.protobuf.TagComponentOrBuilder {
+      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.TagFile)
+      dev.xfj.protobuf.TagFileOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_TagComponent_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_TagFile_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_TagComponent_fieldAccessorTable
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_TagFile_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              dev.xfj.protobuf.TagComponent.class, dev.xfj.protobuf.TagComponent.Builder.class);
+              dev.xfj.protobuf.TagFile.class, dev.xfj.protobuf.TagFile.Builder.class);
     }
 
-    // Construct using dev.xfj.protobuf.TagComponent.newBuilder()
+    // Construct using dev.xfj.protobuf.TagFile.newBuilder()
     private Builder() {
 
     }
@@ -273,17 +273,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_TagComponent_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_TagFile_descriptor;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.TagComponent getDefaultInstanceForType() {
-      return dev.xfj.protobuf.TagComponent.getDefaultInstance();
+    public dev.xfj.protobuf.TagFile getDefaultInstanceForType() {
+      return dev.xfj.protobuf.TagFile.getDefaultInstance();
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.TagComponent build() {
-      dev.xfj.protobuf.TagComponent result = buildPartial();
+    public dev.xfj.protobuf.TagFile build() {
+      dev.xfj.protobuf.TagFile result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -291,14 +291,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.TagComponent buildPartial() {
-      dev.xfj.protobuf.TagComponent result = new dev.xfj.protobuf.TagComponent(this);
+    public dev.xfj.protobuf.TagFile buildPartial() {
+      dev.xfj.protobuf.TagFile result = new dev.xfj.protobuf.TagFile(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(dev.xfj.protobuf.TagComponent result) {
+    private void buildPartial0(dev.xfj.protobuf.TagFile result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.tag_ = tag_;
@@ -307,16 +307,16 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof dev.xfj.protobuf.TagComponent) {
-        return mergeFrom((dev.xfj.protobuf.TagComponent)other);
+      if (other instanceof dev.xfj.protobuf.TagFile) {
+        return mergeFrom((dev.xfj.protobuf.TagFile)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(dev.xfj.protobuf.TagComponent other) {
-      if (other == dev.xfj.protobuf.TagComponent.getDefaultInstance()) return this;
+    public Builder mergeFrom(dev.xfj.protobuf.TagFile other) {
+      if (other == dev.xfj.protobuf.TagFile.getDefaultInstance()) return this;
       if (!other.getTag().isEmpty()) {
         tag_ = other.tag_;
         bitField0_ |= 0x00000001;
@@ -454,23 +454,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.TagComponent)
+    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.TagFile)
   }
 
-  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.TagComponent)
-  private static final dev.xfj.protobuf.TagComponent DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.TagFile)
+  private static final dev.xfj.protobuf.TagFile DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new dev.xfj.protobuf.TagComponent();
+    DEFAULT_INSTANCE = new dev.xfj.protobuf.TagFile();
   }
 
-  public static dev.xfj.protobuf.TagComponent getDefaultInstance() {
+  public static dev.xfj.protobuf.TagFile getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<TagComponent>
-      PARSER = new com.google.protobuf.AbstractParser<TagComponent>() {
+  private static final com.google.protobuf.Parser<TagFile>
+      PARSER = new com.google.protobuf.AbstractParser<TagFile>() {
     @java.lang.Override
-    public TagComponent parsePartialFrom(
+    public TagFile parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -489,17 +489,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<TagComponent> parser() {
+  public static com.google.protobuf.Parser<TagFile> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<TagComponent> getParserForType() {
+  public com.google.protobuf.Parser<TagFile> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public dev.xfj.protobuf.TagComponent getDefaultInstanceForType() {
+  public dev.xfj.protobuf.TagFile getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

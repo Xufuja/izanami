@@ -3,20 +3,20 @@
 
 package dev.xfj.protobuf;
 
-public interface CameraComponentOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:dev.xfj.protobuf.CameraComponent)
+public interface CameraFileOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:dev.xfj.protobuf.CameraFile)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+   * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
    * @return The enum numeric value on the wire for projectionType.
    */
   int getProjectionTypeValue();
   /**
-   * <code>.dev.xfj.protobuf.ProjectionType projection_type = 1;</code>
+   * <code>.dev.xfj.protobuf.CameraFile.ProjectionType projection_type = 1;</code>
    * @return The projectionType.
    */
-  dev.xfj.protobuf.ProjectionType getProjectionType();
+  dev.xfj.protobuf.CameraFile.ProjectionType getProjectionType();
 
   /**
    * <code>float perspective_fov = 2;</code>

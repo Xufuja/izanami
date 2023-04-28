@@ -4,72 +4,69 @@
 package dev.xfj.protobuf;
 
 /**
- * Protobuf type {@code dev.xfj.protobuf.Vector3f}
+ * Protobuf type {@code dev.xfj.protobuf.SpriteRendererFile}
  */
-public final class Vector3f extends
+public final class SpriteRendererFile extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.Vector3f)
-    Vector3fOrBuilder {
+    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.SpriteRendererFile)
+    SpriteRendererFileOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use Vector3f.newBuilder() to construct.
-  private Vector3f(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use SpriteRendererFile.newBuilder() to construct.
+  private SpriteRendererFile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private Vector3f() {
+  private SpriteRendererFile() {
+    color_ = emptyFloatList();
   }
 
   @java.lang.Override
   @SuppressWarnings({"unused"})
   protected java.lang.Object newInstance(
       UnusedPrivateParameter unused) {
-    return new Vector3f();
+    return new SpriteRendererFile();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Vector3f_descriptor;
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_SpriteRendererFile_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Vector3f_fieldAccessorTable
+    return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_SpriteRendererFile_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            dev.xfj.protobuf.Vector3f.class, dev.xfj.protobuf.Vector3f.Builder.class);
+            dev.xfj.protobuf.SpriteRendererFile.class, dev.xfj.protobuf.SpriteRendererFile.Builder.class);
   }
 
-  public static final int F1_FIELD_NUMBER = 1;
-  private float f1_ = 0F;
+  public static final int COLOR_FIELD_NUMBER = 1;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.Internal.FloatList color_;
   /**
-   * <code>float f1 = 1;</code>
-   * @return The f1.
+   * <code>repeated float color = 1;</code>
+   * @return A list containing the color.
    */
   @java.lang.Override
-  public float getF1() {
-    return f1_;
+  public java.util.List<java.lang.Float>
+      getColorList() {
+    return color_;
   }
-
-  public static final int F2_FIELD_NUMBER = 2;
-  private float f2_ = 0F;
   /**
-   * <code>float f2 = 2;</code>
-   * @return The f2.
+   * <code>repeated float color = 1;</code>
+   * @return The count of color.
    */
-  @java.lang.Override
-  public float getF2() {
-    return f2_;
+  public int getColorCount() {
+    return color_.size();
   }
-
-  public static final int F3_FIELD_NUMBER = 3;
-  private float f3_ = 0F;
   /**
-   * <code>float f3 = 3;</code>
-   * @return The f3.
+   * <code>repeated float color = 1;</code>
+   * @param index The index of the element to return.
+   * @return The color at the given index.
    */
-  @java.lang.Override
-  public float getF3() {
-    return f3_;
+  public float getColor(int index) {
+    return color_.getFloat(index);
   }
+  private int colorMemoizedSerializedSize = -1;
 
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
@@ -85,14 +82,13 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (java.lang.Float.floatToRawIntBits(f1_) != 0) {
-      output.writeFloat(1, f1_);
+    getSerializedSize();
+    if (getColorList().size() > 0) {
+      output.writeUInt32NoTag(10);
+      output.writeUInt32NoTag(colorMemoizedSerializedSize);
     }
-    if (java.lang.Float.floatToRawIntBits(f2_) != 0) {
-      output.writeFloat(2, f2_);
-    }
-    if (java.lang.Float.floatToRawIntBits(f3_) != 0) {
-      output.writeFloat(3, f3_);
+    for (int i = 0; i < color_.size(); i++) {
+      output.writeFloatNoTag(color_.getFloat(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -103,17 +99,16 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (java.lang.Float.floatToRawIntBits(f1_) != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(1, f1_);
-    }
-    if (java.lang.Float.floatToRawIntBits(f2_) != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(2, f2_);
-    }
-    if (java.lang.Float.floatToRawIntBits(f3_) != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(3, f3_);
+    {
+      int dataSize = 0;
+      dataSize = 4 * getColorList().size();
+      size += dataSize;
+      if (!getColorList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      colorMemoizedSerializedSize = dataSize;
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -125,20 +120,13 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof dev.xfj.protobuf.Vector3f)) {
+    if (!(obj instanceof dev.xfj.protobuf.SpriteRendererFile)) {
       return super.equals(obj);
     }
-    dev.xfj.protobuf.Vector3f other = (dev.xfj.protobuf.Vector3f) obj;
+    dev.xfj.protobuf.SpriteRendererFile other = (dev.xfj.protobuf.SpriteRendererFile) obj;
 
-    if (java.lang.Float.floatToIntBits(getF1())
-        != java.lang.Float.floatToIntBits(
-            other.getF1())) return false;
-    if (java.lang.Float.floatToIntBits(getF2())
-        != java.lang.Float.floatToIntBits(
-            other.getF2())) return false;
-    if (java.lang.Float.floatToIntBits(getF3())
-        != java.lang.Float.floatToIntBits(
-            other.getF3())) return false;
+    if (!getColorList()
+        .equals(other.getColorList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -150,83 +138,78 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + F1_FIELD_NUMBER;
-    hash = (53 * hash) + java.lang.Float.floatToIntBits(
-        getF1());
-    hash = (37 * hash) + F2_FIELD_NUMBER;
-    hash = (53 * hash) + java.lang.Float.floatToIntBits(
-        getF2());
-    hash = (37 * hash) + F3_FIELD_NUMBER;
-    hash = (53 * hash) + java.lang.Float.floatToIntBits(
-        getF3());
+    if (getColorCount() > 0) {
+      hash = (37 * hash) + COLOR_FIELD_NUMBER;
+      hash = (53 * hash) + getColorList().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(byte[] data)
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Vector3f parseDelimitedFrom(java.io.InputStream input)
+  public static dev.xfj.protobuf.SpriteRendererFile parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.Vector3f parseDelimitedFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static dev.xfj.protobuf.Vector3f parseFrom(
+  public static dev.xfj.protobuf.SpriteRendererFile parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -239,7 +222,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(dev.xfj.protobuf.Vector3f prototype) {
+  public static Builder newBuilder(dev.xfj.protobuf.SpriteRendererFile prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -255,26 +238,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code dev.xfj.protobuf.Vector3f}
+   * Protobuf type {@code dev.xfj.protobuf.SpriteRendererFile}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.Vector3f)
-      dev.xfj.protobuf.Vector3fOrBuilder {
+      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.SpriteRendererFile)
+      dev.xfj.protobuf.SpriteRendererFileOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Vector3f_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_SpriteRendererFile_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Vector3f_fieldAccessorTable
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_SpriteRendererFile_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              dev.xfj.protobuf.Vector3f.class, dev.xfj.protobuf.Vector3f.Builder.class);
+              dev.xfj.protobuf.SpriteRendererFile.class, dev.xfj.protobuf.SpriteRendererFile.Builder.class);
     }
 
-    // Construct using dev.xfj.protobuf.Vector3f.newBuilder()
+    // Construct using dev.xfj.protobuf.SpriteRendererFile.newBuilder()
     private Builder() {
 
     }
@@ -288,26 +271,24 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      f1_ = 0F;
-      f2_ = 0F;
-      f3_ = 0F;
+      color_ = emptyFloatList();
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Vector3f_descriptor;
+      return dev.xfj.protobuf.Scene.internal_static_dev_xfj_protobuf_SpriteRendererFile_descriptor;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.Vector3f getDefaultInstanceForType() {
-      return dev.xfj.protobuf.Vector3f.getDefaultInstance();
+    public dev.xfj.protobuf.SpriteRendererFile getDefaultInstanceForType() {
+      return dev.xfj.protobuf.SpriteRendererFile.getDefaultInstance();
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.Vector3f build() {
-      dev.xfj.protobuf.Vector3f result = buildPartial();
+    public dev.xfj.protobuf.SpriteRendererFile build() {
+      dev.xfj.protobuf.SpriteRendererFile result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -315,46 +296,47 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public dev.xfj.protobuf.Vector3f buildPartial() {
-      dev.xfj.protobuf.Vector3f result = new dev.xfj.protobuf.Vector3f(this);
+    public dev.xfj.protobuf.SpriteRendererFile buildPartial() {
+      dev.xfj.protobuf.SpriteRendererFile result = new dev.xfj.protobuf.SpriteRendererFile(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(dev.xfj.protobuf.Vector3f result) {
+    private void buildPartialRepeatedFields(dev.xfj.protobuf.SpriteRendererFile result) {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        color_.makeImmutable();
+        bitField0_ = (bitField0_ & ~0x00000001);
+      }
+      result.color_ = color_;
+    }
+
+    private void buildPartial0(dev.xfj.protobuf.SpriteRendererFile result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.f1_ = f1_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.f2_ = f2_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.f3_ = f3_;
-      }
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof dev.xfj.protobuf.Vector3f) {
-        return mergeFrom((dev.xfj.protobuf.Vector3f)other);
+      if (other instanceof dev.xfj.protobuf.SpriteRendererFile) {
+        return mergeFrom((dev.xfj.protobuf.SpriteRendererFile)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(dev.xfj.protobuf.Vector3f other) {
-      if (other == dev.xfj.protobuf.Vector3f.getDefaultInstance()) return this;
-      if (other.getF1() != 0F) {
-        setF1(other.getF1());
-      }
-      if (other.getF2() != 0F) {
-        setF2(other.getF2());
-      }
-      if (other.getF3() != 0F) {
-        setF3(other.getF3());
+    public Builder mergeFrom(dev.xfj.protobuf.SpriteRendererFile other) {
+      if (other == dev.xfj.protobuf.SpriteRendererFile.getDefaultInstance()) return this;
+      if (!other.color_.isEmpty()) {
+        if (color_.isEmpty()) {
+          color_ = other.color_;
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          ensureColorIsMutable();
+          color_.addAll(other.color_);
+        }
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -383,20 +365,21 @@ private static final long serialVersionUID = 0L;
               done = true;
               break;
             case 13: {
-              f1_ = input.readFloat();
-              bitField0_ |= 0x00000001;
+              float v = input.readFloat();
+              ensureColorIsMutable();
+              color_.addFloat(v);
               break;
             } // case 13
-            case 21: {
-              f2_ = input.readFloat();
-              bitField0_ |= 0x00000002;
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              ensureColorIsMutable();
+              while (input.getBytesUntilLimit() > 0) {
+                color_.addFloat(input.readFloat());
+              }
+              input.popLimit(limit);
               break;
-            } // case 21
-            case 29: {
-              f3_ = input.readFloat();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 29
+            } // case 10
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -414,98 +397,83 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private float f1_ ;
-    /**
-     * <code>float f1 = 1;</code>
-     * @return The f1.
-     */
-    @java.lang.Override
-    public float getF1() {
-      return f1_;
+    private com.google.protobuf.Internal.FloatList color_ = emptyFloatList();
+    private void ensureColorIsMutable() {
+      if (!((bitField0_ & 0x00000001) != 0)) {
+        color_ = mutableCopy(color_);
+        bitField0_ |= 0x00000001;
+      }
     }
     /**
-     * <code>float f1 = 1;</code>
-     * @param value The f1 to set.
+     * <code>repeated float color = 1;</code>
+     * @return A list containing the color.
+     */
+    public java.util.List<java.lang.Float>
+        getColorList() {
+      return ((bitField0_ & 0x00000001) != 0) ?
+               java.util.Collections.unmodifiableList(color_) : color_;
+    }
+    /**
+     * <code>repeated float color = 1;</code>
+     * @return The count of color.
+     */
+    public int getColorCount() {
+      return color_.size();
+    }
+    /**
+     * <code>repeated float color = 1;</code>
+     * @param index The index of the element to return.
+     * @return The color at the given index.
+     */
+    public float getColor(int index) {
+      return color_.getFloat(index);
+    }
+    /**
+     * <code>repeated float color = 1;</code>
+     * @param index The index to set the value at.
+     * @param value The color to set.
      * @return This builder for chaining.
      */
-    public Builder setF1(float value) {
+    public Builder setColor(
+        int index, float value) {
 
-      f1_ = value;
-      bitField0_ |= 0x00000001;
+      ensureColorIsMutable();
+      color_.setFloat(index, value);
       onChanged();
       return this;
     }
     /**
-     * <code>float f1 = 1;</code>
+     * <code>repeated float color = 1;</code>
+     * @param value The color to add.
      * @return This builder for chaining.
      */
-    public Builder clearF1() {
+    public Builder addColor(float value) {
+
+      ensureColorIsMutable();
+      color_.addFloat(value);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated float color = 1;</code>
+     * @param values The color to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllColor(
+        java.lang.Iterable<? extends java.lang.Float> values) {
+      ensureColorIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, color_);
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated float color = 1;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearColor() {
+      color_ = emptyFloatList();
       bitField0_ = (bitField0_ & ~0x00000001);
-      f1_ = 0F;
-      onChanged();
-      return this;
-    }
-
-    private float f2_ ;
-    /**
-     * <code>float f2 = 2;</code>
-     * @return The f2.
-     */
-    @java.lang.Override
-    public float getF2() {
-      return f2_;
-    }
-    /**
-     * <code>float f2 = 2;</code>
-     * @param value The f2 to set.
-     * @return This builder for chaining.
-     */
-    public Builder setF2(float value) {
-
-      f2_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>float f2 = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearF2() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      f2_ = 0F;
-      onChanged();
-      return this;
-    }
-
-    private float f3_ ;
-    /**
-     * <code>float f3 = 3;</code>
-     * @return The f3.
-     */
-    @java.lang.Override
-    public float getF3() {
-      return f3_;
-    }
-    /**
-     * <code>float f3 = 3;</code>
-     * @param value The f3 to set.
-     * @return This builder for chaining.
-     */
-    public Builder setF3(float value) {
-
-      f3_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>float f3 = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearF3() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      f3_ = 0F;
       onChanged();
       return this;
     }
@@ -522,23 +490,23 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.Vector3f)
+    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.SpriteRendererFile)
   }
 
-  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.Vector3f)
-  private static final dev.xfj.protobuf.Vector3f DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.SpriteRendererFile)
+  private static final dev.xfj.protobuf.SpriteRendererFile DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new dev.xfj.protobuf.Vector3f();
+    DEFAULT_INSTANCE = new dev.xfj.protobuf.SpriteRendererFile();
   }
 
-  public static dev.xfj.protobuf.Vector3f getDefaultInstance() {
+  public static dev.xfj.protobuf.SpriteRendererFile getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<Vector3f>
-      PARSER = new com.google.protobuf.AbstractParser<Vector3f>() {
+  private static final com.google.protobuf.Parser<SpriteRendererFile>
+      PARSER = new com.google.protobuf.AbstractParser<SpriteRendererFile>() {
     @java.lang.Override
-    public Vector3f parsePartialFrom(
+    public SpriteRendererFile parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -557,17 +525,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<Vector3f> parser() {
+  public static com.google.protobuf.Parser<SpriteRendererFile> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<Vector3f> getParserForType() {
+  public com.google.protobuf.Parser<SpriteRendererFile> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public dev.xfj.protobuf.Vector3f getDefaultInstanceForType() {
+  public dev.xfj.protobuf.SpriteRendererFile getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

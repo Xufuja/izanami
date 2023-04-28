@@ -8,6 +8,9 @@ import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.scene.components.*;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Scene {
     private final Dominion registry;
     private int viewportWidth;
@@ -57,6 +60,7 @@ public class Scene {
                 break;
             }
         }
+
         if (mainCamera != null) {
             Renderer2D.beginScene(mainCamera, cameraTransform);
 
@@ -88,13 +92,25 @@ public class Scene {
         return registry;
     }
 
+    public ArrayList<Entity> getAllEntities() {
+        ArrayList<Entity> result = new ArrayList<>();
+        for (var it = registry.findEntitiesWith(TagComponent.class).iterator(); it.hasNext(); ) {
+            var entity = it.next();
+            result.add(new Entity(entity.entity(), this));
+
+        }
+        return result;
+    }
+
+
     protected <T extends Component> void onComponentAdded(Entity entity, T component) {
         switch (component) {
             case TransformComponent tfc -> Log.trace("TransformComponent Unimplemented");
-            case CameraComponent cc -> ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
-            case SpriteRendererComponent src ->  Log.trace("SpriteRendererComponent Unimplemented");
-            case TagComponent tc ->  Log.trace("TagComponent Unimplemented");
-            case NativeScriptComponent<?> nsc ->  Log.trace("NativeScriptComponent<?> Unimplemented");
+            case CameraComponent cc ->
+                    ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
+            case SpriteRendererComponent src -> Log.trace("SpriteRendererComponent Unimplemented");
+            case TagComponent tc -> Log.trace("TagComponent Unimplemented");
+            case NativeScriptComponent<?> nsc -> Log.trace("NativeScriptComponent<?> Unimplemented");
             default -> Log.error("Invalid component type");
         }
     }

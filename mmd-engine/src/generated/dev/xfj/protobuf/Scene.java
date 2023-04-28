@@ -3,859 +3,120 @@
 
 package dev.xfj.protobuf;
 
-/**
- * Protobuf type {@code dev.xfj.protobuf.Scene}
- */
-public final class Scene extends
-    com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:dev.xfj.protobuf.Scene)
-    SceneOrBuilder {
-private static final long serialVersionUID = 0L;
-  // Use Scene.newBuilder() to construct.
-  private Scene(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-    super(builder);
-  }
-  private Scene() {
-    name_ = "";
-    entities_ = java.util.Collections.emptyList();
+public final class Scene {
+  private Scene() {}
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistryLite registry) {
   }
 
-  @java.lang.Override
-  @SuppressWarnings({"unused"})
-  protected java.lang.Object newInstance(
-      UnusedPrivateParameter unused) {
-    return new Scene();
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dev_xfj_protobuf_SceneFile_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dev_xfj_protobuf_SceneFile_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dev_xfj_protobuf_EntityFile_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dev_xfj_protobuf_EntityFile_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dev_xfj_protobuf_TagFile_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dev_xfj_protobuf_TagFile_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dev_xfj_protobuf_TransformFile_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dev_xfj_protobuf_TransformFile_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dev_xfj_protobuf_CameraFile_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dev_xfj_protobuf_CameraFile_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dev_xfj_protobuf_SpriteRendererFile_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_dev_xfj_protobuf_SpriteRendererFile_fieldAccessorTable;
 
-  public static final com.google.protobuf.Descriptors.Descriptor
+  public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Scene_descriptor;
+    return descriptor;
   }
-
-  @java.lang.Override
-  protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
-    return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Scene_fieldAccessorTable
-        .ensureFieldAccessorsInitialized(
-            dev.xfj.protobuf.Scene.class, dev.xfj.protobuf.Scene.Builder.class);
-  }
-
-  public static final int NAME_FIELD_NUMBER = 1;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object name_ = "";
-  /**
-   * <code>string name = 1;</code>
-   * @return The name.
-   */
-  @java.lang.Override
-  public java.lang.String getName() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      name_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string name = 1;</code>
-   * @return The bytes for name.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getNameBytes() {
-    java.lang.Object ref = name_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      name_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int ENTITIES_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private java.util.List<dev.xfj.protobuf.Entity> entities_;
-  /**
-   * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-   */
-  @java.lang.Override
-  public java.util.List<dev.xfj.protobuf.Entity> getEntitiesList() {
-    return entities_;
-  }
-  /**
-   * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-   */
-  @java.lang.Override
-  public java.util.List<? extends dev.xfj.protobuf.EntityOrBuilder> 
-      getEntitiesOrBuilderList() {
-    return entities_;
-  }
-  /**
-   * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-   */
-  @java.lang.Override
-  public int getEntitiesCount() {
-    return entities_.size();
-  }
-  /**
-   * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-   */
-  @java.lang.Override
-  public dev.xfj.protobuf.Entity getEntities(int index) {
-    return entities_.get(index);
-  }
-  /**
-   * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-   */
-  @java.lang.Override
-  public dev.xfj.protobuf.EntityOrBuilder getEntitiesOrBuilder(
-      int index) {
-    return entities_.get(index);
-  }
-
-  private byte memoizedIsInitialized = -1;
-  @java.lang.Override
-  public final boolean isInitialized() {
-    byte isInitialized = memoizedIsInitialized;
-    if (isInitialized == 1) return true;
-    if (isInitialized == 0) return false;
-
-    memoizedIsInitialized = 1;
-    return true;
-  }
-
-  @java.lang.Override
-  public void writeTo(com.google.protobuf.CodedOutputStream output)
-                      throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-    }
-    for (int i = 0; i < entities_.size(); i++) {
-      output.writeMessage(2, entities_.get(i));
-    }
-    getUnknownFields().writeTo(output);
-  }
-
-  @java.lang.Override
-  public int getSerializedSize() {
-    int size = memoizedSize;
-    if (size != -1) return size;
-
-    size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(name_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-    }
-    for (int i = 0; i < entities_.size(); i++) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, entities_.get(i));
-    }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSize = size;
-    return size;
-  }
-
-  @java.lang.Override
-  public boolean equals(final java.lang.Object obj) {
-    if (obj == this) {
-     return true;
-    }
-    if (!(obj instanceof dev.xfj.protobuf.Scene)) {
-      return super.equals(obj);
-    }
-    dev.xfj.protobuf.Scene other = (dev.xfj.protobuf.Scene) obj;
-
-    if (!getName()
-        .equals(other.getName())) return false;
-    if (!getEntitiesList()
-        .equals(other.getEntitiesList())) return false;
-    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-    return true;
-  }
-
-  @java.lang.Override
-  public int hashCode() {
-    if (memoizedHashCode != 0) {
-      return memoizedHashCode;
-    }
-    int hash = 41;
-    hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getName().hashCode();
-    if (getEntitiesCount() > 0) {
-      hash = (37 * hash) + ENTITIES_FIELD_NUMBER;
-      hash = (53 * hash) + getEntitiesList().hashCode();
-    }
-    hash = (29 * hash) + getUnknownFields().hashCode();
-    memoizedHashCode = hash;
-    return hash;
-  }
-
-  public static dev.xfj.protobuf.Scene parseFrom(
-      java.nio.ByteBuffer data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(
-      java.nio.ByteBuffer data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(
-      com.google.protobuf.ByteString data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(
-      com.google.protobuf.ByteString data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(byte[] data)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(
-      byte[] data,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    return PARSER.parseFrom(data, extensionRegistry);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(java.io.InputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(
-      java.io.InputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input, extensionRegistry);
-  }
-  public static dev.xfj.protobuf.Scene parseDelimitedFrom(java.io.InputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseDelimitedWithIOException(PARSER, input);
-  }
-  public static dev.xfj.protobuf.Scene parseDelimitedFrom(
-      java.io.InputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(
-      com.google.protobuf.CodedInputStream input)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input);
-  }
-  public static dev.xfj.protobuf.Scene parseFrom(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws java.io.IOException {
-    return com.google.protobuf.GeneratedMessageV3
-        .parseWithIOException(PARSER, input, extensionRegistry);
-  }
-
-  @java.lang.Override
-  public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder() {
-    return DEFAULT_INSTANCE.toBuilder();
-  }
-  public static Builder newBuilder(dev.xfj.protobuf.Scene prototype) {
-    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-  }
-  @java.lang.Override
-  public Builder toBuilder() {
-    return this == DEFAULT_INSTANCE
-        ? new Builder() : new Builder().mergeFrom(this);
-  }
-
-  @java.lang.Override
-  protected Builder newBuilderForType(
-      com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-    Builder builder = new Builder(parent);
-    return builder;
-  }
-  /**
-   * Protobuf type {@code dev.xfj.protobuf.Scene}
-   */
-  public static final class Builder extends
-      com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:dev.xfj.protobuf.Scene)
-      dev.xfj.protobuf.SceneOrBuilder {
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Scene_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Scene_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              dev.xfj.protobuf.Scene.class, dev.xfj.protobuf.Scene.Builder.class);
-    }
-
-    // Construct using dev.xfj.protobuf.Scene.newBuilder()
-    private Builder() {
-
-    }
-
-    private Builder(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      super(parent);
-
-    }
-    @java.lang.Override
-    public Builder clear() {
-      super.clear();
-      bitField0_ = 0;
-      name_ = "";
-      if (entitiesBuilder_ == null) {
-        entities_ = java.util.Collections.emptyList();
-      } else {
-        entities_ = null;
-        entitiesBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000002);
-      return this;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Descriptors.Descriptor
-        getDescriptorForType() {
-      return dev.xfj.protobuf.SceneFile.internal_static_dev_xfj_protobuf_Scene_descriptor;
-    }
-
-    @java.lang.Override
-    public dev.xfj.protobuf.Scene getDefaultInstanceForType() {
-      return dev.xfj.protobuf.Scene.getDefaultInstance();
-    }
-
-    @java.lang.Override
-    public dev.xfj.protobuf.Scene build() {
-      dev.xfj.protobuf.Scene result = buildPartial();
-      if (!result.isInitialized()) {
-        throw newUninitializedMessageException(result);
-      }
-      return result;
-    }
-
-    @java.lang.Override
-    public dev.xfj.protobuf.Scene buildPartial() {
-      dev.xfj.protobuf.Scene result = new dev.xfj.protobuf.Scene(this);
-      buildPartialRepeatedFields(result);
-      if (bitField0_ != 0) { buildPartial0(result); }
-      onBuilt();
-      return result;
-    }
-
-    private void buildPartialRepeatedFields(dev.xfj.protobuf.Scene result) {
-      if (entitiesBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0)) {
-          entities_ = java.util.Collections.unmodifiableList(entities_);
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.entities_ = entities_;
-      } else {
-        result.entities_ = entitiesBuilder_.build();
-      }
-    }
-
-    private void buildPartial0(dev.xfj.protobuf.Scene result) {
-      int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000001) != 0)) {
-        result.name_ = name_;
-      }
-    }
-
-    @java.lang.Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof dev.xfj.protobuf.Scene) {
-        return mergeFrom((dev.xfj.protobuf.Scene)other);
-      } else {
-        super.mergeFrom(other);
-        return this;
-      }
-    }
-
-    public Builder mergeFrom(dev.xfj.protobuf.Scene other) {
-      if (other == dev.xfj.protobuf.Scene.getDefaultInstance()) return this;
-      if (!other.getName().isEmpty()) {
-        name_ = other.name_;
-        bitField0_ |= 0x00000001;
-        onChanged();
-      }
-      if (entitiesBuilder_ == null) {
-        if (!other.entities_.isEmpty()) {
-          if (entities_.isEmpty()) {
-            entities_ = other.entities_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureEntitiesIsMutable();
-            entities_.addAll(other.entities_);
-          }
-          onChanged();
-        }
-      } else {
-        if (!other.entities_.isEmpty()) {
-          if (entitiesBuilder_.isEmpty()) {
-            entitiesBuilder_.dispose();
-            entitiesBuilder_ = null;
-            entities_ = other.entities_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-            entitiesBuilder_ = 
-              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                 getEntitiesFieldBuilder() : null;
-          } else {
-            entitiesBuilder_.addAllMessages(other.entities_);
-          }
-        }
-      }
-      this.mergeUnknownFields(other.getUnknownFields());
-      onChanged();
-      return this;
-    }
-
-    @java.lang.Override
-    public final boolean isInitialized() {
-      return true;
-    }
-
-    @java.lang.Override
-    public Builder mergeFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              name_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
-              break;
-            } // case 10
-            case 18: {
-              dev.xfj.protobuf.Entity m =
-                  input.readMessage(
-                      dev.xfj.protobuf.Entity.parser(),
-                      extensionRegistry);
-              if (entitiesBuilder_ == null) {
-                ensureEntitiesIsMutable();
-                entities_.add(m);
-              } else {
-                entitiesBuilder_.addMessage(m);
-              }
-              break;
-            } // case 18
-            default: {
-              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                done = true; // was an endgroup tag
-              }
-              break;
-            } // default:
-          } // switch (tag)
-        } // while (!done)
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.unwrapIOException();
-      } finally {
-        onChanged();
-      } // finally
-      return this;
-    }
-    private int bitField0_;
-
-    private java.lang.Object name_ = "";
-    /**
-     * <code>string name = 1;</code>
-     * @return The name.
-     */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string name = 1;</code>
-     * @return The bytes for name.
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string name = 1;</code>
-     * @param value The name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      name_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string name = 1;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearName() {
-      name_ = getDefaultInstance().getName();
-      bitField0_ = (bitField0_ & ~0x00000001);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string name = 1;</code>
-     * @param value The bytes for name to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      name_ = value;
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-
-    private java.util.List<dev.xfj.protobuf.Entity> entities_ =
-      java.util.Collections.emptyList();
-    private void ensureEntitiesIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
-        entities_ = new java.util.ArrayList<dev.xfj.protobuf.Entity>(entities_);
-        bitField0_ |= 0x00000002;
-       }
-    }
-
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        dev.xfj.protobuf.Entity, dev.xfj.protobuf.Entity.Builder, dev.xfj.protobuf.EntityOrBuilder> entitiesBuilder_;
-
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public java.util.List<dev.xfj.protobuf.Entity> getEntitiesList() {
-      if (entitiesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(entities_);
-      } else {
-        return entitiesBuilder_.getMessageList();
-      }
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public int getEntitiesCount() {
-      if (entitiesBuilder_ == null) {
-        return entities_.size();
-      } else {
-        return entitiesBuilder_.getCount();
-      }
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public dev.xfj.protobuf.Entity getEntities(int index) {
-      if (entitiesBuilder_ == null) {
-        return entities_.get(index);
-      } else {
-        return entitiesBuilder_.getMessage(index);
-      }
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder setEntities(
-        int index, dev.xfj.protobuf.Entity value) {
-      if (entitiesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEntitiesIsMutable();
-        entities_.set(index, value);
-        onChanged();
-      } else {
-        entitiesBuilder_.setMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder setEntities(
-        int index, dev.xfj.protobuf.Entity.Builder builderForValue) {
-      if (entitiesBuilder_ == null) {
-        ensureEntitiesIsMutable();
-        entities_.set(index, builderForValue.build());
-        onChanged();
-      } else {
-        entitiesBuilder_.setMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder addEntities(dev.xfj.protobuf.Entity value) {
-      if (entitiesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEntitiesIsMutable();
-        entities_.add(value);
-        onChanged();
-      } else {
-        entitiesBuilder_.addMessage(value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder addEntities(
-        int index, dev.xfj.protobuf.Entity value) {
-      if (entitiesBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureEntitiesIsMutable();
-        entities_.add(index, value);
-        onChanged();
-      } else {
-        entitiesBuilder_.addMessage(index, value);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder addEntities(
-        dev.xfj.protobuf.Entity.Builder builderForValue) {
-      if (entitiesBuilder_ == null) {
-        ensureEntitiesIsMutable();
-        entities_.add(builderForValue.build());
-        onChanged();
-      } else {
-        entitiesBuilder_.addMessage(builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder addEntities(
-        int index, dev.xfj.protobuf.Entity.Builder builderForValue) {
-      if (entitiesBuilder_ == null) {
-        ensureEntitiesIsMutable();
-        entities_.add(index, builderForValue.build());
-        onChanged();
-      } else {
-        entitiesBuilder_.addMessage(index, builderForValue.build());
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder addAllEntities(
-        java.lang.Iterable<? extends dev.xfj.protobuf.Entity> values) {
-      if (entitiesBuilder_ == null) {
-        ensureEntitiesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, entities_);
-        onChanged();
-      } else {
-        entitiesBuilder_.addAllMessages(values);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder clearEntities() {
-      if (entitiesBuilder_ == null) {
-        entities_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-      } else {
-        entitiesBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public Builder removeEntities(int index) {
-      if (entitiesBuilder_ == null) {
-        ensureEntitiesIsMutable();
-        entities_.remove(index);
-        onChanged();
-      } else {
-        entitiesBuilder_.remove(index);
-      }
-      return this;
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public dev.xfj.protobuf.Entity.Builder getEntitiesBuilder(
-        int index) {
-      return getEntitiesFieldBuilder().getBuilder(index);
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public dev.xfj.protobuf.EntityOrBuilder getEntitiesOrBuilder(
-        int index) {
-      if (entitiesBuilder_ == null) {
-        return entities_.get(index);  } else {
-        return entitiesBuilder_.getMessageOrBuilder(index);
-      }
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public java.util.List<? extends dev.xfj.protobuf.EntityOrBuilder> 
-         getEntitiesOrBuilderList() {
-      if (entitiesBuilder_ != null) {
-        return entitiesBuilder_.getMessageOrBuilderList();
-      } else {
-        return java.util.Collections.unmodifiableList(entities_);
-      }
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public dev.xfj.protobuf.Entity.Builder addEntitiesBuilder() {
-      return getEntitiesFieldBuilder().addBuilder(
-          dev.xfj.protobuf.Entity.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public dev.xfj.protobuf.Entity.Builder addEntitiesBuilder(
-        int index) {
-      return getEntitiesFieldBuilder().addBuilder(
-          index, dev.xfj.protobuf.Entity.getDefaultInstance());
-    }
-    /**
-     * <code>repeated .dev.xfj.protobuf.Entity entities = 2;</code>
-     */
-    public java.util.List<dev.xfj.protobuf.Entity.Builder> 
-         getEntitiesBuilderList() {
-      return getEntitiesFieldBuilder().getBuilderList();
-    }
-    private com.google.protobuf.RepeatedFieldBuilderV3<
-        dev.xfj.protobuf.Entity, dev.xfj.protobuf.Entity.Builder, dev.xfj.protobuf.EntityOrBuilder> 
-        getEntitiesFieldBuilder() {
-      if (entitiesBuilder_ == null) {
-        entitiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-            dev.xfj.protobuf.Entity, dev.xfj.protobuf.Entity.Builder, dev.xfj.protobuf.EntityOrBuilder>(
-                entities_,
-                ((bitField0_ & 0x00000002) != 0),
-                getParentForChildren(),
-                isClean());
-        entities_ = null;
-      }
-      return entitiesBuilder_;
-    }
-    @java.lang.Override
-    public final Builder setUnknownFields(
-        final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFields(unknownFields);
-    }
-
-    @java.lang.Override
-    public final Builder mergeUnknownFields(
-        final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.mergeUnknownFields(unknownFields);
-    }
-
-
-    // @@protoc_insertion_point(builder_scope:dev.xfj.protobuf.Scene)
-  }
-
-  // @@protoc_insertion_point(class_scope:dev.xfj.protobuf.Scene)
-  private static final dev.xfj.protobuf.Scene DEFAULT_INSTANCE;
+  private static  com.google.protobuf.Descriptors.FileDescriptor
+      descriptor;
   static {
-    DEFAULT_INSTANCE = new dev.xfj.protobuf.Scene();
+    java.lang.String[] descriptorData = {
+      "\n\020scene_file.proto\022\020dev.xfj.protobuf\"I\n\t" +
+      "SceneFile\022\014\n\004name\030\001 \001(\t\022.\n\010entities\030\002 \003(" +
+      "\0132\034.dev.xfj.protobuf.EntityFile\"\325\001\n\nEnti" +
+      "tyFile\022&\n\003tag\030\001 \001(\0132\031.dev.xfj.protobuf.T" +
+      "agFile\0222\n\ttransform\030\002 \001(\0132\037.dev.xfj.prot" +
+      "obuf.TransformFile\022=\n\017sprite_renderer\030\003 " +
+      "\001(\0132$.dev.xfj.protobuf.SpriteRendererFil" +
+      "e\022,\n\006camera\030\004 \001(\0132\034.dev.xfj.protobuf.Cam" +
+      "eraFile\"\026\n\007TagFile\022\013\n\003tag\030\001 \001(\t\"E\n\rTrans" +
+      "formFile\022\023\n\013translation\030\001 \003(\002\022\020\n\010rotatio" +
+      "n\030\002 \003(\002\022\r\n\005scale\030\003 \003(\002\"\346\002\n\nCameraFile\022D\n" +
+      "\017projection_type\030\001 \001(\0162+.dev.xfj.protobu" +
+      "f.CameraFile.ProjectionType\022\027\n\017perspecti" +
+      "ve_fov\030\002 \001(\002\022\030\n\020perspective_near\030\003 \001(\002\022\027" +
+      "\n\017perspective_far\030\004 \001(\002\022\031\n\021orthographic_" +
+      "size\030\005 \001(\002\022\031\n\021orthographic_near\030\006 \001(\002\022\030\n" +
+      "\020orthographic_far\030\007 \001(\002\022\024\n\014aspect_ratio\030" +
+      "\010 \001(\002\022\017\n\007primary\030\t \001(\010\022\032\n\022fixed_aspect_r" +
+      "atio\030\n \001(\010\"3\n\016ProjectionType\022\017\n\013Perspect" +
+      "ive\020\000\022\020\n\014Orthographic\020\001\"#\n\022SpriteRendere" +
+      "rFile\022\r\n\005color\030\001 \003(\002B\033\n\020dev.xfj.protobuf" +
+      "B\005SceneP\001b\006proto3"
+    };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+        });
+    internal_static_dev_xfj_protobuf_SceneFile_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_dev_xfj_protobuf_SceneFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dev_xfj_protobuf_SceneFile_descriptor,
+        new java.lang.String[] { "Name", "Entities", });
+    internal_static_dev_xfj_protobuf_EntityFile_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_dev_xfj_protobuf_EntityFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dev_xfj_protobuf_EntityFile_descriptor,
+        new java.lang.String[] { "Tag", "Transform", "SpriteRenderer", "Camera", });
+    internal_static_dev_xfj_protobuf_TagFile_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_dev_xfj_protobuf_TagFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dev_xfj_protobuf_TagFile_descriptor,
+        new java.lang.String[] { "Tag", });
+    internal_static_dev_xfj_protobuf_TransformFile_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_dev_xfj_protobuf_TransformFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dev_xfj_protobuf_TransformFile_descriptor,
+        new java.lang.String[] { "Translation", "Rotation", "Scale", });
+    internal_static_dev_xfj_protobuf_CameraFile_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_dev_xfj_protobuf_CameraFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dev_xfj_protobuf_CameraFile_descriptor,
+        new java.lang.String[] { "ProjectionType", "PerspectiveFov", "PerspectiveNear", "PerspectiveFar", "OrthographicSize", "OrthographicNear", "OrthographicFar", "AspectRatio", "Primary", "FixedAspectRatio", });
+    internal_static_dev_xfj_protobuf_SpriteRendererFile_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_dev_xfj_protobuf_SpriteRendererFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_dev_xfj_protobuf_SpriteRendererFile_descriptor,
+        new java.lang.String[] { "Color", });
   }
 
-  public static dev.xfj.protobuf.Scene getDefaultInstance() {
-    return DEFAULT_INSTANCE;
-  }
-
-  private static final com.google.protobuf.Parser<Scene>
-      PARSER = new com.google.protobuf.AbstractParser<Scene>() {
-    @java.lang.Override
-    public Scene parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      Builder builder = newBuilder();
-      try {
-        builder.mergeFrom(input, extensionRegistry);
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(builder.buildPartial());
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(e)
-            .setUnfinishedMessage(builder.buildPartial());
-      }
-      return builder.buildPartial();
-    }
-  };
-
-  public static com.google.protobuf.Parser<Scene> parser() {
-    return PARSER;
-  }
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Scene> getParserForType() {
-    return PARSER;
-  }
-
-  @java.lang.Override
-  public dev.xfj.protobuf.Scene getDefaultInstanceForType() {
-    return DEFAULT_INSTANCE;
-  }
-
+  // @@protoc_insertion_point(outer_class_scope)
 }
-
