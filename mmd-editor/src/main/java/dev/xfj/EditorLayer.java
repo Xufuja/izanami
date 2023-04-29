@@ -15,8 +15,10 @@ import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
-import dev.xfj.engine.scene.SceneCamera;
-import dev.xfj.engine.scene.components.*;
+import dev.xfj.engine.scene.SceneSerializer;
+import dev.xfj.engine.scene.components.CameraComponent;
+import dev.xfj.engine.scene.components.NativeScriptComponent;
+import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import dev.xfj.panels.SceneHierarchyPanel;
 import imgui.*;
 import imgui.flag.ImGuiConfigFlags;
@@ -80,7 +82,7 @@ public class EditorLayer extends Layer {
 
         activeScene = new Scene();
 
-        Entity square = activeScene.createEntity("Green Square");
+        /*Entity square = activeScene.createEntity("Green Square");
         square.addComponent(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
         squareEntity = square;
 
@@ -98,7 +100,7 @@ public class EditorLayer extends Layer {
         cameraEntity.getComponent(NativeScriptComponent.class).bind(CameraController.class);
 
         secondCamera.addComponent(new NativeScriptComponent<CameraController>());
-        secondCamera.getComponent(NativeScriptComponent.class).bind(CameraController.class);
+        secondCamera.getComponent(NativeScriptComponent.class).bind(CameraController.class);*/
 
         sceneHierarchyPanel.setContext(activeScene);
     }
@@ -194,6 +196,16 @@ public class EditorLayer extends Layer {
 
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
+                if (ImGui.menuItem("Serialize")) {
+                    SceneSerializer serializer = new SceneSerializer(activeScene);
+                    serializer.serialize(Path.of("assets/scenes/Example.scene"));
+                }
+
+                if (ImGui.menuItem("Deserialize")) {
+                    SceneSerializer deserializer = new SceneSerializer(activeScene);
+                    deserializer.deserialize(Path.of("assets/scenes/Example.scene"));
+                }
+
                 if (ImGui.menuItem("Exit")) {
                     Application.getApplication().close();
                 }

@@ -19,7 +19,7 @@ MRs performed by other contributors will be handled before the next video, if an
 * Java 17 required
 * `git clone --recursive https://github.com/Xufuja/mmd-tools.git`
     * If not recursively cloned, perform `git submodule update --init --recursive`
-* Run `protoc --proto_path=protobuf --java_out=src/generated protobuf/*.proto` from the mmd-engine directory if you need to regenerate the classes
+* Run `protoc --proto_path=protobuf --java_out=src/generated protobuf/*.proto` from the mmd-engine directory
 
 ## Libraries
 

@@ -116,6 +116,26 @@ public class SceneCamera implements Camera {
         recalculateProjection();
     }
 
+    public float getPerspectiveNear() {
+        return perspectiveNear;
+    }
+
+    public float getPerspectiveFar() {
+        return perspectiveFar;
+    }
+
+    public float getOrthographicNear() {
+        return orthographicNear;
+    }
+
+    public float getOrthographicFar() {
+        return orthographicFar;
+    }
+
+    public float getAspectRatio() {
+        return aspectRatio;
+    }
+
     private void recalculateProjection() {
         if (projectionType == ProjectionType.Perspective) {
             projection = new Matrix4f().setPerspective(perspectiveFoV, aspectRatio, perspectiveNear, perspectiveFar);

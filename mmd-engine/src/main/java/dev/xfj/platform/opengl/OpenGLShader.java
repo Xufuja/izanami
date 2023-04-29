@@ -35,7 +35,7 @@ public class OpenGLShader implements Shader {
         };
     }
 
-    public OpenGLShader(Path filePath) throws IOException {
+    public OpenGLShader(Path filePath) {
         String source = readFile(filePath);
         HashMap<Integer, String> shaderSources = preProcess(source);
         compile(shaderSources);
@@ -53,14 +53,14 @@ public class OpenGLShader implements Shader {
         compile(sources);
     }
 
-    private String readFile(Path filePath) throws IOException {
+    private String readFile(Path filePath) {
         String result;
         try (InputStream inputStream = Files.newInputStream(filePath)) {
             byte[] bytes = inputStream.readAllBytes();
             result = new String(bytes, StandardCharsets.UTF_8);
         } catch (IOException e) {
             Log.error("Could not open file: " + filePath);
-            throw e;
+            throw new RuntimeException(e);
         }
         return result;
     }
