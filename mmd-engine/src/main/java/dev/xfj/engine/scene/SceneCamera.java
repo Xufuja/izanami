@@ -132,10 +132,6 @@ public class SceneCamera implements Camera {
         return orthographicFar;
     }
 
-    public float getAspectRatio() {
-        return aspectRatio;
-    }
-
     private void recalculateProjection() {
         if (projectionType == ProjectionType.Perspective) {
             projection = new Matrix4f().setPerspective(perspectiveFoV, aspectRatio, perspectiveNear, perspectiveFar);

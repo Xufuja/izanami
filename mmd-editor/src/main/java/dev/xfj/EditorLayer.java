@@ -2,6 +2,7 @@ package dev.xfj;
 
 import dev.xfj.engine.core.Application;
 import dev.xfj.engine.core.Layer;
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.renderer.OrthographicCameraController;
@@ -20,6 +21,7 @@ import dev.xfj.engine.scene.components.CameraComponent;
 import dev.xfj.engine.scene.components.NativeScriptComponent;
 import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import dev.xfj.panels.SceneHierarchyPanel;
+import dev.xfj.platform.windows.WindowsPlatformUtils;
 import imgui.*;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiDockNodeFlags;
@@ -196,6 +198,7 @@ public class EditorLayer extends Layer {
 
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
+
                 if (ImGui.menuItem("Serialize")) {
                     SceneSerializer serializer = new SceneSerializer(activeScene);
                     serializer.serialize(Path.of("assets/scenes/Example.scene"));
@@ -204,6 +207,16 @@ public class EditorLayer extends Layer {
                 if (ImGui.menuItem("Deserialize")) {
                     SceneSerializer deserializer = new SceneSerializer(activeScene);
                     deserializer.deserialize(Path.of("assets/scenes/Example.scene"));
+                }
+
+                if (ImGui.menuItem("Open Test")) {
+                    String test = WindowsPlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
+                    Log.debug("File: " + test + " has been selected!");
+                }
+
+                if (ImGui.menuItem("Save Test")) {
+                    String test = WindowsPlatformUtils.saveFile("Scene (*.scene)\0*.scene\0");
+                    Log.debug("File: " + test + " has been selected!");
                 }
 
                 if (ImGui.menuItem("Exit")) {
