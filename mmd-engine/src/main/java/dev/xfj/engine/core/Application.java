@@ -8,6 +8,7 @@ import dev.xfj.engine.events.application.WindowCloseEvent;
 import dev.xfj.engine.events.application.WindowResizeEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.renderer.Renderer;
+import dev.xfj.engine.utils.PlatformUtils;
 
 import java.util.ListIterator;
 
@@ -26,6 +27,7 @@ public class Application {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
         //It seems to do the same thing as using this static block, but not sure how that is being called
         Input.setInput(Input.create());
+        PlatformUtils.setPlatformUtils(PlatformUtils.create());
     }
 
     public Application() {

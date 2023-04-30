@@ -20,6 +20,7 @@ import dev.xfj.engine.scene.SceneSerializer;
 import dev.xfj.engine.scene.components.CameraComponent;
 import dev.xfj.engine.scene.components.NativeScriptComponent;
 import dev.xfj.engine.scene.components.SpriteRendererComponent;
+import dev.xfj.engine.utils.PlatformUtils;
 import dev.xfj.panels.SceneHierarchyPanel;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
 import imgui.*;
@@ -210,12 +211,12 @@ public class EditorLayer extends Layer {
                 }
 
                 if (ImGui.menuItem("Open Test")) {
-                    String test = WindowsPlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
+                    String test = PlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
                     Log.debug("File: " + test + " has been selected!");
                 }
 
                 if (ImGui.menuItem("Save Test")) {
-                    String test = WindowsPlatformUtils.saveFile("Scene (*.scene)\0*.scene\0");
+                    String test = PlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
                     Log.debug("File: " + test + " has been selected!");
                 }
 

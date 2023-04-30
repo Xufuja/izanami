@@ -10,7 +10,7 @@ import dev.xfj.engine.utils.PlatformUtils;
 
 import static org.lwjgl.glfw.GLFWNativeWin32.glfwGetWin32Window;
 
-public class WindowsPlatformUtils implements PlatformUtils {
+public class WindowsPlatformUtils extends PlatformUtils {
     public final static int OFN_READONLY = 0x00000001;
     public final static int OFN_OVERWRITEPROMPT = 0x00000002;
     public final static int OFN_HIDEREADONLY = 0x00000004;
@@ -81,7 +81,8 @@ public class WindowsPlatformUtils implements PlatformUtils {
 
     }
 
-    public static String openFile(String filter) {
+    @Override
+    public String openFileImpl(String filter) {
         OPENFILENAMEA ofn = new OPENFILENAMEA();
         byte[] szFile = new byte[260];
         ofn.lStructSize = Native.getNativeSize(OPENFILENAMEA.class, null);
@@ -98,7 +99,8 @@ public class WindowsPlatformUtils implements PlatformUtils {
         }
     }
 
-    public static String saveFile(String filter) {
+    @Override
+    public String saveFileImpl(String filter) {
         OPENFILENAMEA ofn = new OPENFILENAMEA();
         byte[] szFile = new byte[260];
         ofn.lStructSize = Native.getNativeSize(OPENFILENAMEA.class, null);
