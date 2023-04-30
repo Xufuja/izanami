@@ -3,12 +3,10 @@ package dev.xfj.platform.windows;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.win32.StdCallLibrary;
 import dev.xfj.engine.core.Application;
 import dev.xfj.engine.utils.PlatformUtils;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFWNativeWin32.glfwGetWin32Window;
 
@@ -52,6 +50,12 @@ public class WindowsPlatformUtils implements PlatformUtils {
         boolean GetSaveFileNameA(OPENFILENAMEA lpofn);
     }
 
+    @FieldOrder({"lStructSize", "hwndOwner", "hInstance", "lpstrFilter",
+            "lpstrCustomFilter", "nMaxCustFilter", "nFilterIndex",
+            "lpstrFile", "nMaxFile", "lpstrFileTitle", "nMaxFileTitle",
+            "lpstrInitialDir", "lpstrTitle", "Flags", "nFileOffset",
+            "nFileExtension", "lpstrDefExt", "lCustData", "lpfnHook",
+            "lpTemplateName"})
     public static class OPENFILENAMEA extends Structure {
         public int lStructSize;
         public Pointer hwndOwner;
@@ -74,17 +78,6 @@ public class WindowsPlatformUtils implements PlatformUtils {
         public StdCallLibrary.StdCallCallback lpfnHook;
         public String lpTemplateName;
 
-        @Override
-        protected List<String> getFieldOrder() {
-            return Arrays.asList(
-                    "lStructSize", "hwndOwner", "hInstance", "lpstrFilter",
-                    "lpstrCustomFilter", "nMaxCustFilter", "nFilterIndex",
-                    "lpstrFile", "nMaxFile", "lpstrFileTitle", "nMaxFileTitle",
-                    "lpstrInitialDir", "lpstrTitle", "Flags", "nFileOffset",
-                    "nFileExtension", "lpstrDefExt", "lCustData", "lpfnHook",
-                    "lpTemplateName"
-            );
-        }
 
     }
 
