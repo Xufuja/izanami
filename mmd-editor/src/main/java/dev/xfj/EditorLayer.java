@@ -1,10 +1,9 @@
 package dev.xfj;
 
-import dev.xfj.engine.core.Application;
-import dev.xfj.engine.core.Layer;
-import dev.xfj.engine.core.Log;
-import dev.xfj.engine.core.TimeStep;
+import dev.xfj.engine.core.*;
 import dev.xfj.engine.events.Event;
+import dev.xfj.engine.events.EventDispatcher;
+import dev.xfj.engine.events.key.KeyPressedEvent;
 import dev.xfj.engine.renderer.OrthographicCameraController;
 import dev.xfj.engine.renderer.RenderCommand;
 import dev.xfj.engine.renderer.Texture2D;
@@ -200,29 +199,22 @@ public class EditorLayer extends Layer {
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
 
-                if (ImGui.menuItem("Serialize")) {
-                    SceneSerializer serializer = new SceneSerializer(activeScene);
-                    serializer.serialize(Path.of("assets/scenes/Example.scene"));
+                if (ImGui.menuItem("New", "Ctrl+N")) {
+                    newScene();
                 }
 
-                if (ImGui.menuItem("Deserialize")) {
-                    SceneSerializer deserializer = new SceneSerializer(activeScene);
-                    deserializer.deserialize(Path.of("assets/scenes/Example.scene"));
+                if (ImGui.menuItem("Open...", "Ctrl+O")) {
+                    openScene();
                 }
 
-                if (ImGui.menuItem("Open Test")) {
-                    String test = PlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
-                    Log.debug("File: " + test + " has been selected!");
-                }
-
-                if (ImGui.menuItem("Save Test")) {
-                    String test = PlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
-                    Log.debug("File: " + test + " has been selected!");
+                if (ImGui.menuItem("Save As...", "Ctrl+Shift+S")) {
+                    saveSceneAs();
                 }
 
                 if (ImGui.menuItem("Exit")) {
                     Application.getApplication().close();
                 }
+
                 ImGui.endMenu();
             }
             ImGui.endMenuBar();
@@ -263,5 +255,66 @@ public class EditorLayer extends Layer {
     @Override
     public void onEvent(Event event) {
         cameraController.onEvent(event);
+        EventDispatcher eventDispatcher = new EventDispatcher(event);
+        eventDispatcher.dispatch(KeyPressedEvent.class, this::onKeyPressed);
+    }
+
+    private boolean onKeyPressed(KeyPressedEvent event) {
+        if (event.getRepeatCount() > 0) {
+            return false;
+        }
+
+        boolean control = Input.isKeyPressed(KeyCodes.LEFT_CONTROL) || Input.isKeyPressed(KeyCodes.RIGHT_CONTROL);
+        boolean shift = Input.isKeyPressed(KeyCodes.LEFT_SHIFT) || Input.isKeyPressed(KeyCodes.RIGHT_SHIFT);
+
+        switch (event.getKeyCode()) {
+            case KeyCodes.N -> {
+                if (control) {
+                    newScene();
+                    return true;
+                }
+            }
+            case KeyCodes.O -> {
+                if (control) {
+                    openScene();
+                    return true;
+                }
+            }
+            case KeyCodes.S -> {
+                if (control && shift) {
+                    saveSceneAs();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void newScene() {
+        activeScene = new Scene();
+        activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
+        sceneHierarchyPanel.setContext(activeScene);
+    }
+
+    private void openScene() {
+        String filePath = WindowsPlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
+
+        if (!filePath.isEmpty()) {
+            activeScene = new Scene();
+            activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
+            sceneHierarchyPanel.setContext(activeScene);
+
+            SceneSerializer serializer = new SceneSerializer(activeScene);
+            serializer.deserialize(Path.of(filePath));
+        }
+    }
+
+    private void saveSceneAs() {
+        String filePath = WindowsPlatformUtils.saveFile("Scene (*.scene)\0*.scene\0");
+
+        if (!filePath.isEmpty()) {
+            SceneSerializer serializer = new SceneSerializer(activeScene);
+            serializer.serialize(Path.of(filePath));
+        }
     }
 }

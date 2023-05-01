@@ -29,6 +29,7 @@ public class SceneHierarchyPanel {
 
     public void setContext(Scene scene) {
         context = scene;
+        selectionContext = null;
     }
 
     public void onImGuiRender() {
