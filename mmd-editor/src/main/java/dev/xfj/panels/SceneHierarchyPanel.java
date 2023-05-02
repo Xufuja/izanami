@@ -1,5 +1,6 @@
 package dev.xfj.panels;
 
+import dev.xfj.engine.core.Log;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
@@ -233,12 +234,20 @@ public class SceneHierarchyPanel {
         if (ImGui.beginPopup("AddComponent")) {
 
             if (ImGui.menuItem("Camera")) {
-                selectionContext.addComponent(new CameraComponent());
+                if (!selectionContext.hasComponent(CameraComponent.class)) {
+                    selectionContext.addComponent(new CameraComponent());
+                } else {
+                    Log.warn("This entity already has the Camera Component!");
+                }
                 ImGui.closeCurrentPopup();
             }
 
             if (ImGui.menuItem("Sprite Renderer")) {
-                selectionContext.addComponent(new SpriteRendererComponent());
+                if (!selectionContext.hasComponent(SpriteRendererComponent.class)) {
+                    selectionContext.addComponent(new SpriteRendererComponent());
+                } else {
+                    Log.warn("This entity already has the Camera Component!");
+                }
                 ImGui.closeCurrentPopup();
             }
             ImGui.endPopup();

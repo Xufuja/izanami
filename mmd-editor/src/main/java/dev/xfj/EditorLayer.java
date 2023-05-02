@@ -32,6 +32,7 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class EditorLayer extends Layer {
     private static float rotation = 0.0f;
@@ -297,24 +298,24 @@ public class EditorLayer extends Layer {
     }
 
     private void openScene() {
-        String filePath = WindowsPlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
+        Optional<String> filePath = WindowsPlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
 
-        if (!filePath.isEmpty()) {
+        if (filePath.isPresent()) {
             activeScene = new Scene();
             activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
             sceneHierarchyPanel.setContext(activeScene);
 
             SceneSerializer serializer = new SceneSerializer(activeScene);
-            serializer.deserialize(Path.of(filePath));
+            serializer.deserialize(Path.of(filePath.get()));
         }
     }
 
     private void saveSceneAs() {
-        String filePath = WindowsPlatformUtils.saveFile("Scene (*.scene)\0*.scene\0");
+        Optional<String> filePath = WindowsPlatformUtils.saveFile("Scene (*.scene)\0*.scene\0");
 
-        if (!filePath.isEmpty()) {
+        if (filePath.isPresent()) {
             SceneSerializer serializer = new SceneSerializer(activeScene);
-            serializer.serialize(Path.of(filePath));
+            serializer.serialize(Path.of(filePath.get()));
         }
     }
 }

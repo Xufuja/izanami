@@ -8,6 +8,8 @@ import com.sun.jna.win32.StdCallLibrary;
 import dev.xfj.engine.core.Application;
 import dev.xfj.engine.utils.PlatformUtils;
 
+import java.util.Optional;
+
 import static org.lwjgl.glfw.GLFWNativeWin32.glfwGetWin32Window;
 
 public class WindowsPlatformUtils extends PlatformUtils {
@@ -82,7 +84,7 @@ public class WindowsPlatformUtils extends PlatformUtils {
     }
 
     @Override
-    public String openFileImpl(String filter) {
+    public Optional<String> openFileImpl(String filter) {
         OPENFILENAMEA ofn = new OPENFILENAMEA();
         byte[] szFile = new byte[260];
         ofn.lStructSize = Native.getNativeSize(OPENFILENAMEA.class, null);
@@ -91,16 +93,17 @@ public class WindowsPlatformUtils extends PlatformUtils {
         ofn.nMaxFile = szFile.length;
         ofn.lpstrFilter = filter;
         ofn.nFilterIndex = 1;
+        ofn.lpstrDefExt = filter.substring(filter.lastIndexOf(".") + 1);
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
         if (Comdlg32.INSTANCE.GetOpenFileNameA(ofn)) {
-            return ofn.lpstrFile;
+            return Optional.of(ofn.lpstrFile);
         } else {
-            return "";
+            return Optional.empty();
         }
     }
 
     @Override
-    public String saveFileImpl(String filter) {
+    public Optional<String> saveFileImpl(String filter) {
         OPENFILENAMEA ofn = new OPENFILENAMEA();
         byte[] szFile = new byte[260];
         ofn.lStructSize = Native.getNativeSize(OPENFILENAMEA.class, null);
@@ -111,9 +114,9 @@ public class WindowsPlatformUtils extends PlatformUtils {
         ofn.nFilterIndex = 1;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
         if (Comdlg32.INSTANCE.GetSaveFileNameA(ofn)) {
-            return ofn.lpstrFile;
+            return Optional.of(ofn.lpstrFile);
         } else {
-            return "";
+            return Optional.empty();
         }
     }
 

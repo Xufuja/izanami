@@ -2,6 +2,8 @@ package dev.xfj.engine.utils;
 
 import dev.xfj.platform.windows.WindowsPlatformUtils;
 
+import java.util.Optional;
+
 public abstract class PlatformUtils {
     private static PlatformUtils platformUtils;
 
@@ -14,17 +16,17 @@ public abstract class PlatformUtils {
         }
     }
 
-    public static String openFile(String filter) {
+    public static Optional<String> openFile(String filter) {
         return platformUtils.openFileImpl(filter);
     }
 
-    public static String saveFile(String filter) {
+    public static Optional<String> saveFile(String filter) {
         return platformUtils.saveFileImpl(filter);
     }
 
-    protected abstract String openFileImpl(String filter);
+    protected abstract Optional<String> openFileImpl(String filter);
 
-    protected abstract String saveFileImpl(String filter);
+    protected abstract Optional<String> saveFileImpl(String filter);
 
     public static PlatformUtils getPlatformUtils() {
         return platformUtils;
