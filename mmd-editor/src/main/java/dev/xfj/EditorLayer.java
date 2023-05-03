@@ -85,7 +85,7 @@ public class EditorLayer extends Layer {
 
         activeScene = new Scene();
 
-        Entity square = activeScene.createEntity("Green Square");
+        /*Entity square = activeScene.createEntity("Green Square");
         square.addComponent(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
         squareEntity = square;
 
@@ -103,7 +103,7 @@ public class EditorLayer extends Layer {
         cameraEntity.getComponent(NativeScriptComponent.class).bind(CameraController.class);
 
         secondCamera.addComponent(new NativeScriptComponent<CameraController>());
-        secondCamera.getComponent(NativeScriptComponent.class).bind(CameraController.class);
+        secondCamera.getComponent(NativeScriptComponent.class).bind(CameraController.class);*/
 
         sceneHierarchyPanel.setContext(activeScene);
     }

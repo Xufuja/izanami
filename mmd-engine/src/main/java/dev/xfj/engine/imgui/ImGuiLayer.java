@@ -5,6 +5,7 @@ import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
 import imgui.*;
+import imgui.extension.imguizmo.ImGuizmo;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
@@ -80,6 +81,7 @@ public class ImGuiLayer extends Layer {
         imGuiGl3.updateFontsTexture();
         imGuiGlfw.newFrame();
         ImGui.newFrame();
+        ImGuizmo.beginFrame();
     }
 
     public void end() {
