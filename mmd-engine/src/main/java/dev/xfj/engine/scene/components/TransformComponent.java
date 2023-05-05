@@ -1,6 +1,7 @@
 package dev.xfj.engine.scene.components;
 
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class TransformComponent implements Component {
@@ -19,7 +20,7 @@ public class TransformComponent implements Component {
     }
 
     public Matrix4f getTransform() {
-        Matrix4f rotation = new Matrix4f().rotateX(this.rotation.x).rotateY(this.rotation.y).rotateZ(this.rotation.z);
+        Matrix4f rotation = new Matrix4f().rotate(new Quaternionf().rotateXYZ(this.rotation.x, this.rotation.y, this.rotation.z));
         return new Matrix4f().translate(translation).mul(rotation).mul(new Matrix4f().scale(scale));
     }
 }
