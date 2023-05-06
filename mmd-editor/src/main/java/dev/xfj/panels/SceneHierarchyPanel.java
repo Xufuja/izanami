@@ -33,6 +33,10 @@ public class SceneHierarchyPanel {
         selectionContext = null;
     }
 
+    public Entity getSelectedEntity() {
+        return selectionContext;
+    }
+
     public void onImGuiRender() {
         ImGui.begin("Scene Hierarchy");
 

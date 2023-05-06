@@ -88,6 +88,19 @@ public class Scene {
                 });
     }
 
+    public Entity getPrimaryCameraEntity() {
+        Entity result = null;
+        for (var it = registry.findEntitiesWith(CameraComponent.class).iterator(); it.hasNext(); ) {
+            var entity = it.next();
+            CameraComponent cameraComponent = entity.comp();
+            if (cameraComponent.primary) {
+                result = new Entity(entity.entity(), this);
+            }
+
+        }
+        return result;
+    }
+
     public Dominion getRegistry() {
         return registry;
     }

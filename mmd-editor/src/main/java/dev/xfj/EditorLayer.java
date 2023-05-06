@@ -15,20 +15,24 @@ import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
+import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.SceneSerializer;
 import dev.xfj.engine.scene.components.CameraComponent;
-import dev.xfj.engine.scene.components.NativeScriptComponent;
-import dev.xfj.engine.scene.components.SpriteRendererComponent;
-import dev.xfj.engine.utils.PlatformUtils;
+import dev.xfj.engine.scene.components.TransformComponent;
 import dev.xfj.panels.SceneHierarchyPanel;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
 import imgui.*;
+import imgui.extension.imguizmo.ImGuizmo;
+import imgui.extension.imguizmo.flag.Mode;
+import imgui.extension.imguizmo.flag.Operation;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.nio.file.Path;
@@ -53,6 +57,7 @@ public class EditorLayer extends Layer {
     private boolean viewportHovered;
     private final Vector2f viewportSize;
     private Vector4f squareColor;
+    private int gizmoType;
 
     private SceneHierarchyPanel sceneHierarchyPanel;
 
@@ -71,6 +76,7 @@ public class EditorLayer extends Layer {
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
         this.primaryCamera = true;
         this.sceneHierarchyPanel = new SceneHierarchyPanel();
+        this.gizmoType = -1;
     }
 
     @Override
@@ -238,7 +244,7 @@ public class EditorLayer extends Layer {
 
         viewportFocused = ImGui.isWindowFocused();
         viewportHovered = ImGui.isWindowHovered();
-        Application.getApplication().getImGuiLayer().blockEvents(!viewportFocused || !viewportHovered);
+        Application.getApplication().getImGuiLayer().blockEvents(!viewportFocused && !viewportHovered);
 
         ImVec2 viewportPanelSize = ImGui.getContentRegionAvail();
 
@@ -247,6 +253,55 @@ public class EditorLayer extends Layer {
 
         int textureId = framebuffer.getColorAttachmentRendererId();
         ImGui.image(textureId, viewportSize.x, viewportSize.y, 0, 1, 1, 0);
+
+        Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
+        if (selectedEntity != null && gizmoType != -1) {
+            ImGuizmo.setOrthographic(false);
+            ImGuizmo.setDrawList();
+
+            float windowWidth = ImGui.getWindowWidth();
+            float windowHeight = ImGui.getWindowHeight();
+            ImGuizmo.setRect(ImGui.getWindowPosX(), ImGui.getWindowPosY(), windowWidth, windowHeight);
+
+            Entity cameraEntity = activeScene.getPrimaryCameraEntity();
+            SceneCamera camera = cameraEntity.getComponent(CameraComponent.class).camera;
+            Matrix4f cameraProjection = camera.getProjection();
+            Matrix4f cameraView = cameraEntity.getComponent(TransformComponent.class).getTransform().invert();
+
+            TransformComponent transformComponent = selectedEntity.getComponent(TransformComponent.class);
+            Matrix4f transform = transformComponent.getTransform();
+
+            boolean snap = Input.isKeyPressed(KeyCodes.LEFT_CONTROL);
+            float snapValue = 0.5f;
+
+            if (gizmoType == Operation.ROTATE) {
+                snapValue = 45.0f;
+            }
+
+            float[] snapValues = new float[]{snapValue, snapValue, snapValue};
+
+            float[] transformAsFloatArray = transform.get(new float[16]);
+
+            ImGuizmo.manipulate(cameraView.get(new float[16]), cameraProjection.get(new float[16]), transformAsFloatArray, gizmoType, Mode.LOCAL, snap ? snapValues : new float[]{0});
+
+            transform.set(transformAsFloatArray);
+
+            if (ImGuizmo.isUsing()) {
+                Vector3f translation = new Vector3f();
+                Vector3f rotation = new Vector3f();
+                Vector3f scale = new Vector3f();
+
+                transform.getTranslation(translation);
+                transform.getEulerAnglesXYZ(rotation);
+                transform.getScale(scale);
+
+                Vector3f deltaRotation = rotation.sub(transformComponent.rotation, new Vector3f());
+                transformComponent.translation = translation;
+                transformComponent.rotation.add(deltaRotation);
+                transformComponent.scale = scale;
+            }
+        }
+
         ImGui.end();
         ImGui.popStyleVar();
 
@@ -287,6 +342,10 @@ public class EditorLayer extends Layer {
                     return true;
                 }
             }
+            case KeyCodes.Q -> gizmoType = -1;
+            case KeyCodes.W -> gizmoType = Operation.TRANSLATE;
+            case KeyCodes.E -> gizmoType = Operation.ROTATE;
+            case KeyCodes.R -> gizmoType = Operation.SCALE;
         }
         return false;
     }
