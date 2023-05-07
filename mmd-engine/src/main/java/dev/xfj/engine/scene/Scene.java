@@ -4,12 +4,12 @@ import dev.dominion.ecs.api.Dominion;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.renderer.Camera;
+import dev.xfj.engine.renderer.EditorCamera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.scene.components.*;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Scene {
     private final Dominion registry;
@@ -35,7 +35,7 @@ public class Scene {
     }
 
     @SuppressWarnings("unchecked")
-    public void onUpdate(TimeStep ts) {
+    public void onUpdateRuntime(TimeStep ts) {
         registry.findEntitiesWith(NativeScriptComponent.class)
                 .stream().forEach(entity -> {
                     NativeScriptComponent<ScriptableEntity> nsc = entity.comp();
@@ -73,6 +73,20 @@ public class Scene {
 
             Renderer2D.endScene();
         }
+    }
+
+    public void onUpdateEditor(TimeStep ts, EditorCamera camera) {
+        Renderer2D.beginScene(camera);
+
+        registry.findEntitiesWith(TransformComponent.class, SpriteRendererComponent.class)
+                .stream().forEach(entity -> {
+                    TransformComponent transform = entity.comp1();
+                    SpriteRendererComponent sprite = entity.comp2();
+                    Renderer2D.drawQuad(transform.getTransform(), sprite.color);
+                });
+
+        Renderer2D.endScene();
+
     }
 
     public void onViewportResize(int width, int height) {

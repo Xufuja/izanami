@@ -3,8 +3,7 @@ package dev.xfj.engine.scene;
 import dev.xfj.engine.renderer.Camera;
 import org.joml.Matrix4f;
 
-public class SceneCamera implements Camera {
-    private Matrix4f projection;
+public class SceneCamera extends Camera {
     private ProjectionType projectionType;
     private float perspectiveFoV;
     private float perspectiveNear;
@@ -142,10 +141,5 @@ public class SceneCamera implements Camera {
             float orthoTop = orthographicSize * 0.5f;
             projection = new Matrix4f().setOrtho(orthoLeft, orthoRight, orthoBottom, orthoTop, orthographicNear, orthographicFar);
         }
-    }
-
-    @Override
-    public Matrix4f getProjection() {
-        return projection;
     }
 }

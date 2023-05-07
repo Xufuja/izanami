@@ -97,6 +97,14 @@ public class Renderer2D {
         startBatch();
     }
 
+    public static void beginScene(EditorCamera camera) {
+        Matrix4f viewProjection = camera.getViewProjection();
+        data.textureShader.bind();
+        data.textureShader.setMat4("u_ViewProjection", viewProjection);
+
+        startBatch();
+    }
+
     public static void beginScene(OrthographicCamera camera) {
         data.textureShader.bind();
         data.textureShader.setMat4("u_ViewProjection", camera.getViewProjectionMatrix());

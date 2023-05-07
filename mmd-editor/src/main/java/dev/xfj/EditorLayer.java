@@ -4,10 +4,7 @@ import dev.xfj.engine.core.*;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.key.KeyPressedEvent;
-import dev.xfj.engine.renderer.OrthographicCameraController;
-import dev.xfj.engine.renderer.RenderCommand;
-import dev.xfj.engine.renderer.Texture2D;
-import dev.xfj.engine.renderer.VertexArray;
+import dev.xfj.engine.renderer.*;
 import dev.xfj.engine.renderer.framebuffer.Framebuffer;
 import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -52,6 +49,7 @@ public class EditorLayer extends Layer {
     private Entity cameraEntity;
     private Entity secondCamera;
     private boolean primaryCamera;
+    private EditorCamera editorCamera;
     private Texture2D checkerBoardTexture;
     private boolean viewportFocused;
     private boolean viewportHovered;
@@ -90,6 +88,7 @@ public class EditorLayer extends Layer {
         framebuffer = Framebuffer.create(fbSpec);
 
         activeScene = new Scene();
+        editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
         /*Entity square = activeScene.createEntity("Green Square");
         square.addComponent(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
@@ -125,6 +124,7 @@ public class EditorLayer extends Layer {
         if (viewportSize.x > 0.0f && viewportSize.y > 0.0f && (spec.width != viewportSize.x || spec.height != viewportSize.y)) {
             framebuffer.resize((int) viewportSize.x, (int) viewportSize.y);
             cameraController.onResize(viewportSize.x, viewportSize.y);
+            editorCamera.setViewportSize(viewportSize.x, viewportSize.y);
             activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
         }
 
@@ -137,27 +137,8 @@ public class EditorLayer extends Layer {
         RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
         RenderCommand.clear();
 
-        /*rotation += ts.getTime() * 50.0f;
-
-        Renderer2D.beginScene(cameraController.getCamera());
-        Renderer2D.drawRotatedQuad(new Vector2f(1.0f, 0.0f), new Vector2f(0.8f, 0.8f), -45.0f, new Vector4f(0.8f, 0.2f, 0.3f, 1.0f));
-        Renderer2D.drawQuad(new Vector2f(-1.0f, 0.0f), new Vector2f(0.8f, 0.8f), new Vector4f(0.8f, 0.2f, 0.3f, 1.0f));
-        Renderer2D.drawQuad(new Vector2f(0.5f, -0.5f), new Vector2f(0.5f, 0.75f), squareColor);
-        Renderer2D.drawQuad(new Vector3f(0.0f, 0.0f, -0.1f), new Vector2f(20.0f, 20.0f), checkerBoardTexture, 10.0f);
-        Renderer2D.drawRotatedQuad(new Vector3f(-2.0f, 0.0f, 0.0f), new Vector2f(1.0f, 1.0f), rotation, checkerBoardTexture, 20.0f);
-        Renderer2D.endScene();
-
-        Renderer2D.beginScene(cameraController.getCamera());
-        for (float y = -5.0f; y < 5.0f; y += 0.5f) {
-            for (float x = -5.0f; x < 5.0f; x += 0.5f) {
-                Vector4f color = new Vector4f((x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f);
-                Renderer2D.drawQuad(new Vector2f(x, y), new Vector2f(0.45f, 0.45f), color);
-            }
-        }
-
-        Renderer2D.endScene();*/
-
-        activeScene.onUpdate(ts);
+        activeScene.onUpdateRuntime(ts);
+        //activeScene.onUpdateEditor(ts, editorCamera);
 
         framebuffer.unbind();
     }
@@ -268,6 +249,9 @@ public class EditorLayer extends Layer {
             Matrix4f cameraProjection = camera.getProjection();
             Matrix4f cameraView = cameraEntity.getComponent(TransformComponent.class).getTransform().invert();
 
+            //Matrix4f cameraProjection = editorCamera.getProjection();
+            //Matrix4f cameraView = editorCamera.getViewMatrix();
+
             TransformComponent transformComponent = selectedEntity.getComponent(TransformComponent.class);
             Matrix4f transform = transformComponent.getTransform();
 
@@ -311,6 +295,7 @@ public class EditorLayer extends Layer {
     @Override
     public void onEvent(Event event) {
         cameraController.onEvent(event);
+        editorCamera.onEvent(event);
         EventDispatcher eventDispatcher = new EventDispatcher(event);
         eventDispatcher.dispatch(KeyPressedEvent.class, this::onKeyPressed);
     }
