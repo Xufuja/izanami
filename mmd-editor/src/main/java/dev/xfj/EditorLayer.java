@@ -132,13 +132,15 @@ public class EditorLayer extends Layer {
             cameraController.onUpdate(ts);
         }
 
+        editorCamera.onUpdate(ts);
+
         Renderer2D.resetStats();
         framebuffer.bind();
         RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
         RenderCommand.clear();
 
-        activeScene.onUpdateRuntime(ts);
-        //activeScene.onUpdateEditor(ts, editorCamera);
+        //activeScene.onUpdateRuntime(ts);
+        activeScene.onUpdateEditor(ts, editorCamera);
 
         framebuffer.unbind();
     }
@@ -244,13 +246,13 @@ public class EditorLayer extends Layer {
             float windowHeight = ImGui.getWindowHeight();
             ImGuizmo.setRect(ImGui.getWindowPosX(), ImGui.getWindowPosY(), windowWidth, windowHeight);
 
-            Entity cameraEntity = activeScene.getPrimaryCameraEntity();
-            SceneCamera camera = cameraEntity.getComponent(CameraComponent.class).camera;
-            Matrix4f cameraProjection = camera.getProjection();
-            Matrix4f cameraView = cameraEntity.getComponent(TransformComponent.class).getTransform().invert();
+            //Entity cameraEntity = activeScene.getPrimaryCameraEntity();
+            //SceneCamera camera = cameraEntity.getComponent(CameraComponent.class).camera;
+            //Matrix4f cameraProjection = camera.getProjection();
+            //Matrix4f cameraView = cameraEntity.getComponent(TransformComponent.class).getTransform().invert();
 
-            //Matrix4f cameraProjection = editorCamera.getProjection();
-            //Matrix4f cameraView = editorCamera.getViewMatrix();
+            Matrix4f cameraProjection = editorCamera.getProjection();
+            Matrix4f cameraView = editorCamera.getViewMatrix();
 
             TransformComponent transformComponent = selectedEntity.getComponent(TransformComponent.class);
             Matrix4f transform = transformComponent.getTransform();

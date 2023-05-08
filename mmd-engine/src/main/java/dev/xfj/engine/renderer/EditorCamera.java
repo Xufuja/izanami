@@ -13,14 +13,13 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class EditorCamera extends Camera {
-    private float fov;
+    private final float fov;
     private float aspectRatio;
-    private float nearClip;
-    private float farClip;
+    private final float nearClip;
+    private final float farClip;
     private Matrix4f viewMatrix;
-    private Matrix4f projection;
     private Vector3f position;
-    private Vector3f focalPoint;
+    private final Vector3f focalPoint;
     private Vector2f initialMousePosition;
     private float distance;
     private float pitch;
@@ -33,8 +32,12 @@ public class EditorCamera extends Camera {
     }
 
     public EditorCamera(float fov, float aspectRatio, float nearClip, float farClip) {
+        this.fov = fov;
+        this.aspectRatio = aspectRatio;
+        this.nearClip = nearClip;
+        this.farClip = farClip;
         this.viewMatrix = new Matrix4f().identity();
-        this.projection = new Matrix4f().perspective((float) Math.toRadians(fov), aspectRatio, nearClip, farClip);
+        this.projection = new Matrix4f().setPerspective((float) Math.toRadians(fov), aspectRatio, nearClip, farClip);
         this.position = new Vector3f(0.0f, 0.0f, 0.0f);
         this.focalPoint = new Vector3f(0.0f, 0.0f, 0.0f);
         this.initialMousePosition = new Vector2f(0.0f, 0.0f);
@@ -50,7 +53,7 @@ public class EditorCamera extends Camera {
     public void onUpdate(TimeStep ts) {
         if (Input.isKeyPressed(KeyCodes.LEFT_ALT)) {
             Vector2f mouse = new Vector2f(Input.getMouseX(), Input.getMouseY());
-            Vector2f delta = new Vector2f(mouse.sub(initialMousePosition, new Vector2f()).mul(0.003f));
+            Vector2f delta = new Vector2f(mouse).sub(initialMousePosition).mul(0.003f);
             initialMousePosition = mouse;
 
             if (Input.isMouseButtonPressed(MouseButtonCodes.BUTTON_MIDDLE)) {
@@ -88,19 +91,19 @@ public class EditorCamera extends Camera {
     }
 
     public Matrix4f getViewProjection() {
-        return projection.mul(viewMatrix, new Matrix4f());
+        return new Matrix4f(projection).mul(viewMatrix);
     }
 
     public Vector3f getUpDirection() {
-        return getOrientation().rotateYXZ(0, 0, 0).transform(new Vector3f(0, 1, 0)).normalize();
+        return getOrientation().transform(new Vector3f(0, 1, 0)).normalize();
     }
 
     public Vector3f getRightDirection() {
-        return getOrientation().rotateYXZ(0, 0, 0).transform(new Vector3f(1, 0, 0)).normalize();
+        return getOrientation().transform(new Vector3f(1, 0, 0)).normalize();
     }
 
     public Vector3f getForwardDirection() {
-        return getOrientation().rotateYXZ(0, 0, 0).transform(new Vector3f(0, 0, -1)).normalize();
+        return getOrientation().transform(new Vector3f(0, 0, -1)).normalize();
     }
 
     public Vector3f getPosition() {
@@ -108,10 +111,7 @@ public class EditorCamera extends Camera {
     }
 
     public Quaternionf getOrientation() {
-        Quaternionf orientation = new Quaternionf();
-        orientation.rotateX(-pitch);
-        orientation.rotateY(-yaw);
-        return orientation;
+        return new Quaternionf().rotateX(-pitch).rotateY(-yaw);
     }
 
     public float getPitch() {
@@ -124,7 +124,7 @@ public class EditorCamera extends Camera {
 
     private void updateProjection() {
         aspectRatio = viewportWidth / viewportHeight;
-        projection = new Matrix4f().perspective((float) Math.toRadians(fov), aspectRatio, nearClip, farClip);
+        projection = new Matrix4f().setPerspective((float) Math.toRadians(fov), aspectRatio, nearClip, farClip);
     }
 
     private void updateView() {
@@ -143,8 +143,8 @@ public class EditorCamera extends Camera {
 
     private void mousePan(Vector2f delta) {
         Vector2f speed = panSpeed();
-        focalPoint.add(getRightDirection().mul(-1.0f, new Vector3f()).mul(delta.x).mul(speed.x).mul(distance));
-        focalPoint.add(getUpDirection().mul(delta.y, new Vector3f()).mul(speed.y).mul(distance));
+        focalPoint.add(getRightDirection().mul(-1.0f).mul(delta.x).mul(speed.x).mul(distance));
+        focalPoint.add(getUpDirection().mul(delta.y).mul(speed.y).mul(distance));
     }
 
     private void mouseRotate(Vector2f delta) {
@@ -162,7 +162,7 @@ public class EditorCamera extends Camera {
     }
 
     private Vector3f calculatePosition() {
-        return focalPoint.sub(getForwardDirection(), new Vector3f()).mul(distance);
+        return new Vector3f(focalPoint).sub(getForwardDirection().mul(distance));
     }
 
     private Vector2f panSpeed() {
