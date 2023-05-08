@@ -128,6 +128,10 @@ public class EditorCamera extends Camera {
     }
 
     private void updateView() {
+        //Lock camera
+        //yaw = 0.0f;
+        //pitch = 0.0f;
+
         position = calculatePosition();
         Quaternionf orientation = getOrientation();
         viewMatrix = new Matrix4f().translate(position).mul(orientation.get(new Matrix4f()), new Matrix4f()).invert();
