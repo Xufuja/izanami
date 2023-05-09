@@ -1,5 +1,6 @@
 package dev.xfj.platform.windows;
 
+import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
@@ -52,6 +53,12 @@ public class WindowsPlatformUtils extends PlatformUtils {
         boolean GetSaveFileNameA(OPENFILENAMEA lpofn);
     }
 
+    public interface Kernel32 extends Library {
+        Kernel32 INSTANCE = Native.load("kernel32", Kernel32.class);
+
+        boolean GetCurrentDirectoryA(int nBufferLength, byte[] lpBuffer);
+    }
+
     @FieldOrder({"lStructSize", "hwndOwner", "hInstance", "lpstrFilter",
             "lpstrCustomFilter", "nMaxCustFilter", "nFilterIndex",
             "lpstrFile", "nMaxFile", "lpstrFileTitle", "nMaxFileTitle",
@@ -79,18 +86,20 @@ public class WindowsPlatformUtils extends PlatformUtils {
         public Pointer lCustData;
         public StdCallLibrary.StdCallCallback lpfnHook;
         public String lpTemplateName;
-
-
     }
 
     @Override
     public Optional<String> openFileImpl(String filter) {
         OPENFILENAMEA ofn = new OPENFILENAMEA();
         byte[] szFile = new byte[260];
+        byte[] currentDirectory = new byte[256];
         ofn.lStructSize = Native.getNativeSize(OPENFILENAMEA.class, null);
         ofn.hwndOwner = Pointer.createConstant(glfwGetWin32Window(Application.getApplication().getWindow().getNativeWindow()));
         ofn.lpstrFile = new String(szFile);
         ofn.nMaxFile = szFile.length;
+        if (Kernel32.INSTANCE.GetCurrentDirectoryA(256, currentDirectory)) {
+            ofn.lpstrInitialDir = new String(currentDirectory);
+        }
         ofn.lpstrFilter = filter;
         ofn.nFilterIndex = 1;
         ofn.lpstrDefExt = filter.substring(filter.lastIndexOf(".") + 1);
@@ -106,13 +115,17 @@ public class WindowsPlatformUtils extends PlatformUtils {
     public Optional<String> saveFileImpl(String filter) {
         OPENFILENAMEA ofn = new OPENFILENAMEA();
         byte[] szFile = new byte[260];
+        byte[] currentDirectory = new byte[256];
         ofn.lStructSize = Native.getNativeSize(OPENFILENAMEA.class, null);
         ofn.hwndOwner = Pointer.createConstant(glfwGetWin32Window(Application.getApplication().getWindow().getNativeWindow()));
         ofn.lpstrFile = new String(szFile);
         ofn.nMaxFile = szFile.length;
+        if (Kernel32.INSTANCE.GetCurrentDirectoryA(256, currentDirectory)) {
+            ofn.lpstrInitialDir = new String(currentDirectory);
+        }
         ofn.lpstrFilter = filter;
         ofn.nFilterIndex = 1;
-        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
         if (Comdlg32.INSTANCE.GetSaveFileNameA(ofn)) {
             return Optional.of(ofn.lpstrFile);
         } else {
