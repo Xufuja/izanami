@@ -7,6 +7,7 @@ import dev.xfj.engine.events.key.KeyPressedEvent;
 import dev.xfj.engine.renderer.*;
 import dev.xfj.engine.renderer.framebuffer.Framebuffer;
 import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
+import dev.xfj.engine.renderer.framebuffer.FramebufferTextureSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
@@ -83,6 +84,8 @@ public class EditorLayer extends Layer {
         checkerBoardTexture = Texture2D.create(Path.of("assets/textures/Checkerboard.png"));
 
         FramebufferSpecification fbSpec = new FramebufferSpecification();
+        fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.RGBA8));
+        fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.Depth));
         fbSpec.width = 1280;
         fbSpec.height = 720;
         framebuffer = Framebuffer.create(fbSpec);

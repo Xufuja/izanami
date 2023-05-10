@@ -19,13 +19,25 @@ public interface Framebuffer {
         };
     }
 
+    enum FramebufferTextureFormat {
+        None,
+        RGBA8,
+        DEPTH24STENCIL8,
+        Depth
+    }
+
     void bind();
 
     void unbind();
 
     void resize(int width, int height);
 
-    int getColorAttachmentRendererId();
+    default int getColorAttachmentRendererId() {
+        return getColorAttachmentRendererId(0);
+    }
+
+    int getColorAttachmentRendererId(int index);
+
     FramebufferSpecification getSpecification();
 
 }
