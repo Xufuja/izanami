@@ -22,6 +22,7 @@ public interface Framebuffer {
     enum FramebufferTextureFormat {
         None,
         RGBA8,
+        RED_INTEGER,
         DEPTH24STENCIL8,
         Depth
     }

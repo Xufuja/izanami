@@ -62,7 +62,9 @@ public class OpenGLFramebuffer implements Framebuffer {
                 bindTexture(multisample, colorAttachments[i]);
                 switch (colorAttachmentSpecifications.get(i).textureFormat) {
                     case RGBA8 ->
-                            attachColorTexture(colorAttachments[i], specification.samples, GL_RGBA8, specification.width, specification.height, i);
+                            attachColorTexture(colorAttachments[i], specification.samples, GL_RGBA8, GL_RGBA, specification.width, specification.height, i);
+                    case RED_INTEGER ->
+                            attachColorTexture(colorAttachments[i], specification.samples, GL_R32I, GL_RED_INTEGER, specification.width, specification.height, i);
                 }
             }
         }
@@ -121,7 +123,7 @@ public class OpenGLFramebuffer implements Framebuffer {
         //Some sort of exception HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
         GL45.glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
         int[] pixelData = new int[1];
-        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, pixelData);
+        GL45.glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, pixelData);
         return pixelData[0];
     }
 
@@ -148,12 +150,12 @@ public class OpenGLFramebuffer implements Framebuffer {
         GL45.glBindTexture(textureTarget(multisampled), id);
     }
 
-    public static void attachColorTexture(int id, int samples, int format, int width, int height, int index) {
+    public static void attachColorTexture(int id, int samples, int internalFormat, int format, int width, int height, int index) {
         boolean multisampled = samples > 1;
         if (multisampled) {
-            GL45.glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, false);
+            GL45.glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, false);
         } else {
-            GL45.glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            GL45.glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, NULL);
 
             GL45.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             GL45.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

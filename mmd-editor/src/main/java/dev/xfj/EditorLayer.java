@@ -13,9 +13,7 @@ import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
-import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.SceneSerializer;
-import dev.xfj.engine.scene.components.CameraComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
 import dev.xfj.panels.SceneHierarchyPanel;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
@@ -55,6 +53,7 @@ public class EditorLayer extends Layer {
     private boolean viewportFocused;
     private boolean viewportHovered;
     private final Vector2f viewportSize;
+    private Vector2f[] viewportBounds;
     private Vector4f squareColor;
     private int gizmoType;
 
@@ -72,6 +71,7 @@ public class EditorLayer extends Layer {
         this.viewportFocused = false;
         this.viewportHovered = false;
         this.viewportSize = new Vector2f(0.0f, 0.0f);
+        this.viewportBounds = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(0.0f, 0.0f)};
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
         this.primaryCamera = true;
         this.sceneHierarchyPanel = new SceneHierarchyPanel();
@@ -85,6 +85,7 @@ public class EditorLayer extends Layer {
 
         FramebufferSpecification fbSpec = new FramebufferSpecification();
         fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.RGBA8));
+        fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.RED_INTEGER));
         fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.Depth));
         fbSpec.width = 1280;
         fbSpec.height = 720;
@@ -144,6 +145,20 @@ public class EditorLayer extends Layer {
 
         //activeScene.onUpdateRuntime(ts);
         activeScene.onUpdateEditor(ts, editorCamera);
+
+        ImVec2 mousePosition = ImGui.getMousePos();
+        mousePosition.x -= viewportBounds[0].x;
+        mousePosition.y -= viewportBounds[0].y;
+        Vector2f viewportSize = viewportBounds[1].sub(viewportBounds[0], new Vector2f());
+        mousePosition.y = viewportSize.y - mousePosition.y;
+
+        int mouseX = (int) mousePosition.x;
+        int mouseY = (int) mousePosition.y;
+
+        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int) viewportSize.x && mouseY < (int) viewportSize.y) {
+            int pixelData = framebuffer.readPixel(1, mouseX, mouseY);
+            Log.warn(String.format("Pixel data = %s", pixelData));
+        }
 
         framebuffer.unbind();
     }
@@ -228,6 +243,8 @@ public class EditorLayer extends Layer {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
         ImGui.begin("Viewport");
 
+        ImVec2 viewportOffset = ImGui.getCursorPos();
+
         viewportFocused = ImGui.isWindowFocused();
         viewportHovered = ImGui.isWindowHovered();
         Application.getApplication().getImGuiLayer().blockEvents(!viewportFocused && !viewportHovered);
@@ -239,6 +256,14 @@ public class EditorLayer extends Layer {
 
         int textureId = framebuffer.getColorAttachmentRendererId();
         ImGui.image(textureId, viewportSize.x, viewportSize.y, 0, 1, 1, 0);
+
+        ImVec2 windowSize = ImGui.getWindowSize();
+        ImVec2 minBound = ImGui.getWindowPos();
+        minBound.x += viewportOffset.x;
+        minBound.y += viewportOffset.y;
+        ImVec2 maxBound = new ImVec2(minBound.x + viewportSize.x, minBound.y + viewportSize.y);
+        viewportBounds[0] = new Vector2f(minBound.x, minBound.y);
+        viewportBounds[1] = new Vector2f(maxBound.x, maxBound.y);
 
         Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
         if (selectedEntity != null && gizmoType != -1) {
