@@ -128,6 +128,14 @@ public class OpenGLFramebuffer implements Framebuffer {
     }
 
     @Override
+    public void clearAttachment(int attachmentIndex, int value) {
+        //Some sort of exception HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
+
+        FramebufferTextureSpecification spec = colorAttachmentSpecifications.get(attachmentIndex);
+        GL45.glClearTexImage(colorAttachments[attachmentIndex], 0, engineFBTextureFormatToGL(spec.textureFormat), GL_INT, new int[]{value});
+    }
+
+    @Override
     public int getColorAttachmentRendererId(int index) {
         //Some sort of exception HZ_CORE_ASSERT(index < m_ColorAttachments.size());
         return colorAttachments[index];
@@ -189,6 +197,14 @@ public class OpenGLFramebuffer implements Framebuffer {
             //He treats Depth as DEPTH24STENCIL8 so not entirely sure why it is a separate option
             case Depth, DEPTH24STENCIL8 -> true;
             default -> false;
+        };
+    }
+
+    public static int engineFBTextureFormatToGL(FramebufferTextureFormat format) {
+        return switch (format) {
+            case RGBA8 -> GL_RGBA8;
+            case RED_INTEGER -> GL_RED_INTEGER;
+            default -> 0;
         };
     }
 }

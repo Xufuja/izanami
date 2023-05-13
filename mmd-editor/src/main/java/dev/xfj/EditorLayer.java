@@ -143,6 +143,8 @@ public class EditorLayer extends Layer {
         RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
         RenderCommand.clear();
 
+        framebuffer.clearAttachment(1, -1);
+
         //activeScene.onUpdateRuntime(ts);
         activeScene.onUpdateEditor(ts, editorCamera);
 

@@ -33,6 +33,7 @@ public interface Framebuffer {
 
     void resize(int width, int height);
     int readPixel(int attachmentIndex, int x, int y);
+    void clearAttachment(int attachmentIndex, int value);
 
     default int getColorAttachmentRendererId() {
         return getColorAttachmentRendererId(0);
