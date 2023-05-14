@@ -173,6 +173,11 @@ public class OpenGLShader implements Shader {
     }
 
     @Override
+    public void setFloat2(String name, Vector2f value) {
+        uploadUniformFloat2(name, value);
+    }
+
+    @Override
     public void setFloat3(String name, Vector3f value) {
         uploadUniformFloat3(name, value);
     }

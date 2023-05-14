@@ -359,10 +359,26 @@ public class EditorLayer extends Layer {
                     return true;
                 }
             }
-            case KeyCodes.Q -> gizmoType = -1;
-            case KeyCodes.W -> gizmoType = Operation.TRANSLATE;
-            case KeyCodes.E -> gizmoType = Operation.ROTATE;
-            case KeyCodes.R -> gizmoType = Operation.SCALE;
+            case KeyCodes.Q ->  {
+                if (!ImGuizmo.isUsing()) {
+                    gizmoType = -1;
+                }
+            }
+            case KeyCodes.W -> {
+                if (!ImGuizmo.isUsing()) {
+                    gizmoType = Operation.TRANSLATE;
+                }
+            }
+            case KeyCodes.E -> {
+                if (!ImGuizmo.isUsing()) {
+                    gizmoType = Operation.ROTATE;
+                }
+            }
+            case KeyCodes.R -> {
+                if (!ImGuizmo.isUsing()) {
+                    gizmoType = Operation.SCALE;
+                }
+            }
         }
         return false;
     }

@@ -59,9 +59,14 @@ public class OpenGLVertexArray implements VertexArray {
         BufferLayout layout = vertexBuffer.getLayout();
         for (BufferElement element : layout) {
             switch (element.type) {
-                case Float, Float2, Float3, Float4, Int, Int2, Int3, Int4, Bool -> {
+                case Float, Float2, Float3, Float4 -> {
                     GL45.glEnableVertexAttribArray(vertexBufferIndex);
                     GL45.glVertexAttribPointer(vertexBufferIndex, element.getComponentCount(), shaderDataTypeToOpenGLBaseType(element.getType()), element.isNormalized(), layout.getStride(), element.offset);
+                    vertexBufferIndex++;
+                }
+                case Int, Int2, Int3, Int4, Bool -> {
+                    GL45.glEnableVertexAttribArray(vertexBufferIndex);
+                    GL45.glVertexAttribIPointer(vertexBufferIndex, element.getComponentCount(), shaderDataTypeToOpenGLBaseType(element.getType()), layout.getStride(), element.offset);
                     vertexBufferIndex++;
                 }
                 case Mat3, Mat4 -> {

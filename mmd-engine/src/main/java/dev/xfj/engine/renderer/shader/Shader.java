@@ -4,6 +4,7 @@ import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.platform.opengl.OpenGLShader;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -47,6 +48,7 @@ public interface Shader {
     void setIntArray(String name, int[] values);
 
     void setFloat(String name, float value);
+    void setFloat2(String name, Vector2f value);
 
     void setFloat3(String name, Vector3f value);
 
