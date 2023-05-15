@@ -160,8 +160,7 @@ public class EditorLayer extends Layer {
         int mouseY = (int) mousePosition.y;
 
         if (mouseX >= 0 && mouseY >= 0 && mouseX < (int) viewportSize.x && mouseY < (int) viewportSize.y) {
-            int pixelData = framebuffer.readPixel(1, mouseX, mouseY);
-            Log.warn(String.format("Pixel data = %s", pixelData));
+            float pixelData = framebuffer.readPixel(1, mouseX, mouseY);
             hoveredEntity = activeScene.getEntityById(pixelData);
         }
 

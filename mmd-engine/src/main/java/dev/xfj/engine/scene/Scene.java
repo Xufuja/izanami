@@ -137,14 +137,13 @@ public class Scene {
 
     public Entity getEntityById(float id) {
         if (entityIdMapping.get(id) != null) {
-            Log.info((entityIdMapping.get(id) + " and " + id));
             return new Entity(entityIdMapping.get(id), this);
         } else {
             return null;
         }
     }
 
-    private float findEntityId(dev.dominion.ecs.api.Entity entity) {
+    public float findEntityId(dev.dominion.ecs.api.Entity entity) {
         for (Map.Entry<Float, dev.dominion.ecs.api.Entity> entry : entityIdMapping.entrySet()) {
             if (entity.equals(entry.getValue())) {
                 return entry.getKey();
