@@ -13,13 +13,16 @@ public class QuadVertex {
     public Vector2f texCoord;
     public float texIndex;
     public float tilingFactor;
+    //The entityId is an int but this class assumes that everything is a float, it should fit
+    public float entityId;
 
-    public void setQuadVertex(Vector3f position, Vector4f color, Vector2f texCoord, float texIndex, float tilingFactor) {
+    public void setQuadVertex(Vector3f position, Vector4f color, Vector2f texCoord, float texIndex, float tilingFactor, float entityId) {
         this.position = position;
         this.color = color;
         this.texCoord = texCoord;
         this.texIndex = texIndex;
         this.tilingFactor = tilingFactor;
+        this.entityId = entityId;
     }
 
     public ArrayList<Float> toList() {

@@ -7,6 +7,7 @@ import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import dev.xfj.engine.renderer.shader.Shader;
+import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -31,7 +32,8 @@ public class Renderer2D {
                 new BufferElement(BufferElement.ShaderDataType.Float4, "a_Color"),
                 new BufferElement(BufferElement.ShaderDataType.Float2, "a_TexCoord"),
                 new BufferElement(BufferElement.ShaderDataType.Float, "a_TexIndex"),
-                new BufferElement(BufferElement.ShaderDataType.Float, "a_TilingFactor")));
+                new BufferElement(BufferElement.ShaderDataType.Float, "a_TilingFactor"),
+                new BufferElement(BufferElement.ShaderDataType.Float, "a_EntityID")));
 
         data.quadVertexArray.addVertexBuffer(data.quadVertexBuffer);
 
@@ -157,7 +159,7 @@ public class Renderer2D {
 
     public static void drawQuad(Vector3f position, Vector2f size, Vector4f color) {
         Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
-        drawQuad(transform, color);
+        drawQuad(transform, color, -1);
     }
 
     public static void drawQuad(Vector2f position, Vector2f size, Texture2D texture) {
@@ -182,7 +184,7 @@ public class Renderer2D {
 
     public static void drawQuad(Vector3f position, Vector2f size, Texture2D texture, float tilingFactor, Vector4f tintColor) {
         Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
-        drawQuad(transform, texture, tilingFactor, tintColor);
+        drawQuad(transform, texture, tilingFactor, tintColor, -1);
     }
 
     public static Vector3f transformPosition(Matrix4f transform, int quadVertexPosition) {
@@ -190,7 +192,7 @@ public class Renderer2D {
         return new Vector3f(transformedPosition.x, transformedPosition.y, transformedPosition.z);
     }
 
-    public static void drawQuad(Matrix4f transform, Vector4f color) {
+    public static void drawQuad(Matrix4f transform, Vector4f color, float entityId) {
         int quadVertexCount = 4;
         float textureIndex = 0.0f;
         Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
@@ -201,7 +203,7 @@ public class Renderer2D {
         }
 
         for (int i = 0; i < quadVertexCount; i++) {
-            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(transform, i), color, textureCoords[i], textureIndex, tilingFactor);
+            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(transform, i), color, textureCoords[i], textureIndex, tilingFactor, entityId);
             data.quadVertexBufferPtr++;
         }
 
@@ -210,14 +212,14 @@ public class Renderer2D {
     }
 
     public static void drawQuad(Matrix4f transform, Texture2D texture) {
-        drawQuad(transform, texture, 1.0f, new Vector4f(1.0f));
+        drawQuad(transform, texture, 1.0f, new Vector4f(1.0f), -1.1f);
     }
 
     public static void drawQuad(Matrix4f transform, Texture2D texture, float tilingFactor) {
-        drawQuad(transform, texture, tilingFactor, new Vector4f(1.0f));
+        drawQuad(transform, texture, tilingFactor, new Vector4f(1.0f), -1.1f);
     }
 
-    public static void drawQuad(Matrix4f transform, Texture2D texture, float tilingFactor, Vector4f tintColor) {
+    public static void drawQuad(Matrix4f transform, Texture2D texture, float tilingFactor, Vector4f tintColor, float entityId) {
         int quadVertexCount = 4;
         float textureIndex = 0.0f;
         Vector2f[] textureCoords = new Vector2f[]{new Vector2f(0.0f, 0.0f), new Vector2f(1.0f, 0.0f), new Vector2f(1.0f, 1.0f), new Vector2f(0.0f, 1.0f)};
@@ -244,7 +246,7 @@ public class Renderer2D {
         }
 
         for (int i = 0; i < quadVertexCount; i++) {
-            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(transform, i), tintColor, textureCoords[i], textureIndex, tilingFactor);
+            data.quadVertexBufferBase.get(data.quadVertexBufferPtr).setQuadVertex(transformPosition(transform, i), tintColor, textureCoords[i], textureIndex, tilingFactor, entityId);
             data.quadVertexBufferPtr++;
         }
 
@@ -258,7 +260,7 @@ public class Renderer2D {
 
     public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Vector4f color) {
         Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().rotate((float) Math.toRadians(rotation), new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
-        drawQuad(transform, color);
+        drawQuad(transform, color, -1.1f);
     }
 
     public static void drawRotatedQuad(Vector2f position, Vector2f size, float rotation, Texture2D texture) {
@@ -283,7 +285,11 @@ public class Renderer2D {
 
     public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Texture2D texture, float tilingFactor, Vector4f tintColor) {
         Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().rotate((float) Math.toRadians(rotation), new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
-        drawQuad(transform, texture, tilingFactor, tintColor);
+        drawQuad(transform, texture, tilingFactor, tintColor, -1.1f);
+    }
+
+    public static void drawSprite(Matrix4f transform, SpriteRendererComponent src, float entityId) {
+        drawQuad(transform, src.color, entityId);
     }
 
     public static void resetStats() {

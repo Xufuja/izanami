@@ -14,6 +14,7 @@ import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneSerializer;
+import dev.xfj.engine.scene.components.TagComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
 import dev.xfj.panels.SceneHierarchyPanel;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
@@ -47,6 +48,7 @@ public class EditorLayer extends Layer {
     private Entity squareEntity;
     private Entity cameraEntity;
     private Entity secondCamera;
+    private Entity hoveredEntity;
     private boolean primaryCamera;
     private EditorCamera editorCamera;
     private Texture2D checkerBoardTexture;
@@ -160,6 +162,7 @@ public class EditorLayer extends Layer {
         if (mouseX >= 0 && mouseY >= 0 && mouseX < (int) viewportSize.x && mouseY < (int) viewportSize.y) {
             int pixelData = framebuffer.readPixel(1, mouseX, mouseY);
             Log.warn(String.format("Pixel data = %s", pixelData));
+            hoveredEntity = activeScene.getEntityById(pixelData);
         }
 
         framebuffer.unbind();
@@ -233,6 +236,13 @@ public class EditorLayer extends Layer {
         sceneHierarchyPanel.onImGuiRender();
 
         ImGui.begin("Stats");
+
+        String name = "None";
+        if (hoveredEntity != null) {
+            name = hoveredEntity.getComponent(TagComponent.class).tag;
+        }
+        ImGui.text(String.format("Hovered Entity: %s", name));
+
         Statistics stats = Renderer2D.getStats();
         ImGui.text("Renderer2D Stats:");
         ImGui.text(String.format("Draw Calls: %1$d", stats.drawCalls));

@@ -10,14 +10,20 @@ import dev.xfj.engine.scene.components.*;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Scene {
     private final Dominion registry;
+    private final Map<Float, dev.dominion.ecs.api.Entity> entityIdMapping;
+    private float lastId;
     private int viewportWidth;
     private int viewportHeight;
 
     public Scene() {
         this.registry = Dominion.create();
+        this.entityIdMapping = new HashMap<>();
+        this.lastId = 0.1f;
         this.viewportWidth = 0;
         this.viewportHeight = 0;
     }
@@ -68,7 +74,7 @@ public class Scene {
                     .stream().forEach(entity -> {
                         TransformComponent transform = entity.comp1();
                         SpriteRendererComponent sprite = entity.comp2();
-                        Renderer2D.drawQuad(transform.getTransform(), sprite.color);
+                        Renderer2D.drawSprite(transform.getTransform(), sprite, findEntityId(entity.entity()));
                     });
 
             Renderer2D.endScene();
@@ -82,7 +88,7 @@ public class Scene {
                 .stream().forEach(entity -> {
                     TransformComponent transform = entity.comp1();
                     SpriteRendererComponent sprite = entity.comp2();
-                    Renderer2D.drawQuad(transform.getTransform(), sprite.color);
+                    Renderer2D.drawSprite(transform.getTransform(), sprite, findEntityId(entity.entity()));
                 });
 
         Renderer2D.endScene();
@@ -129,15 +135,52 @@ public class Scene {
         return result;
     }
 
+    public Entity getEntityById(float id) {
+        if (entityIdMapping.get(id) != null) {
+            Log.info((entityIdMapping.get(id) + " and " + id));
+            return new Entity(entityIdMapping.get(id), this);
+        } else {
+            return null;
+        }
+    }
+
+    private float findEntityId(dev.dominion.ecs.api.Entity entity) {
+        for (Map.Entry<Float, dev.dominion.ecs.api.Entity> entry : entityIdMapping.entrySet()) {
+            if (entity.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return -1.1f;
+    }
+
 
     protected <T extends Component> void onComponentAdded(Entity entity, T component) {
         switch (component) {
-            case TransformComponent tfc -> Log.trace("TransformComponent Unimplemented");
-            case CameraComponent cc ->
-                    ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
-            case SpriteRendererComponent src -> Log.trace("SpriteRendererComponent Unimplemented");
-            case TagComponent tc -> Log.trace("TagComponent Unimplemented");
-            case NativeScriptComponent<?> nsc -> Log.trace("NativeScriptComponent<?> Unimplemented");
+            case TransformComponent tfc -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                Log.trace("TransformComponent Unimplemented");
+            }
+            case CameraComponent cc -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
+            }
+            case SpriteRendererComponent src -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                Log.trace("SpriteRendererComponent Unimplemented");
+            }
+            case TagComponent tc -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                Log.trace("TagComponent Unimplemented");
+            }
+            case NativeScriptComponent<?> nsc -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                Log.trace("NativeScriptComponent<?> Unimplemented");
+            }
             default -> Log.error("Invalid component type");
         }
     }
