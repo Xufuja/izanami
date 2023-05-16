@@ -254,7 +254,12 @@ public class EditorLayer extends Layer {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
         ImGui.begin("Viewport");
 
-        ImVec2 viewportOffset = ImGui.getCursorPos();
+        ImVec2 viewportMinRegion = ImGui.getWindowContentRegionMin();
+        ImVec2 viewportMaxRegion = ImGui.getContentRegionMax();
+        ImVec2 viewportOffset = ImGui.getWindowPos();
+
+        viewportBounds[0] = new Vector2f(viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y);
+        viewportBounds[1] = new Vector2f(viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y);
 
         viewportFocused = ImGui.isWindowFocused();
         viewportHovered = ImGui.isWindowHovered();
@@ -268,22 +273,12 @@ public class EditorLayer extends Layer {
         int textureId = framebuffer.getColorAttachmentRendererId();
         ImGui.image(textureId, viewportSize.x, viewportSize.y, 0, 1, 1, 0);
 
-        ImVec2 windowSize = ImGui.getWindowSize();
-        ImVec2 minBound = ImGui.getWindowPos();
-        minBound.x += viewportOffset.x;
-        minBound.y += viewportOffset.y;
-        ImVec2 maxBound = new ImVec2(minBound.x + viewportSize.x, minBound.y + viewportSize.y);
-        viewportBounds[0] = new Vector2f(minBound.x, minBound.y);
-        viewportBounds[1] = new Vector2f(maxBound.x, maxBound.y);
-
         Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
         if (selectedEntity != null && gizmoType != -1) {
             ImGuizmo.setOrthographic(false);
             ImGuizmo.setDrawList();
 
-            float windowWidth = ImGui.getWindowWidth();
-            float windowHeight = ImGui.getWindowHeight();
-            ImGuizmo.setRect(ImGui.getWindowPosX(), ImGui.getWindowPosY(), windowWidth, windowHeight);
+            ImGuizmo.setRect(viewportBounds[0].x, viewportBounds[0].y, viewportBounds[1].x - viewportBounds[0].x, viewportBounds[1].y - viewportBounds[0].y);
 
             //Entity cameraEntity = activeScene.getPrimaryCameraEntity();
             //SceneCamera camera = cameraEntity.getComponent(CameraComponent.class).camera;
@@ -368,7 +363,7 @@ public class EditorLayer extends Layer {
                     return true;
                 }
             }
-            case KeyCodes.Q ->  {
+            case KeyCodes.Q -> {
                 if (!ImGuizmo.isUsing()) {
                     gizmoType = -1;
                 }
