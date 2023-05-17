@@ -69,7 +69,7 @@ public class SceneHierarchyPanel {
     private void drawEntityNode(Entity entity) {
         String tag = entity.getComponent(TagComponent.class).tag;
 
-        int flags = ((selectionContext == entity) ? ImGuiTreeNodeFlags.Selected : 0) | ImGuiTreeNodeFlags.OpenOnArrow;
+        int flags = (selectionContext != null && selectionContext.equals(entity) ? ImGuiTreeNodeFlags.Selected : 0) | ImGuiTreeNodeFlags.OpenOnArrow;
         flags |= ImGuiTreeNodeFlags.SpanAvailWidth;
 
         boolean opened = ImGui.treeNodeEx(entity.getId(), flags, tag);
