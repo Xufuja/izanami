@@ -12,7 +12,7 @@ public abstract class MouseButtonEvent extends Event {
         this.button = button;
     }
 
-    public int getButton() {
+    public int getMouseButton() {
         return button;
     }
 }

@@ -10,7 +10,7 @@ public class MouseButtonPressedEvent extends MouseButtonEvent {
 
     }
     public String toString() {
-        return String.format("MouseButtonPressedEvent: %1$d", getButton());
+        return String.format("MouseButtonPressedEvent: %1$d", getMouseButton());
     }
 
     public static Event.EventType getStaticType() {

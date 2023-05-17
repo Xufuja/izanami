@@ -62,6 +62,10 @@ public class SceneHierarchyPanel {
         ImGui.end();
     }
 
+    public void setSelectedEntity(Entity entity) {
+        selectionContext = entity;
+    }
+
     private void drawEntityNode(Entity entity) {
         String tag = entity.getComponent(TagComponent.class).tag;
 

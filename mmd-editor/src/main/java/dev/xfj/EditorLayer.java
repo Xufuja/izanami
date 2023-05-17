@@ -4,6 +4,7 @@ import dev.xfj.engine.core.*;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.key.KeyPressedEvent;
+import dev.xfj.engine.events.mouse.MouseButtonPressedEvent;
 import dev.xfj.engine.renderer.*;
 import dev.xfj.engine.renderer.framebuffer.Framebuffer;
 import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
@@ -334,6 +335,7 @@ public class EditorLayer extends Layer {
         editorCamera.onEvent(event);
         EventDispatcher eventDispatcher = new EventDispatcher(event);
         eventDispatcher.dispatch(KeyPressedEvent.class, this::onKeyPressed);
+        eventDispatcher.dispatch(MouseButtonPressedEvent.class, this::onMouseButtonPressed);
     }
 
     private boolean onKeyPressed(KeyPressedEvent event) {
@@ -382,6 +384,15 @@ public class EditorLayer extends Layer {
                 if (!ImGuizmo.isUsing()) {
                     gizmoType = Operation.SCALE;
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean onMouseButtonPressed(MouseButtonPressedEvent event) {
+        if (event.getMouseButton() == MouseButtonCodes.BUTTON_LEFT) {
+            if (viewportHovered && !ImGuizmo.isOver() && !Input.isKeyPressed(KeyCodes.LEFT_ALT)) {
+                sceneHierarchyPanel.setSelectedEntity(hoveredEntity);
             }
         }
         return false;
