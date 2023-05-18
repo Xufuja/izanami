@@ -17,7 +17,7 @@ import static org.lwjgl.opengl.GL20.GL_BOOL;
 
 
 public class OpenGLVertexArray implements VertexArray {
-    private final int renderId;
+    private final int rendererId;
     private final List<VertexBuffer> vertexBuffers;
     private int vertexBufferIndex;
     private IndexBuffer indexBuffer;
@@ -35,14 +35,14 @@ public class OpenGLVertexArray implements VertexArray {
     }
 
     public OpenGLVertexArray() {
-        this.renderId = GL45.glCreateVertexArrays();
+        this.rendererId = GL45.glCreateVertexArrays();
         this.vertexBufferIndex = 0;
         this.vertexBuffers = new ArrayList<>();
     }
 
     @Override
     public void bind() {
-        GL45.glBindVertexArray(renderId);
+        GL45.glBindVertexArray(rendererId);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class OpenGLVertexArray implements VertexArray {
     @Override
     public void addVertexBuffer(VertexBuffer vertexBuffer) {
         //TODO Some sort of exception to replicate HZ_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
-        GL45.glBindVertexArray(renderId);
+        GL45.glBindVertexArray(rendererId);
         vertexBuffer.bind();
 
         BufferLayout layout = vertexBuffer.getLayout();
@@ -85,7 +85,7 @@ public class OpenGLVertexArray implements VertexArray {
 
     @Override
     public void setIndexBuffer(IndexBuffer indexBuffer) {
-        GL45.glBindVertexArray(renderId);
+        GL45.glBindVertexArray(rendererId);
         indexBuffer.bind();
         this.indexBuffer = indexBuffer;
     }

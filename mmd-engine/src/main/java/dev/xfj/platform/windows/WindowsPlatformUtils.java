@@ -6,7 +6,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.win32.StdCallLibrary;
-import dev.xfj.engine.core.Application;
+import dev.xfj.engine.core.application.Application;
 import dev.xfj.engine.utils.PlatformUtils;
 
 import java.util.Optional;

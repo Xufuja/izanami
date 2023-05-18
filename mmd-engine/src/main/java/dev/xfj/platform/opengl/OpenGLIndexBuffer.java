@@ -9,18 +9,18 @@ import static org.lwjgl.opengl.GL45.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL45.glCreateBuffers;
 
 public class OpenGLIndexBuffer implements IndexBuffer {
-    private final int renderId;
+    private final int rendererId;
     private final int count;
 
     public OpenGLIndexBuffer(int[] indices, int count) {
-        this.renderId = glCreateBuffers();
+        this.rendererId = GL45.glCreateBuffers();
         this.count = count;
-        GL45.glBindBuffer(GL_ARRAY_BUFFER, renderId);
+        GL45.glBindBuffer(GL_ARRAY_BUFFER, rendererId);
         GL45.glBufferData(GL_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
     }
     @Override
     public void bind() {
-        GL45.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderId);
+        GL45.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererId);
     }
 
     @Override

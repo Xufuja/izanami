@@ -1,12 +1,11 @@
 package dev.xfj.platform.windows;
 
-import dev.xfj.engine.core.Application;
+import dev.xfj.engine.core.application.Application;
 import dev.xfj.engine.core.Input;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.DoubleBuffer;
-import java.util.AbstractMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 

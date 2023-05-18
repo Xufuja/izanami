@@ -18,7 +18,7 @@ public class OpenGLTexture2D extends Texture2D {
     private final Path path;
     private final int width;
     private final int height;
-    private final int renderId;
+    private final int rendererId;
     private final int internalFormat;
     private final int dataFormat;
 
@@ -30,14 +30,14 @@ public class OpenGLTexture2D extends Texture2D {
         this.internalFormat = GL_RGBA8;
         this.dataFormat = GL_RGBA;
 
-        this.renderId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
-        GL45.glTextureStorage2D(this.renderId, 1, this.internalFormat, this.width, this.height);
+        this.rendererId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
+        GL45.glTextureStorage2D(this.rendererId, 1, this.internalFormat, this.width, this.height);
 
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
 
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
     }
 
     public OpenGLTexture2D(Path path) {
@@ -70,16 +70,16 @@ public class OpenGLTexture2D extends Texture2D {
         this.internalFormat = internalFormat;
         this.dataFormat = dataFormat;
 
-        this.renderId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
-        GL45.glTextureStorage2D(this.renderId, 1, internalFormat, this.width, this.height);
+        this.rendererId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
+        GL45.glTextureStorage2D(this.rendererId, 1, internalFormat, this.width, this.height);
 
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
 
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
-        GL45.glTextureParameteri(this.renderId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
 
-        GL45.glTextureSubImage2D(this.renderId, 0, 0, 0, this.width, this.height, dataFormat, GL45.GL_UNSIGNED_BYTE, data);
+        GL45.glTextureSubImage2D(this.rendererId, 0, 0, 0, this.width, this.height, dataFormat, GL45.GL_UNSIGNED_BYTE, data);
 
         STBImage.stbi_image_free(data);
     }
@@ -96,7 +96,7 @@ public class OpenGLTexture2D extends Texture2D {
 
     @Override
     public int getRendererId() {
-        return this.renderId;
+        return this.rendererId;
     }
 
 
@@ -107,20 +107,20 @@ public class OpenGLTexture2D extends Texture2D {
         if (size != this.width * this.width * bpp) {
             Log.error("Data must be entire texture!");
         }
-        GL45.glTextureSubImage2D(this.renderId, 0, 0, 0, this.width, this.height, this.dataFormat, GL45.GL_UNSIGNED_BYTE, data);
+        GL45.glTextureSubImage2D(this.rendererId, 0, 0, 0, this.width, this.height, this.dataFormat, GL45.GL_UNSIGNED_BYTE, data);
     }
 
     @Override
     public boolean equals(Texture other) {
-        return renderId == ((OpenGLTexture2D) other).renderId;
+        return rendererId == ((OpenGLTexture2D) other).rendererId;
     }
 
     @Override
     public void bind(int slot) {
-        GL45.glBindTextureUnit(slot, this.renderId);
+        GL45.glBindTextureUnit(slot, this.rendererId);
     }
 
     public void bind() {
-        GL45.glBindTextureUnit(0, this.renderId);
+        GL45.glBindTextureUnit(0, this.rendererId);
     }
 }

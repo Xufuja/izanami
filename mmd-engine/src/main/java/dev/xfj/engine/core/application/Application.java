@@ -1,5 +1,6 @@
-package dev.xfj.engine.core;
+package dev.xfj.engine.core.application;
 
+import dev.xfj.engine.core.*;
 import dev.xfj.engine.core.window.Window;
 import dev.xfj.engine.core.window.WindowProps;
 import dev.xfj.engine.events.Event;
@@ -16,6 +17,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class Application {
     private static Application application;
+    private final ApplicationCommandLineArgs commandLineArgs;
     private final Window window;
     private final ImGuiLayer imGuiLayer;
     private boolean running;
@@ -31,21 +33,22 @@ public class Application {
     }
 
     public Application() {
-        this("MMD Application");
+        this("MMD Application", new ApplicationCommandLineArgs());
     }
 
-    public Application(String name) {
+    public Application(String name, ApplicationCommandLineArgs commandLineArgs) {
         if (application == null) {
             application = this;
         } else {
             Log.error("Application already exists!");
         }
 
-        window = Window.create(new WindowProps(name));
-        running = true;
-        minimized = false;
-        layerStack = new LayerStack();
-        window.setEventCallback(this::onEvent);
+        this.commandLineArgs = commandLineArgs;
+        this.window = Window.create(new WindowProps(name));
+        this.running = true;
+        this.minimized = false;
+        this.layerStack = new LayerStack();
+        this.window.setEventCallback(this::onEvent);
 
         Renderer.init();
 
@@ -131,5 +134,9 @@ public class Application {
 
     public static Application getApplication() {
         return application;
+    }
+
+    public ApplicationCommandLineArgs getCommandLineArgs() {
+        return commandLineArgs;
     }
 }

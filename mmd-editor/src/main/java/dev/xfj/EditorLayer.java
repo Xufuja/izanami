@@ -1,6 +1,7 @@
 package dev.xfj;
 
 import dev.xfj.engine.core.*;
+import dev.xfj.engine.core.application.Application;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.key.KeyPressedEvent;

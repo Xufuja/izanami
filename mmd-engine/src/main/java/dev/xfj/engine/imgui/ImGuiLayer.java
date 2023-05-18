@@ -1,6 +1,6 @@
 package dev.xfj.engine.imgui;
 
-import dev.xfj.engine.core.Application;
+import dev.xfj.engine.core.application.Application;
 import dev.xfj.engine.core.Layer;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.events.Event;
@@ -10,8 +10,6 @@ import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-
-import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.glfwGetCurrentContext;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;

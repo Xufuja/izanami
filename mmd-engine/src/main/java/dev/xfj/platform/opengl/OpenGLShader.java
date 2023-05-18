@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL45;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,23 +20,82 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.util.shaderc.Shaderc.*;
 
 public class OpenGLShader implements Shader {
-    private int renderId;
+    private int rendererId;
+    private final Path filePath;
     private final String name;
+    private Map<Integer, List<Integer>> vulkanSPIRV;
+    private Map<Integer, List<Integer>> openGLSPIRV;
+    private Map<Integer, String> openGLSourceCode;
 
     static int shaderTypeFromString(String type) {
         return switch (type) {
             case "vertex" -> GL_VERTEX_SHADER;
             case "fragment", "pixel" -> GL_FRAGMENT_SHADER;
             default -> {
+                //Some sort of exception
                 Log.error("Unknown Shader Type!");
                 yield 0;
             }
         };
     }
 
+
+    static int gLShaderStageToShaderC(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> shaderc_glsl_vertex_shader;
+            case GL_FRAGMENT_SHADER -> shaderc_glsl_fragment_shader;
+            //Some sort of exception
+            default -> 0;
+        };
+    }
+
+    static String gLShaderStageToString(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> "GL_VERTEX_SHADER";
+            case GL_FRAGMENT_SHADER -> "GL_FRAGMENT_SHADER";
+            //Some sort of exception
+            default -> null;
+        };
+    }
+
+    static Path getCacheDirectory() {
+        return Path.of("assets/cache/shader/opengl");
+    }
+
+    static void createCacheDirectoryIfNeeded() {
+        Path cacheDirectory = getCacheDirectory();
+        if (!Files.exists(cacheDirectory)) {
+            try {
+                Files.createDirectories(cacheDirectory);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+
+    static String gLShaderStageCachedOpenGLFileExtension(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> ".cached_opengl.vert";
+            case GL_FRAGMENT_SHADER -> ".cached_opengl.frag";
+            //Some sort of exception
+            default -> null;
+        };
+    }
+
+    static String gLShaderStageCachedVulkanFileExtension(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> ".cached_vulkan.vert";
+            case GL_FRAGMENT_SHADER -> ".cached_vulkan.frag";
+            //Some sort of exception
+            default -> null;
+        };
+    }
+
     public OpenGLShader(Path filePath) {
+        this.filePath = filePath;
         String source = readFile(filePath);
         HashMap<Integer, String> shaderSources = preProcess(source);
         compile(shaderSources);
@@ -46,6 +106,7 @@ public class OpenGLShader implements Shader {
     }
 
     public OpenGLShader(String name, String vertexSrc, String fragmentSrc) {
+        this.filePath = null;
         this.name = name;
         HashMap<Integer, String> sources = new HashMap<>();
         sources.put(GL_VERTEX_SHADER, vertexSrc);
@@ -119,7 +180,7 @@ public class OpenGLShader implements Shader {
             shaderIds.add(glShaderIDIndex++, shader);
         }
 
-        this.renderId = program;
+        this.rendererId = program;
 
         GL45.glLinkProgram(program);
 
@@ -147,9 +208,47 @@ public class OpenGLShader implements Shader {
         }
     }
 
+    private void compileOrGetVulkanBinaries(Map<Integer, String> shaderSources) {
+        int program = GL45.glCreateProgram();
+        long compiler = shaderc_compiler_initialize();
+        long options = 0;
+        shaderc_compile_options_set_target_env(options, shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
+
+        boolean optimize = true;
+        if (optimize) {
+            shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
+        }
+
+        Path cacheDirectory = getCacheDirectory();
+
+        Map<Integer, List<Integer>> shaderData =  vulkanSPIRV;
+        shaderData.clear();
+
+        for (Map.Entry<Integer, String> entry : shaderSources.entrySet()) {
+            int stage = entry.getKey();
+            String source = entry.getValue();
+
+            Path shaderFilePath = filePath;
+            Path cachedPath = cacheDirectory.resolve(shaderFilePath.getFileName().toString() + gLShaderStageCachedVulkanFileExtension(stage));
+
+
+        }
+
+    }
+
+    private void compileOrGetOpenGLBinaries() {
+
+    }
+    private void createProgram() {
+
+    }
+    private void reflect(int stage, List<Integer> shaderData) {
+
+    }
+
     @Override
     public void bind() {
-        GL45.glUseProgram(this.renderId);
+        GL45.glUseProgram(this.rendererId);
     }
 
     @Override
@@ -193,42 +292,42 @@ public class OpenGLShader implements Shader {
     }
 
     public void uploadUniformInt(String name, int value) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniform1i(location, value);
     }
 
     public void uploadUniformIntArray(String name, int[] values) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniform1iv(location, values);
     }
 
     public void uploadUniformFloat(String name, float value) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniform1f(location, value);
     }
 
     public void uploadUniformFloat2(String name, Vector2f value) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniform2f(location, value.x, value.y);
     }
 
     public void uploadUniformFloat3(String name, Vector3f value) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniform3f(location, value.x, value.y, value.z);
     }
 
     public void uploadUniformFloat4(String name, Vector4f value) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniform4f(location, value.x, value.y, value.z, value.w);
     }
 
     public void uploadUniformMat3(String name, Matrix3f matrix) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniformMatrix3fv(location, false, matrix.get(new float[9]));
     }
 
     public void uploadUniformMat4(String name, Matrix4f matrix) {
-        int location = GL45.glGetUniformLocation(renderId, name);
+        int location = GL45.glGetUniformLocation(rendererId, name);
         GL45.glUniformMatrix4fv(location, false, matrix.get(new float[16]));
     }
 
