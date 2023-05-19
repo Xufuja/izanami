@@ -5,6 +5,7 @@ import dev.xfj.engine.renderer.shader.Shader;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL45;
+import org.lwjgl.opengl.GL46;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +20,17 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL46.GL_SHADER_BINARY_FORMAT_SPIR_V;
+import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.util.shaderc.Shaderc.*;
 
 public class OpenGLShader implements Shader {
     private int rendererId;
     private final Path filePath;
     private final String name;
+    private Map<Integer, ByteBuffer> vulkanSPIRV;
+    private Map<Integer, ByteBuffer> openGLSPIRV;
+    private Map<Integer, String> openGLSourceCode;
 
     static int shaderTypeFromString(String type) {
         return switch (type) {
@@ -149,6 +156,92 @@ public class OpenGLShader implements Shader {
             GL45.glDetachShader(program, id);
             GL45.glDeleteShader(id);
         }
+    }
+
+    private void compileOrGetVulkanBinaries(Map<Integer, String> shaderSources) {
+        int program = GL45.glCreateProgram();
+        long compiler = shaderc_compiler_initialize();
+        long options = 0;
+        shaderc_compile_options_set_target_env(options, shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
+
+        boolean optimize = true;
+        if (optimize) {
+            shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
+        }
+
+        Path cacheDirectory = getCacheDirectory();
+
+        Map<Integer, List<Integer>> shaderData = vulkanSPIRV;
+        shaderData.clear();
+
+        for (Map.Entry<Integer, String> entry : shaderSources.entrySet()) {
+            int stage = entry.getKey();
+            String source = entry.getValue();
+
+            Path shaderFilePath = filePath;
+            Path cachedPath = cacheDirectory.resolve(shaderFilePath.getFileName().toString() + gLShaderStageCachedVulkanFileExtension(stage));
+
+            if (Files.exists(cachedPath)) {
+
+            } else {
+
+            }
+
+        }
+    }
+
+
+    private void compileOrGetOpenGLBinaries() {
+
+    }
+
+    private void createProgram() {
+        int program = GL45.glCreateProgram();
+
+        List<Integer> shaderIds = new ArrayList<>();
+        for (Map.Entry<Integer, ByteBuffer> entry : openGLSPIRV.entrySet()) {
+            int stage = entry.getKey();
+            ByteBuffer spirv = entry.getValue();
+
+            int[] shaderId = new int[1];
+            shaderId[0] = GL45.glCreateShader(stage);
+            shaderIds.add(shaderId[0]);
+
+            GL45.glShaderBinary(shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv);
+            GL46.glSpecializeShader(shaderId[0], "main", new int[]{0}, new int[]{0});
+            GL45.glAttachShader(program, shaderId[0]);
+        }
+
+        GL45.glLinkProgram(program);
+
+        int[] isLinked = new int[1];
+        GL45.glGetProgramiv(program, GL_LINK_STATUS, isLinked);
+
+        if (isLinked[0] == GL_FALSE) {
+            int[] maxLength = new int[1];
+            GL45.glGetProgramiv(program, GL_INFO_LOG_LENGTH, maxLength);
+
+            String infoLog = glGetProgramInfoLog(program, maxLength[0]);
+            //Should be some sort of exception
+            Log.error("Shader link failure " + infoLog);
+
+            GL45.glDeleteProgram(program);
+
+            for (int id : shaderIds) {
+                GL45.glDeleteShader(id);
+            }
+
+        }
+        for (int id : shaderIds) {
+            GL45.glDetachShader(program, id);
+            GL45.glDeleteShader(id);
+        }
+
+        rendererId = program;
+    }
+
+    private void reflect(int stage, List<Integer> shaderData) {
+
     }
 
     @Override
