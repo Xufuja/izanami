@@ -18,6 +18,7 @@ import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneSerializer;
 import dev.xfj.engine.scene.components.TagComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
+import dev.xfj.panels.ContentBrowserPanel;
 import dev.xfj.panels.SceneHierarchyPanel;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
 import imgui.*;
@@ -61,7 +62,8 @@ public class EditorLayer extends Layer {
     private Vector4f squareColor;
     private int gizmoType;
 
-    private SceneHierarchyPanel sceneHierarchyPanel;
+    private final SceneHierarchyPanel sceneHierarchyPanel;
+    private final ContentBrowserPanel contentBrowserPanel;
 
     static {
         System.setProperty("dominion.show-banner", "false");
@@ -79,6 +81,7 @@ public class EditorLayer extends Layer {
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
         this.primaryCamera = true;
         this.sceneHierarchyPanel = new SceneHierarchyPanel();
+        this.contentBrowserPanel = new ContentBrowserPanel();
         this.gizmoType = -1;
     }
 
@@ -235,6 +238,7 @@ public class EditorLayer extends Layer {
         }
 
         sceneHierarchyPanel.onImGuiRender();
+        contentBrowserPanel.onImGuiRender();
 
         ImGui.begin("Stats");
 
