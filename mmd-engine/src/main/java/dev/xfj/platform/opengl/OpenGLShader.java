@@ -24,9 +24,6 @@ public class OpenGLShader implements Shader {
     private int rendererId;
     private final Path filePath;
     private final String name;
-    private Map<Integer, List<Integer>> vulkanSPIRV;
-    private Map<Integer, List<Integer>> openGLSPIRV;
-    private Map<Integer, String> openGLSourceCode;
 
     static int shaderTypeFromString(String type) {
         return switch (type) {
