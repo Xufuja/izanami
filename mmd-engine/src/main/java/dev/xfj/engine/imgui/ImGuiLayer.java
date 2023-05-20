@@ -37,9 +37,11 @@ public class ImGuiLayer extends Layer {
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         //io.setConfigViewportsNoTaskBarIcon(true);
         //io.setConfigViewportsNoAutoMerge(true);
+
+        float fontSize = 18.0f;
         fonts = new ImFont[]{
-                io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f),
-                io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f)
+                io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", fontSize),
+                io.getFonts().addFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", fontSize)
         };
         io.setFontDefault(fonts[1]);
 
