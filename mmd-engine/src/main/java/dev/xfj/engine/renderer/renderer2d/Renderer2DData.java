@@ -1,6 +1,7 @@
 package dev.xfj.engine.renderer.renderer2d;
 
 import dev.xfj.engine.renderer.Texture2D;
+import dev.xfj.engine.renderer.UniformBuffer;
 import dev.xfj.engine.renderer.VertexArray;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import dev.xfj.engine.renderer.shader.Shader;
@@ -29,4 +30,6 @@ public class Renderer2DData {
 
     public Statistics stats = new Statistics();
 
+    CameraData cameraBuffer = new CameraData();
+    UniformBuffer cameraUniformBuffer;
 }

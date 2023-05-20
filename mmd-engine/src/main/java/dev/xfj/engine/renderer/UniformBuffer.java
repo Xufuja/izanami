@@ -4,6 +4,7 @@ import dev.xfj.engine.core.Log;
 import dev.xfj.platform.opengl.OpenGLUniformBuffer;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 public interface UniformBuffer {
     static UniformBuffer create(int size, int binding) {
@@ -20,9 +21,9 @@ public interface UniformBuffer {
         };
     }
 
-    default void setData(ByteBuffer data) {
+    default void setData(FloatBuffer data) {
         setData(data, 0);
     }
 
-    void setData(ByteBuffer data, int offset);
+    void setData(FloatBuffer data, int offset);
 }

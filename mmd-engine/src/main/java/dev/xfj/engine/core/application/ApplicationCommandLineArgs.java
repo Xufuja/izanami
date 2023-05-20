@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ApplicationCommandLineArgs {
-    int count;
-    List<String> arguments;
+    public int count;
+    public List<String> arguments;
 
     public ApplicationCommandLineArgs() {
         this.count = 0;

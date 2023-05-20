@@ -4,6 +4,7 @@ import dev.xfj.engine.renderer.UniformBuffer;
 import org.lwjgl.opengl.GL45;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL45.*;
 
@@ -17,7 +18,7 @@ public class OpenGLUniformBuffer implements UniformBuffer {
     }
 
     @Override
-    public void setData(ByteBuffer data, int offset) {
+    public void setData(FloatBuffer data, int offset) {
         GL45.glNamedBufferSubData(rendererId, offset, data);
     }
 }

@@ -12,10 +12,12 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
@@ -62,6 +64,7 @@ public class Renderer2D {
         try {
             data.whiteTexture = Texture2D.create(1, 1);
             int whiteTextureData = 0xffffffff;
+            //Using MemoryUtil.memAllocInt(1); does not work for some reason
             ByteBuffer data = ByteBuffer.allocateDirect(Integer.BYTES).order(ByteOrder.nativeOrder());
             data.asIntBuffer().put(whiteTextureData);
             Renderer2D.data.whiteTexture.setData(data, Integer.BYTES);
@@ -73,8 +76,6 @@ public class Renderer2D {
             }
 
             Renderer2D.data.textureShader = Shader.create(Path.of("assets/shaders/Texture.glsl"));
-            Renderer2D.data.textureShader.bind();
-            Renderer2D.data.textureShader.setIntArray("u_Textures", samplers);
 
             Renderer2D.data.textureSlots[0] = Renderer2D.data.whiteTexture;
 
@@ -82,6 +83,8 @@ public class Renderer2D {
             Renderer2D.data.quadVertexPositions[1] = new Vector4f(0.5f, -0.5f, 0.0f, 1.0f);
             Renderer2D.data.quadVertexPositions[2] = new Vector4f(0.5f, 0.5f, 0.0f, 1.0f);
             Renderer2D.data.quadVertexPositions[3] = new Vector4f(-0.5f, 0.5f, 0.0f, 1.0f);
+
+            Renderer2D.data.cameraUniformBuffer = UniformBuffer.create(16 * Float.BYTES, 0);
         } catch (IOException e) {
             Log.error(e.toString());
         }
@@ -92,24 +95,25 @@ public class Renderer2D {
     }
 
     public static void beginScene(Camera camera, Matrix4f transform) {
-        Matrix4f viewProjection = camera.getProjection().mul(new Matrix4f(transform.get(new Matrix4f()).invert()), new Matrix4f());
-        data.textureShader.bind();
-        data.textureShader.setMat4("u_ViewProjection", viewProjection);
+        Renderer2D.data.cameraBuffer.viewProjection = camera.getProjection().mul(new Matrix4f(transform.get(new Matrix4f()).invert()), new Matrix4f());
+        FloatBuffer data = Renderer2D.data.cameraBuffer.viewProjection.get(MemoryUtil.memAllocFloat(16));
+        Renderer2D.data.cameraUniformBuffer.setData(data);
 
         startBatch();
     }
 
     public static void beginScene(EditorCamera camera) {
-        Matrix4f viewProjection = camera.getViewProjection();
-        data.textureShader.bind();
-        data.textureShader.setMat4("u_ViewProjection", viewProjection);
+        Renderer2D.data.cameraBuffer.viewProjection = camera.getViewProjection();
+        FloatBuffer data = Renderer2D.data.cameraBuffer.viewProjection.get(MemoryUtil.memAllocFloat(16));
+        Renderer2D.data.cameraUniformBuffer.setData(data);
 
         startBatch();
     }
 
     public static void beginScene(OrthographicCamera camera) {
-        data.textureShader.bind();
-        data.textureShader.setMat4("u_ViewProjection", camera.getViewProjectionMatrix());
+        Renderer2D.data.cameraBuffer.viewProjection = camera.getViewProjectionMatrix();
+        FloatBuffer data = Renderer2D.data.cameraBuffer.viewProjection.get(MemoryUtil.memAllocFloat(16));
+        Renderer2D.data.cameraUniformBuffer.setData(data);
 
         startBatch();
     }
@@ -144,6 +148,9 @@ public class Renderer2D {
         for (int i = 0; i < data.textureSlotIndex; i++) {
             data.textureSlots[i].bind(i);
         }
+
+        Renderer2D.data.textureShader.bind();
+
         RenderCommand.drawIndexed(data.quadVertexArray, data.quadIndexCount);
         data.stats.drawCalls++;
     }

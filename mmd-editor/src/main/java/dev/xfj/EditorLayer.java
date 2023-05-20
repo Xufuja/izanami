@@ -2,6 +2,7 @@ package dev.xfj;
 
 import dev.xfj.engine.core.*;
 import dev.xfj.engine.core.application.Application;
+import dev.xfj.engine.core.application.ApplicationCommandLineArgs;
 import dev.xfj.engine.events.Event;
 import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.key.KeyPressedEvent;
@@ -99,6 +100,13 @@ public class EditorLayer extends Layer {
         framebuffer = Framebuffer.create(fbSpec);
 
         activeScene = new Scene();
+
+        ApplicationCommandLineArgs commandLineArgs = Application.getApplication().getCommandLineArgs();
+        if (commandLineArgs.count > 1) {
+            String sceneFilePath = commandLineArgs.get(0);
+            SceneSerializer serializer = new SceneSerializer(activeScene);
+            serializer.deserialize(Path.of(sceneFilePath));
+        }
         editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
         /*Entity square = activeScene.createEntity("Green Square");
