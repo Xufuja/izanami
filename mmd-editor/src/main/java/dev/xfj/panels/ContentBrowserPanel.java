@@ -1,7 +1,10 @@
 package dev.xfj.panels;
 
+import dev.xfj.engine.core.Log;
+import dev.xfj.engine.imgui.ImGuiStringPayload;
 import dev.xfj.engine.renderer.Texture2D;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiMouseButton;
 
 import java.nio.file.DirectoryStream;
@@ -11,7 +14,7 @@ import java.nio.file.Paths;
 
 public class ContentBrowserPanel {
     //Change later when this needs to be variable
-    private static final Path assetPath = Path.of("assets");
+    public static final Path assetPath = Path.of("assets");
     private Path currentDirectory;
     private final Texture2D directoryIcon;
     private final Texture2D fileIcon;
@@ -52,11 +55,22 @@ public class ContentBrowserPanel {
 
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(currentDirectory)) {
             for (Path directoryEntry : directoryStream) {
-                Path relativePath = currentDirectory.relativize(directoryEntry);
+                Path relativePath = assetPath.relativize(directoryEntry);
                 String filenameString = relativePath.getFileName().toString();
 
+                ImGui.pushID(filenameString);
+
                 Texture2D icon = Files.isDirectory(directoryEntry) ? directoryIcon : fileIcon;
+                ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0);
+
                 ImGui.imageButton(icon.getRendererId(), thumbnailSize, thumbnailSize, 0, 1, 1, 0);
+
+                if (ImGui.beginDragDropSource()) {
+                    ImGui.setDragDropPayload("CONTENT_BROWSER_ITEM", new ImGuiStringPayload(relativePath.toString()));
+                    ImGui.endDragDropSource();
+                }
+
+                ImGui.popStyleColor();
 
                 if (ImGui.isItemHovered() && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
                     if (Files.isDirectory(directoryEntry)) {
@@ -65,6 +79,7 @@ public class ContentBrowserPanel {
                 }
                 ImGui.textWrapped(filenameString);
                 ImGui.nextColumn();
+                ImGui.popID();
 
             }
         } catch (Exception e) {

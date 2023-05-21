@@ -7,6 +7,7 @@ import dev.xfj.engine.events.Event;
 import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.key.KeyPressedEvent;
 import dev.xfj.engine.events.mouse.MouseButtonPressedEvent;
+import dev.xfj.engine.imgui.ImGuiPayload;
 import dev.xfj.engine.renderer.*;
 import dev.xfj.engine.renderer.framebuffer.Framebuffer;
 import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
@@ -287,6 +288,14 @@ public class EditorLayer extends Layer {
         int textureId = framebuffer.getColorAttachmentRendererId();
         ImGui.image(textureId, viewportSize.x, viewportSize.y, 0, 1, 1, 0);
 
+        if (ImGui.beginDragDropTarget()) {
+            ImGuiPayload<?> payload = ImGui.acceptDragDropPayload("CONTENT_BROWSER_ITEM");
+            if (payload != null) {
+                openScene(ContentBrowserPanel.assetPath.resolve(String.valueOf(payload.getData())));
+            }
+            ImGui.endDragDropTarget();
+        }
+
         Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
         if (selectedEntity != null && gizmoType != -1) {
             ImGuizmo.setOrthographic(false);
@@ -419,15 +428,16 @@ public class EditorLayer extends Layer {
 
     private void openScene() {
         Optional<String> filePath = WindowsPlatformUtils.openFile("Scene (*.scene)\0*.scene\0");
+        filePath.ifPresent(path -> openScene(Path.of(path)));
+    }
 
-        if (filePath.isPresent()) {
-            activeScene = new Scene();
-            activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
-            sceneHierarchyPanel.setContext(activeScene);
+    private void openScene(Path filePath) {
+        activeScene = new Scene();
+        activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
+        sceneHierarchyPanel.setContext(activeScene);
 
-            SceneSerializer serializer = new SceneSerializer(activeScene);
-            serializer.deserialize(Path.of(filePath.get()));
-        }
+        SceneSerializer serializer = new SceneSerializer(activeScene);
+        serializer.deserialize(filePath);
     }
 
     private void saveSceneAs() {
