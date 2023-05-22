@@ -27,10 +27,7 @@ import imgui.*;
 import imgui.extension.imguizmo.ImGuizmo;
 import imgui.extension.imguizmo.flag.Mode;
 import imgui.extension.imguizmo.flag.Operation;
-import imgui.flag.ImGuiConfigFlags;
-import imgui.flag.ImGuiDockNodeFlags;
-import imgui.flag.ImGuiStyleVar;
-import imgui.flag.ImGuiWindowFlags;
+import imgui.flag.*;
 import imgui.type.ImBoolean;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -38,6 +35,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class EditorLayer extends Layer {
@@ -57,12 +55,15 @@ public class EditorLayer extends Layer {
     private boolean primaryCamera;
     private EditorCamera editorCamera;
     private Texture2D checkerBoardTexture;
+    private Texture2D iconPlay;
+    private Texture2D iconStop;
     private boolean viewportFocused;
     private boolean viewportHovered;
     private final Vector2f viewportSize;
     private Vector2f[] viewportBounds;
     private Vector4f squareColor;
     private int gizmoType;
+    private SceneState sceneState;
 
     private final SceneHierarchyPanel sceneHierarchyPanel;
     private final ContentBrowserPanel contentBrowserPanel;
@@ -71,6 +72,11 @@ public class EditorLayer extends Layer {
         System.setProperty("dominion.show-banner", "false");
         System.setProperty("dominion.logging-level", "INFO");
         System.setProperty("dominion.dominion-1.logging-level", "INFO");
+    }
+
+    public enum SceneState {
+        Edit,
+        Play
     }
 
     public EditorLayer() {
@@ -85,6 +91,7 @@ public class EditorLayer extends Layer {
         this.sceneHierarchyPanel = new SceneHierarchyPanel();
         this.contentBrowserPanel = new ContentBrowserPanel();
         this.gizmoType = -1;
+        this.sceneState = SceneState.Edit;
     }
 
     @Override
@@ -92,43 +99,35 @@ public class EditorLayer extends Layer {
     public void onAttach() {
         checkerBoardTexture = Texture2D.create(Path.of("assets/textures/Checkerboard.png"));
 
+        ClassLoader classLoader = EditorLayer.class.getClassLoader();
+        try {
+            iconPlay = Texture2D.create(Paths.get(classLoader.getResource("icons/PlayButton.png").toURI()));
+            iconStop = Texture2D.create(Paths.get(classLoader.getResource("icons/StopButton.png").toURI()));
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
         FramebufferSpecification fbSpec = new FramebufferSpecification();
+
         fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.RGBA8));
         fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.RED_INTEGER));
         fbSpec.attachments.attachments.add(new FramebufferTextureSpecification(Framebuffer.FramebufferTextureFormat.Depth));
         fbSpec.width = 1280;
         fbSpec.height = 720;
+
         framebuffer = Framebuffer.create(fbSpec);
 
         activeScene = new Scene();
 
         ApplicationCommandLineArgs commandLineArgs = Application.getApplication().getCommandLineArgs();
+
         if (commandLineArgs.count > 1) {
             String sceneFilePath = commandLineArgs.get(0);
             SceneSerializer serializer = new SceneSerializer(activeScene);
             serializer.deserialize(Path.of(sceneFilePath));
         }
+
         editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-
-        /*Entity square = activeScene.createEntity("Green Square");
-        square.addComponent(new SpriteRendererComponent(new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
-        squareEntity = square;
-
-        Entity redSquare = activeScene.createEntity("Red Square");
-        redSquare.addComponent(new SpriteRendererComponent(new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
-
-        cameraEntity = activeScene.createEntity("Camera A");
-        cameraEntity.addComponent(new CameraComponent());
-
-        secondCamera = activeScene.createEntity("Camera B");
-        secondCamera.addComponent(new CameraComponent());
-        secondCamera.getComponent(CameraComponent.class).primary = false;
-
-        cameraEntity.addComponent(new NativeScriptComponent<CameraController>());
-        cameraEntity.getComponent(NativeScriptComponent.class).bind(CameraController.class);
-
-        secondCamera.addComponent(new NativeScriptComponent<CameraController>());
-        secondCamera.getComponent(NativeScriptComponent.class).bind(CameraController.class);*/
 
         sceneHierarchyPanel.setContext(activeScene);
     }
@@ -148,10 +147,6 @@ public class EditorLayer extends Layer {
             activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
         }
 
-        if (viewportFocused) {
-            cameraController.onUpdate(ts);
-        }
-
         editorCamera.onUpdate(ts);
 
         Renderer2D.resetStats();
@@ -161,8 +156,16 @@ public class EditorLayer extends Layer {
 
         framebuffer.clearAttachment(1, -1);
 
-        //activeScene.onUpdateRuntime(ts);
-        activeScene.onUpdateEditor(ts, editorCamera);
+        switch (sceneState) {
+            case Edit -> {
+                if (viewportFocused) {
+                    cameraController.onUpdate(ts);
+                }
+                editorCamera.onUpdate(ts);
+                activeScene.onUpdateEditor(ts, editorCamera);
+            }
+            case Play -> activeScene.onUpdateRuntime(ts);
+        }
 
         ImVec2 mousePosition = ImGui.getMousePos();
         mousePosition.x -= viewportBounds[0].x;
@@ -187,10 +190,11 @@ public class EditorLayer extends Layer {
         boolean opt_fullscreen = opt_fullscreen_persistant;
 
         int window_flags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
+
         if (opt_fullscreen) {
             ImGuiViewport viewport = ImGui.getMainViewport();
             ImGui.setNextWindowPos(viewport.getPosX(), viewport.getPosY());
-            ImGui.setNextWindowSize(viewport.getSizeX(), viewport.getSizeX());
+            ImGui.setNextWindowSize(viewport.getSizeX(), viewport.getSizeY());
             ImGui.setNextWindowViewport(viewport.getID());
             ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
             ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
@@ -224,7 +228,6 @@ public class EditorLayer extends Layer {
 
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
-
                 if (ImGui.menuItem("New", "Ctrl+N")) {
                     newScene();
                 }
@@ -270,7 +273,7 @@ public class EditorLayer extends Layer {
         ImGui.begin("Viewport");
 
         ImVec2 viewportMinRegion = ImGui.getWindowContentRegionMin();
-        ImVec2 viewportMaxRegion = ImGui.getContentRegionMax();
+        ImVec2 viewportMaxRegion = ImGui.getWindowContentRegionMax();
         ImVec2 viewportOffset = ImGui.getWindowPos();
 
         viewportBounds[0] = new Vector2f(viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y);
@@ -278,6 +281,7 @@ public class EditorLayer extends Layer {
 
         viewportFocused = ImGui.isWindowFocused();
         viewportHovered = ImGui.isWindowHovered();
+
         Application.getApplication().getImGuiLayer().blockEvents(!viewportFocused && !viewportHovered);
 
         ImVec2 viewportPanelSize = ImGui.getContentRegionAvail();
@@ -303,11 +307,6 @@ public class EditorLayer extends Layer {
 
             ImGuizmo.setRect(viewportBounds[0].x, viewportBounds[0].y, viewportBounds[1].x - viewportBounds[0].x, viewportBounds[1].y - viewportBounds[0].y);
 
-            //Entity cameraEntity = activeScene.getPrimaryCameraEntity();
-            //SceneCamera camera = cameraEntity.getComponent(CameraComponent.class).camera;
-            //Matrix4f cameraProjection = camera.getProjection();
-            //Matrix4f cameraView = cameraEntity.getComponent(TransformComponent.class).getTransform().invert();
-
             Matrix4f cameraProjection = editorCamera.getProjection();
             Matrix4f cameraView = editorCamera.getViewMatrix();
 
@@ -322,11 +321,8 @@ public class EditorLayer extends Layer {
             }
 
             float[] snapValues = new float[]{snapValue, snapValue, snapValue};
-
             float[] transformAsFloatArray = transform.get(new float[16]);
-
             ImGuizmo.manipulate(cameraView.get(new float[16]), cameraProjection.get(new float[16]), transformAsFloatArray, gizmoType, Mode.LOCAL, snap ? snapValues : new float[]{0});
-
             transform.set(transformAsFloatArray);
 
             if (ImGuizmo.isUsing()) {
@@ -348,6 +344,39 @@ public class EditorLayer extends Layer {
         ImGui.end();
         ImGui.popStyleVar();
 
+        uiToolbar();
+
+        ImGui.end();
+    }
+
+    public void uiToolbar() {
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 2);
+        ImGui.pushStyleVar(ImGuiStyleVar.ItemInnerSpacing, 0, 0);
+        ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0);
+
+        float[][] colors = ImGui.getStyle().getColors();
+
+        float[] buttonHovered = colors[ImGuiCol.ButtonHovered];
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, buttonHovered[0], buttonHovered[1], buttonHovered[2], 0.5f);
+        float[] buttonActive = colors[ImGuiCol.ButtonActive];
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, buttonActive[0], buttonActive[1], buttonActive[2], 0.5f);
+
+        ImGui.begin("##toolbar", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+
+        float size = ImGui.getWindowHeight() - 4.0f;
+        Texture2D icon = sceneState == SceneState.Edit ? iconPlay : iconStop;
+        ImGui.setCursorPosX((ImGui.getWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+
+        if (ImGui.imageButton(icon.getRendererId(), size, size, 0, 0, 1, 1, 0)) {
+            if (sceneState == SceneState.Edit) {
+                onScenePlay();
+            } else if (sceneState == SceneState.Play) {
+                onSceneStop();
+            }
+        }
+
+        ImGui.popStyleVar(2);
+        ImGui.popStyleColor(3);
         ImGui.end();
     }
 
@@ -447,5 +476,14 @@ public class EditorLayer extends Layer {
             SceneSerializer serializer = new SceneSerializer(activeScene);
             serializer.serialize(Path.of(filePath.get()));
         }
+    }
+
+    private void onScenePlay() {
+        sceneState = SceneState.Play;
+    }
+
+    private void onSceneStop() {
+        sceneState = SceneState.Edit;
+
     }
 }
