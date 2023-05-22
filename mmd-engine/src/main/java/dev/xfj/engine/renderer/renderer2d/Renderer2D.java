@@ -296,7 +296,11 @@ public class Renderer2D {
     }
 
     public static void drawSprite(Matrix4f transform, SpriteRendererComponent src, float entityId) {
-        drawQuad(transform, src.color, entityId);
+        if (src.texture != null) {
+            drawQuad(transform, src.texture, src.tilingFactor, src.color, entityId);
+        } else {
+            drawQuad(transform, src.color, entityId);
+        }
     }
 
     public static void resetStats() {

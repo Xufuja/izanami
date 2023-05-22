@@ -34,7 +34,7 @@ public class OpenGLTexture2D extends Texture2D {
         GL45.glTextureStorage2D(this.rendererId, 1, this.internalFormat, this.width, this.height);
 
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
-        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_LINEAR);
 
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
@@ -74,7 +74,7 @@ public class OpenGLTexture2D extends Texture2D {
         GL45.glTextureStorage2D(this.rendererId, 1, internalFormat, this.width, this.height);
 
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
-        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_NEAREST);
+        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_LINEAR);
 
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);

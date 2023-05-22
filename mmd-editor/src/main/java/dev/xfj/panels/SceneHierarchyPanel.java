@@ -2,6 +2,8 @@ package dev.xfj.panels;
 
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.imgui.ImGuiLayer;
+import dev.xfj.engine.imgui.ImGuiPayload;
+import dev.xfj.engine.renderer.Texture2D;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
@@ -337,9 +339,22 @@ public class SceneHierarchyPanel {
 
         drawComponent(SpriteRendererComponent.class, "Sprite Renderer", entity, component -> {
             SpriteRendererComponent src = entity.getComponent(SpriteRendererComponent.class);
+
             float[] newColor = {src.color.x, src.color.y, src.color.z, src.color.w};
             ImGui.colorEdit4("Color", newColor);
             src.color = new Vector4f(newColor[0], newColor[1], newColor[2], newColor[3]);
+
+            ImGui.button("Texture", 100.0f, 0.0f);
+            if (ImGui.beginDragDropTarget()) {
+                ImGuiPayload<?> payload = ImGui.acceptDragDropPayload("CONTENT_BROWSER_ITEM");
+                if (payload != null) {
+                    component.texture = Texture2D.create(ContentBrowserPanel.assetPath.resolve(String.valueOf(payload.getData())));
+                }
+                ImGui.endDragDropTarget();
+            }
+            float[] newTilingFactor = new float[]{component.tilingFactor};
+            ImGui.dragFloat("Tiling Factor", newTilingFactor, 0.1f, 0.0f, 100.0f);
+            component.tilingFactor = newTilingFactor[0];
         });
 
     }
