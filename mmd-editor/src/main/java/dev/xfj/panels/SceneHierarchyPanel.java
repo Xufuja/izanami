@@ -14,9 +14,11 @@ import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.type.ImString;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import javax.swing.*;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
@@ -244,22 +246,33 @@ public class SceneHierarchyPanel {
 
         if (ImGui.beginPopup("AddComponent")) {
 
-            if (ImGui.menuItem("Camera")) {
-                if (!selectionContext.hasComponent(CameraComponent.class)) {
+
+            if (!selectionContext.hasComponent(CameraComponent.class)) {
+                if (ImGui.menuItem("Camera")) {
                     selectionContext.addComponent(new CameraComponent());
-                } else {
-                    Log.warn("This entity already has the Camera Component!");
+                    ImGui.closeCurrentPopup();
                 }
-                ImGui.closeCurrentPopup();
             }
 
-            if (ImGui.menuItem("Sprite Renderer")) {
-                if (!selectionContext.hasComponent(SpriteRendererComponent.class)) {
+            if (!selectionContext.hasComponent(SpriteRendererComponent.class)) {
+                if (ImGui.menuItem("Sprite Renderer")) {
                     selectionContext.addComponent(new SpriteRendererComponent());
-                } else {
-                    Log.warn("This entity already has the Camera Component!");
+                    ImGui.closeCurrentPopup();
                 }
-                ImGui.closeCurrentPopup();
+            }
+
+            if (!selectionContext.hasComponent(Rigidbody2DComponent.class)) {
+                if (ImGui.menuItem("Rigidbody 2D")) {
+                    selectionContext.addComponent(new Rigidbody2DComponent());
+                    ImGui.closeCurrentPopup();
+                }
+            }
+
+            if (!selectionContext.hasComponent(BoxCollider2DComponent.class)) {
+                if (ImGui.menuItem("Box Collider 2D")) {
+                    selectionContext.addComponent(new BoxCollider2DComponent());
+                    ImGui.closeCurrentPopup();
+                }
             }
             ImGui.endPopup();
         }
@@ -363,6 +376,56 @@ public class SceneHierarchyPanel {
             float[] newTilingFactor = new float[]{component.tilingFactor};
             ImGui.dragFloat("Tiling Factor", newTilingFactor, 0.1f, 0.0f, 100.0f);
             component.tilingFactor = newTilingFactor[0];
+        });
+
+        drawComponent(Rigidbody2DComponent.class, "Rigidbody 2D", entity, component -> {
+            String[] bodyTypeStrings = new String[]{"Static", "Dynamic", "Kinmatic"};
+            String currentbodyTypeString = bodyTypeStrings[component.type.ordinal()];
+
+            if (ImGui.beginCombo("Body Type", currentbodyTypeString)) {
+                for (int i = 0; i < 2; i++) {
+                    boolean isSelected = currentbodyTypeString.equals(bodyTypeStrings[i]);
+                    if (ImGui.selectable(bodyTypeStrings[i], isSelected)) {
+                        currentbodyTypeString = bodyTypeStrings[i];
+                        component.type = Rigidbody2DComponent.BodyType.values()[i];
+
+                    }
+                    if (isSelected) {
+                        ImGui.setItemDefaultFocus();
+                    }
+                }
+                ImGui.endCombo();
+
+                if (ImGui.checkbox("Fixed Rotation", component.fixedRotation)) {
+                    component.fixedRotation = !component.fixedRotation;
+                }
+        }});
+        drawComponent(BoxCollider2DComponent.class, "Box Collider 2D", entity, component -> {
+            float[] newOffset = new float[]{component.offset.x, component.offset.y};
+            ImGui.dragFloat2("Offset", newOffset);
+            component.offset.x = newOffset[0];
+            component.offset.y = newOffset[1];
+
+            float[] newSize = new float[]{component.size.x, component.size.y};
+            ImGui.dragFloat2("Size", newSize);
+            component.size.x = newSize[0];
+            component.size.y = newSize[1];
+
+            float[] newDensity = new float[]{component.density};
+            ImGui.dragFloat("Density", newDensity, 0.01f, 0.0f, 1.0f);
+            component.density = newDensity[0];
+
+            float[] newFriction = new float[]{component.friction};
+            ImGui.dragFloat("Friction", newFriction, 0.01f, 0.0f, 1.0f);
+            component.friction = newFriction[0];
+
+            float[] newRestitution = new float[]{component.restitution};
+            ImGui.dragFloat("Restitution", newRestitution, 0.01f, 0.0f, 1.0f);
+            component.restitution = newRestitution[0];
+
+            float[] newRestitutionThreshold = new float[]{component.restitutionThreshold};
+            ImGui.dragFloat("Restitution Threshold", newRestitutionThreshold, 0.01f, 0.0f, 1.0f);
+            component.restitutionThreshold = newRestitutionThreshold[0];
         });
 
     }

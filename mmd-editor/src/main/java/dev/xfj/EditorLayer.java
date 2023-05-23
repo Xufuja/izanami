@@ -487,10 +487,11 @@ public class EditorLayer extends Layer {
 
     private void onScenePlay() {
         sceneState = SceneState.Play;
+        activeScene.onRuntimeStart();
     }
 
     private void onSceneStop() {
         sceneState = SceneState.Edit;
-
+        activeScene.onRuntimeStop();
     }
 }

@@ -1,5 +1,7 @@
 package dev.xfj.engine.scene;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import dev.dominion.ecs.api.Dominion;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
@@ -19,6 +21,20 @@ public class Scene {
     private float lastId;
     private int viewportWidth;
     private int viewportHeight;
+    private World physicsWorld;
+
+    public static BodyDef.BodyType rigidbody2DTypeToBox2DBody(Rigidbody2DComponent.BodyType bodyType) {
+        return switch (bodyType) {
+            case Static -> BodyDef.BodyType.StaticBody;
+            case Dynamic -> BodyDef.BodyType.DynamicBody;
+            case Kinematic -> BodyDef.BodyType.KinematicBody;
+            case default -> {
+                //Some sort of exception
+                Log.error("Unknown body type");
+                yield BodyDef.BodyType.StaticBody;
+            }
+        };
+    }
 
     public Scene() {
         this.registry = Dominion.create();
@@ -40,6 +56,46 @@ public class Scene {
         registry.deleteEntity(entity);
     }
 
+    public void onRuntimeStart() {
+        physicsWorld = new World(new Vector2(0.0f, -9.8f), true);
+        registry.findEntitiesWith(Rigidbody2DComponent.class)
+                .stream().forEach(component -> {
+                    Entity entity = new Entity(component.entity(), this);
+                    TransformComponent transform = entity.getComponent(TransformComponent.class);
+                    Rigidbody2DComponent rb2dc = entity.getComponent(Rigidbody2DComponent.class);
+
+                    BodyDef bodyDef = new BodyDef();
+                    bodyDef.type = rigidbody2DTypeToBox2DBody(rb2dc.type);
+                    bodyDef.position.set(transform.translation.x, transform.translation.y);
+                    bodyDef.angle = transform.rotation.z;
+
+                    Body body = physicsWorld.createBody(bodyDef);
+                    body.setFixedRotation(rb2dc.fixedRotation);
+                    rb2dc.runtimeBody = body;
+
+                    if (entity.hasComponent(BoxCollider2DComponent.class)) {
+                        BoxCollider2DComponent bc2dc = entity.getComponent(BoxCollider2DComponent.class);
+
+                        PolygonShape boxShape = new PolygonShape();
+                        boxShape.setAsBox(bc2dc.size.x * transform.scale.x, bc2dc.size.y * transform.scale.y);
+
+                        FixtureDef fixtureDef = new FixtureDef();
+                        fixtureDef.shape = boxShape;
+                        fixtureDef.density = bc2dc.density;
+                        ;
+                        fixtureDef.friction = bc2dc.friction;
+                        fixtureDef.restitution = bc2dc.restitution;
+                        ;
+                        //There is no such as restitutionThreshold?
+                        body.createFixture(fixtureDef);
+                    }
+                });
+    }
+
+    public void onRuntimeStop() {
+        physicsWorld = null;
+    }
+
     @SuppressWarnings("unchecked")
     public void onUpdateRuntime(TimeStep ts) {
         registry.findEntitiesWith(NativeScriptComponent.class)
@@ -51,6 +107,24 @@ public class Scene {
                         nsc.instance.onCreate();
                     }
                     nsc.instance.onUpdate(ts);
+                });
+
+        int velocityIterations = 6;
+        int positionIterations = 2;
+
+        physicsWorld.step(ts.getTime(), velocityIterations, positionIterations);
+
+        registry.findEntitiesWith(Rigidbody2DComponent.class)
+                .stream().forEach(component -> {
+                    Entity entity = new Entity(component.entity(), this);
+                    TransformComponent transform = entity.getComponent(TransformComponent.class);
+                    Rigidbody2DComponent rb2dc = entity.getComponent(Rigidbody2DComponent.class);
+
+                    Body body = rb2dc.runtimeBody;
+                    Vector2 position = body.getPosition();
+                    transform.translation.x = position.x;
+                    transform.translation.y = position.y;
+                    transform.rotation.z = body.getAngle();
                 });
 
         Camera mainCamera = null;
@@ -179,6 +253,16 @@ public class Scene {
                 entityIdMapping.put(lastId + 1, entity.getEntity());
                 lastId++;
                 Log.trace("NativeScriptComponent<?> Unimplemented");
+            }
+            case Rigidbody2DComponent rb2dc -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                Log.trace("Rigidbody2DComponent Unimplemented");
+            }
+            case BoxCollider2DComponent bc2dc -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                Log.trace("BoxCollider2DComponent Unimplemented");
             }
             default -> Log.error("Invalid component type");
         }
