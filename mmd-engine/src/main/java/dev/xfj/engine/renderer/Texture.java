@@ -12,7 +12,11 @@ public interface Texture {
     void setData(ByteBuffer data, int size);
     boolean equals(Texture other);
 
-    void bind();
+    default void bind() {
+        bind(0);
+    }
     void bind(int slot);
+
+    boolean isLoaded();
 
 }

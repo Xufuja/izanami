@@ -21,9 +21,10 @@ public class OpenGLTexture2D extends Texture2D {
     private final int rendererId;
     private final int internalFormat;
     private final int dataFormat;
+    private boolean isLoaded;
 
     public OpenGLTexture2D(int width, int height) {
-        this.path = null; //Not entirely sure why it complains about this not being assigned when this code path never uses it
+        this.path = null;
         this.width = width;
         this.height = height;
 
@@ -38,6 +39,8 @@ public class OpenGLTexture2D extends Texture2D {
 
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
         GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
+
+        this.isLoaded = false;
     }
 
     public OpenGLTexture2D(Path path) {
@@ -49,39 +52,47 @@ public class OpenGLTexture2D extends Texture2D {
 
         STBImage.stbi_set_flip_vertically_on_load(true);
         ByteBuffer data = STBImage.stbi_load(path.normalize().toString(), width, height, channels, 0);
-        //Some sort exception if the image cannot be loaded
-        this.width = width.get(0);
-        this.height = height.get(0);
 
-        int internalFormat = 0;
-        int dataFormat = 0;
+        if (data != null && data.hasRemaining()) {
+            this.isLoaded = true;
 
-        if (channels.get(0) == 4) {
-            internalFormat = GL_RGBA8;
-            dataFormat = GL_RGBA;
-        } else if (channels.get(0) == 3) {
-            internalFormat = GL45.GL_RGB8;
-            dataFormat = GL45.GL_RGB;
+            this.width = width.get(0);
+            this.height = height.get(0);
+
+            int internalFormat = 0;
+            int dataFormat = 0;
+
+            if (channels.get(0) == 4) {
+                internalFormat = GL_RGBA8;
+                dataFormat = GL_RGBA;
+            } else if (channels.get(0) == 3) {
+                internalFormat = GL45.GL_RGB8;
+                dataFormat = GL45.GL_RGB;
+            }
+
+            this.internalFormat = internalFormat;
+            this.dataFormat = dataFormat;
+            //Some sort of exception HZ_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+
+            this.rendererId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
+            GL45.glTextureStorage2D(this.rendererId, 1, internalFormat, this.width, this.height);
+
+            GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
+            GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_LINEAR);
+
+            GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
+            GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
+
+            GL45.glTextureSubImage2D(this.rendererId, 0, 0, 0, this.width, this.height, dataFormat, GL45.GL_UNSIGNED_BYTE, data);
+
+            STBImage.stbi_image_free(data);
         } else {
-            //Should be some sort of exception
-            Log.error("Format not supported!");
+            this.width = 0;
+            this.height = 0;
+            this.rendererId = 0;
+            this.internalFormat = 0;
+            this.dataFormat = 0;
         }
-
-        this.internalFormat = internalFormat;
-        this.dataFormat = dataFormat;
-
-        this.rendererId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
-        GL45.glTextureStorage2D(this.rendererId, 1, internalFormat, this.width, this.height);
-
-        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MIN_FILTER, GL45.GL_LINEAR);
-        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_MAG_FILTER, GL45.GL_LINEAR);
-
-        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_S, GL45.GL_REPEAT);
-        GL45.glTextureParameteri(this.rendererId, GL45.GL_TEXTURE_WRAP_T, GL45.GL_REPEAT);
-
-        GL45.glTextureSubImage2D(this.rendererId, 0, 0, 0, this.width, this.height, dataFormat, GL45.GL_UNSIGNED_BYTE, data);
-
-        STBImage.stbi_image_free(data);
     }
 
     @Override
@@ -120,7 +131,8 @@ public class OpenGLTexture2D extends Texture2D {
         GL45.glBindTextureUnit(slot, this.rendererId);
     }
 
-    public void bind() {
-        GL45.glBindTextureUnit(0, this.rendererId);
+    @Override
+    public boolean isLoaded() {
+        return isLoaded;
     }
 }

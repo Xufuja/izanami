@@ -17,6 +17,7 @@ import imgui.type.ImString;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class SceneHierarchyPanel {
@@ -348,7 +349,14 @@ public class SceneHierarchyPanel {
             if (ImGui.beginDragDropTarget()) {
                 ImGuiPayload<?> payload = ImGui.acceptDragDropPayload("CONTENT_BROWSER_ITEM");
                 if (payload != null) {
-                    component.texture = Texture2D.create(ContentBrowserPanel.assetPath.resolve(String.valueOf(payload.getData())));
+                    Path texturePath = ContentBrowserPanel.assetPath.resolve(String.valueOf(payload.getData()));
+                    Texture2D texture = Texture2D.create(texturePath);
+
+                    if (texture.isLoaded()) {
+                        component.texture = texture;
+                    } else {
+                        Log.warn(String.format("Could not load texture %s", texturePath));
+                    }
                 }
                 ImGui.endDragDropTarget();
             }

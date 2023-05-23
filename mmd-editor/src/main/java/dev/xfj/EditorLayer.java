@@ -461,12 +461,19 @@ public class EditorLayer extends Layer {
     }
 
     private void openScene(Path filePath) {
-        activeScene = new Scene();
-        activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
-        sceneHierarchyPanel.setContext(activeScene);
+        if (!filePath.getFileName().toString().endsWith(".scene")) {
+            Log.warn(String.format("Could not load %s - not a scene file", filePath.getFileName()));
+            return;
+        }
 
-        SceneSerializer serializer = new SceneSerializer(activeScene);
-        serializer.deserialize(filePath);
+        Scene newScene = new Scene();
+        SceneSerializer serializer = new SceneSerializer(newScene);
+
+        if (serializer.deserialize(filePath)) {
+            activeScene = newScene;
+            activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
+            sceneHierarchyPanel.setContext(activeScene);
+        }
     }
 
     private void saveSceneAs() {
