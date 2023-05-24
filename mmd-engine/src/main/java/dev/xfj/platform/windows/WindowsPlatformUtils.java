@@ -97,13 +97,15 @@ public class WindowsPlatformUtils extends PlatformUtils {
         ofn.hwndOwner = Pointer.createConstant(glfwGetWin32Window(Application.getApplication().getWindow().getNativeWindow()));
         ofn.lpstrFile = new String(szFile);
         ofn.nMaxFile = szFile.length;
+
         if (Kernel32.INSTANCE.GetCurrentDirectoryA(256, currentDirectory)) {
             ofn.lpstrInitialDir = new String(currentDirectory);
         }
+
         ofn.lpstrFilter = filter;
         ofn.nFilterIndex = 1;
-        ofn.lpstrDefExt = filter.substring(filter.lastIndexOf(".") + 1);
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
         if (Comdlg32.INSTANCE.GetOpenFileNameA(ofn)) {
             return Optional.of(ofn.lpstrFile);
         } else {
@@ -120,12 +122,16 @@ public class WindowsPlatformUtils extends PlatformUtils {
         ofn.hwndOwner = Pointer.createConstant(glfwGetWin32Window(Application.getApplication().getWindow().getNativeWindow()));
         ofn.lpstrFile = new String(szFile);
         ofn.nMaxFile = szFile.length;
+
         if (Kernel32.INSTANCE.GetCurrentDirectoryA(256, currentDirectory)) {
             ofn.lpstrInitialDir = new String(currentDirectory);
         }
+
         ofn.lpstrFilter = filter;
         ofn.nFilterIndex = 1;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+        ofn.lpstrDefExt = filter.substring(filter.lastIndexOf(".") + 1);
+
         if (Comdlg32.INSTANCE.GetSaveFileNameA(ofn)) {
             return Optional.of(ofn.lpstrFile);
         } else {
