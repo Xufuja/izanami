@@ -16,6 +16,8 @@ message EntityFile {
   TransformFile transform = 2;
   SpriteRendererFile sprite_renderer = 3;
   CameraFile camera = 4;
+  Rigidbody2DFile rigidbody_2d = 5;
+  BoxCollider2DFile box_collider_2d = 6;
 }
 
 message TagFile {
@@ -47,4 +49,23 @@ message CameraFile {
 
 message SpriteRendererFile {
   repeated float color = 1;
+}
+
+message Rigidbody2DFile {
+  enum BodyType {
+    Static = 0;
+    Dynamic = 1;
+    Kinematic = 2;
+  }
+  BodyType body_type = 1;
+  bool fixed_rotation = 2;
+}
+
+message BoxCollider2DFile {
+  repeated float offset = 1;
+  repeated float size = 2;
+  float density = 3;
+  float friction = 4;
+  float restitution = 5;
+  float restitution_threshold = 6;
 }

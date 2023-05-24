@@ -383,23 +383,24 @@ public class SceneHierarchyPanel {
             String currentbodyTypeString = bodyTypeStrings[component.type.ordinal()];
 
             if (ImGui.beginCombo("Body Type", currentbodyTypeString)) {
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 3; i++) {
                     boolean isSelected = currentbodyTypeString.equals(bodyTypeStrings[i]);
                     if (ImGui.selectable(bodyTypeStrings[i], isSelected)) {
                         currentbodyTypeString = bodyTypeStrings[i];
                         component.type = Rigidbody2DComponent.BodyType.values()[i];
-
                     }
+
                     if (isSelected) {
                         ImGui.setItemDefaultFocus();
                     }
                 }
                 ImGui.endCombo();
+            }
+            if (ImGui.checkbox("Fixed Rotation", component.fixedRotation)) {
+                component.fixedRotation = !component.fixedRotation;
+            }
+        });
 
-                if (ImGui.checkbox("Fixed Rotation", component.fixedRotation)) {
-                    component.fixedRotation = !component.fixedRotation;
-                }
-        }});
         drawComponent(BoxCollider2DComponent.class, "Box Collider 2D", entity, component -> {
             float[] newOffset = new float[]{component.offset.x, component.offset.y};
             ImGui.dragFloat2("Offset", newOffset);

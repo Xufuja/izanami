@@ -2,11 +2,9 @@ package dev.xfj.engine.scene;
 
 
 import dev.xfj.engine.core.Log;
-import dev.xfj.engine.scene.components.CameraComponent;
-import dev.xfj.engine.scene.components.SpriteRendererComponent;
-import dev.xfj.engine.scene.components.TagComponent;
-import dev.xfj.engine.scene.components.TransformComponent;
+import dev.xfj.engine.scene.components.*;
 import dev.xfj.protobuf.*;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -67,6 +65,28 @@ public class SceneSerializer {
                 entityBuilder.setSpriteRenderer(SpriteRendererFile.newBuilder()
                         .addAllColor(Arrays.asList(color.x, color.y, color.z, color.w))).build();
             }
+
+            if (entity.hasComponent(Rigidbody2DComponent.class)) {
+                Rigidbody2DComponent rigidbody2DComponent = entity.getComponent(Rigidbody2DComponent.class);
+
+                entityBuilder.setRigidbody2D(Rigidbody2DFile.newBuilder()
+                        .setBodyType(rigidBody2DBodyTypeToEnum(rigidbody2DComponent.type))
+                        .setFixedRotation(rigidbody2DComponent.fixedRotation));
+            }
+
+            if (entity.hasComponent(BoxCollider2DComponent.class)) {
+                BoxCollider2DComponent boxCollider2DComponent = entity.getComponent(BoxCollider2DComponent.class);
+
+                entityBuilder.setBoxCollider2D(BoxCollider2DFile.newBuilder()
+                                .addAllOffset(Arrays.asList(boxCollider2DComponent.offset.x, boxCollider2DComponent.offset.y))
+                                .addAllSize(Arrays.asList(boxCollider2DComponent.size.x, boxCollider2DComponent.size.y))
+                                .setDensity(boxCollider2DComponent.density)
+                                .setFriction(boxCollider2DComponent.friction)
+                                .setRestitution(boxCollider2DComponent.restitution)
+                                .setRestitutionThreshold(boxCollider2DComponent.restitutionThreshold))
+                        .build();
+            }
+
             sceneBuilder.addEntities(entityBuilder.build());
         }
 
@@ -77,6 +97,14 @@ public class SceneSerializer {
             Log.error("Could not open file: " + filePath);
             throw new RuntimeException(e);
         }
+    }
+
+    private Rigidbody2DFile.BodyType rigidBody2DBodyTypeToEnum(Rigidbody2DComponent.BodyType type) {
+        return switch (type) {
+            case Static -> Rigidbody2DFile.BodyType.Static;
+            case Dynamic -> Rigidbody2DFile.BodyType.Dynamic;
+            case Kinematic -> Rigidbody2DFile.BodyType.Kinematic;
+        };
     }
 
 
@@ -144,9 +172,44 @@ public class SceneSerializer {
 
                     spriteRendererComponent.color = new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(2));
                 }
+
+                if (entity.hasRigidbody2D()) {
+                    Rigidbody2DFile rigidbody2DFile = entity.getRigidbody2D();
+                    deserializedEntity.addComponent(new Rigidbody2DComponent());
+                    Rigidbody2DComponent rigidbody2DComponent = deserializedEntity.getComponent(Rigidbody2DComponent.class);
+
+                    rigidbody2DComponent.type = rigidBody2DBodyTypeFromEnum(rigidbody2DFile.getBodyType());
+                    rigidbody2DComponent.fixedRotation = rigidbody2DFile.getFixedRotation();
+                }
+
+                if (entity.hasBoxCollider2D()) {
+                    BoxCollider2DFile boxCollider2DFile = entity.getBoxCollider2D();
+                    deserializedEntity.addComponent(new BoxCollider2DComponent());
+                    BoxCollider2DComponent boxCollider2DComponent = deserializedEntity.getComponent(BoxCollider2DComponent.class);
+
+                    boxCollider2DComponent.offset = new Vector2f(boxCollider2DFile.getOffset(0), boxCollider2DFile.getOffset(1));
+                    boxCollider2DComponent.size = new Vector2f(boxCollider2DFile.getSize(0), boxCollider2DFile.getSize(1));
+                    boxCollider2DComponent.density = boxCollider2DFile.getDensity();
+                    boxCollider2DComponent.friction = boxCollider2DFile.getFriction();
+                    boxCollider2DComponent.restitution = boxCollider2DFile.getRestitution();
+                    boxCollider2DComponent.restitutionThreshold = boxCollider2DFile.getRestitutionThreshold();
+                }
             }
         }
         return true;
+    }
+
+    private Rigidbody2DComponent.BodyType rigidBody2DBodyTypeFromEnum(Rigidbody2DFile.BodyType type) {
+        return switch (type) {
+            case Static -> Rigidbody2DComponent.BodyType.Static;
+            case Dynamic -> Rigidbody2DComponent.BodyType.Dynamic;
+            case Kinematic -> Rigidbody2DComponent.BodyType.Kinematic;
+            //Some sort of exception
+            default -> {
+                Log.error("Unknown body type");
+                yield Rigidbody2DComponent.BodyType.Static;
+            }
+        };
     }
 
     public boolean deserializeRuntime(Path filePath) {

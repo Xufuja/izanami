@@ -82,11 +82,8 @@ public class Scene {
                         FixtureDef fixtureDef = new FixtureDef();
                         fixtureDef.shape = boxShape;
                         fixtureDef.density = bc2dc.density;
-                        ;
                         fixtureDef.friction = bc2dc.friction;
                         fixtureDef.restitution = bc2dc.restitution;
-                        ;
-                        //There is no such as restitutionThreshold?
                         body.createFixture(fixtureDef);
                     }
                 });
