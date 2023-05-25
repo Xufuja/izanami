@@ -25,8 +25,10 @@ public class QuadVertex {
         this.entityId = entityId;
     }
 
-    public ArrayList<Float> toList() {
-        ArrayList<Float> list = new ArrayList<>();
+    public float[] getFloatsAsArray() {
+        float[] array = new float[getFloatArrayCount()];
+        int arrayPosition = 0;
+
         for (Field field : this.getClass().getDeclaredFields()) {
             Object fieldValue;
             try {
@@ -37,28 +39,28 @@ public class QuadVertex {
             }
             if (fieldValue != null) {
                 Class<?> fieldValueClass = fieldValue.getClass();
-                if (fieldValueClass.equals(float.class) || fieldValueClass.equals(Float.class)) {
-                    list.add((Float) fieldValue);
+                if (fieldValueClass.equals(Float.class)) {
+                    array[arrayPosition++] = (float) fieldValue;
                 } else if (fieldValueClass.equals(Vector2f.class)) {
-                    list.add(((Vector2f) fieldValue).x);
-                    list.add(((Vector2f) fieldValue).y);
+                    array[arrayPosition++] = ((Vector2f) fieldValue).x;
+                    array[arrayPosition++] = ((Vector2f) fieldValue).y;
                 } else if (fieldValueClass.equals(Vector3f.class)) {
-                    list.add(((Vector3f) fieldValue).x);
-                    list.add(((Vector3f) fieldValue).y);
-                    list.add(((Vector3f) fieldValue).z);
+                    array[arrayPosition++] = ((Vector3f) fieldValue).x;
+                    array[arrayPosition++] = ((Vector3f) fieldValue).y;
+                    array[arrayPosition++] = ((Vector3f) fieldValue).z;
                 } else if (fieldValueClass.equals(Vector4f.class)) {
-                    list.add(((Vector4f) fieldValue).x);
-                    list.add(((Vector4f) fieldValue).y);
-                    list.add(((Vector4f) fieldValue).z);
-                    list.add(((Vector4f) fieldValue).w);
+                    array[arrayPosition++] = ((Vector4f) fieldValue).x;
+                    array[arrayPosition++] = ((Vector4f) fieldValue).y;
+                    array[arrayPosition++] = ((Vector4f) fieldValue).z;
+                    array[arrayPosition++] = ((Vector4f) fieldValue).w;
                 }
             }
         }
-        return list;
+        return array;
     }
 
 
-    public static int getQuadVertexSize() {
+    public static int getFloatArrayCount() {
         int size = 0;
         for (Field field : QuadVertex.class.getDeclaredFields()) {
             Class<?> fieldType = field.getType();

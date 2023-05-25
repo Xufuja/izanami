@@ -20,6 +20,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class Renderer2D {
@@ -135,15 +136,13 @@ public class Renderer2D {
             return;
         }
 
-        float[] temp = new float[data.quadVertexBufferPtr * QuadVertex.getQuadVertexSize()];
-        ArrayList<Float> list = new ArrayList<>();
-        //Surely there must be a better way than to do this
-        for (int i = 0; i < data.quadVertexBufferPtr; i++) {
-            list.addAll(data.quadVertexBufferBase.get(i).toList());
+        float[] floatArrays = data.quadVertexBufferBase.get(0).getFloatsAsArray();
+
+        for (int i = 1; i < data.quadVertexBufferPtr; i++) {
+            floatArrays = concatenateFloatArray(floatArrays, data.quadVertexBufferBase.get(i).getFloatsAsArray());
         }
 
-        IntStream.range(0, list.size()).forEach(i -> temp[i] = list.get(i));
-        data.quadVertexBuffer.setData(temp);
+        data.quadVertexBuffer.setData(floatArrays);
 
         for (int i = 0; i < data.textureSlotIndex; i++) {
             data.textureSlots[i].bind(i);
@@ -153,6 +152,12 @@ public class Renderer2D {
 
         RenderCommand.drawIndexed(data.quadVertexArray, data.quadIndexCount);
         data.stats.drawCalls++;
+    }
+
+    private static float[] concatenateFloatArray(float[] first, float[] second) {
+        float[] result = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
     }
 
     private static void nextBatch() {
