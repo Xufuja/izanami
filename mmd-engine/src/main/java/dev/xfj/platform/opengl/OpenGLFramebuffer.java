@@ -119,10 +119,10 @@ public class OpenGLFramebuffer implements Framebuffer {
     }
 
     @Override
-    public float readPixel(int attachmentIndex, int x, int y) {
+    public int readPixel(int attachmentIndex, int x, int y) {
         //Some sort of exception HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
         GL45.glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-        float[] pixelData = new float[1];
+        int[] pixelData = new int[1];
         GL45.glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, pixelData);
         return pixelData[0];
     }

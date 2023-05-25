@@ -17,8 +17,8 @@ import java.util.Map;
 
 public class Scene {
     private final Dominion registry;
-    private final Map<Float, dev.dominion.ecs.api.Entity> entityIdMapping;
-    private float lastId;
+    private final Map<Integer, dev.dominion.ecs.api.Entity> entityIdMapping;
+    private int lastId;
     private int viewportWidth;
     private int viewportHeight;
     private World physicsWorld;
@@ -39,7 +39,7 @@ public class Scene {
     public Scene() {
         this.registry = Dominion.create();
         this.entityIdMapping = new HashMap<>();
-        this.lastId = 0.1f;
+        this.lastId = 0;
         this.viewportWidth = 0;
         this.viewportHeight = 0;
     }
@@ -206,7 +206,7 @@ public class Scene {
         return result;
     }
 
-    public Entity getEntityById(float id) {
+    public Entity getEntityById(int id) {
         if (entityIdMapping.get(id) != null) {
             return new Entity(entityIdMapping.get(id), this);
         } else {
@@ -214,13 +214,13 @@ public class Scene {
         }
     }
 
-    public float findEntityId(dev.dominion.ecs.api.Entity entity) {
-        for (Map.Entry<Float, dev.dominion.ecs.api.Entity> entry : entityIdMapping.entrySet()) {
+    public int findEntityId(dev.dominion.ecs.api.Entity entity) {
+        for (Map.Entry<Integer, dev.dominion.ecs.api.Entity> entry : entityIdMapping.entrySet()) {
             if (entity.equals(entry.getValue())) {
                 return entry.getKey();
             }
         }
-        return -1.1f;
+        return -1;
     }
 
 

@@ -4,6 +4,9 @@ import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.platform.opengl.OpenGLVertexBuffer;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+
 public interface VertexBuffer {
     static VertexBuffer create(int size) {
         return switch (Renderer.getAPI()) {
@@ -36,7 +39,7 @@ public interface VertexBuffer {
 
     void unbind();
 
-    void setData(float[] data);
+    void setData(ArrayList<ByteBuffer> data, int floatSize, int intSize);
 
     BufferLayout getLayout();
 
