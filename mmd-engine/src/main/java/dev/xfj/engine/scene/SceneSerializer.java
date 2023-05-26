@@ -178,7 +178,7 @@ public class SceneSerializer {
                     deserializedEntity.addComponent(new SpriteRendererComponent());
                     SpriteRendererComponent spriteRendererComponent = deserializedEntity.getComponent(SpriteRendererComponent.class);
 
-                    spriteRendererComponent.color = new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(2));
+                    spriteRendererComponent.color = new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3));
                 }
 
                 if (entity.hasRigidbody2D()) {
