@@ -42,34 +42,33 @@ public class OpenGLVertexBuffer implements VertexBuffer {
     }
 
     @Override
-    public void setData(ArrayList<ByteBuffer> data, int floatSize, int intSize) {
+    public void setData(ArrayList<ByteBuffer> data, int floatCount, int intCount) {
         GL45.glBindBuffer(GL_ARRAY_BUFFER, rendererId);
 
-        int floatLength = floatSize * Float.BYTES;
-        int intLength = intSize * Integer.BYTES;
+        int floatSize = floatCount * Float.BYTES;
+        int intSize = intCount * Integer.BYTES;
 
-        float[] floatArray = new float[floatSize];
-        int[] intArray = new int[intSize];
+        float[] floatArray = new float[floatCount];
+        int[] intArray = new int[intCount];
 
         int currentOffset = 0;
 
         for (ByteBuffer buffer : data) {
-            for (int i = 0; i < floatSize; i++) {
+            for (int i = 0; i < floatCount; i++) {
                 floatArray[i] = buffer.getFloat();
             }
 
             GL45.glBufferSubData(GL_ARRAY_BUFFER, currentOffset, floatArray);
-            currentOffset += floatLength;
+            currentOffset += floatSize;
 
-            for (int i = 0; i < intSize; i++) {
+            for (int i = 0; i < intCount; i++) {
                 intArray[i] = buffer.getInt();
             }
 
             GL45.glBufferSubData(GL_ARRAY_BUFFER, currentOffset, intArray);
-            currentOffset += intLength;
+            currentOffset += intSize;
         }
     }
-
 
     @Override
     public BufferLayout getLayout() {
