@@ -12,12 +12,13 @@ message SceneFile {
 }
 
 message EntityFile {
-  TagFile tag = 1;
-  TransformFile transform = 2;
-  SpriteRendererFile sprite_renderer = 3;
-  CameraFile camera = 4;
-  Rigidbody2DFile rigidbody_2d = 5;
-  BoxCollider2DFile box_collider_2d = 6;
+  int64 Entity = 1;
+  TagFile tag = 2;
+  TransformFile transform = 3;
+  SpriteRendererFile sprite_renderer = 4;
+  CameraFile camera = 5;
+  Rigidbody2DFile rigidbody_2d = 6;
+  BoxCollider2DFile box_collider_2d = 7;
 }
 
 message TagFile {

@@ -15,7 +15,7 @@ public class TransformComponent implements Component {
 
     public TransformComponent(Vector3f translation) {
         this.translation = translation;
-        this.rotation = new Vector3f(0.0f, 0.0f, 0.0f);
+        this.rotation = new Vector3f(0.0f, 45.0f, 0.0f);
         this.scale = new Vector3f(1.0f, 1.0f, 1.0f);
     }
 

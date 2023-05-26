@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import dev.dominion.ecs.api.Dominion;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
+import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.EditorCamera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -45,7 +46,12 @@ public class Scene {
     }
 
     public Entity createEntity(String name) {
+        return createEntityWithUUID(new UUID(), name);
+    }
+
+    public Entity createEntityWithUUID(UUID uuid, String name) {
         Entity entity = new Entity(registry.createEntity(), this);
+        entity.addComponent(new IDComponent(uuid));
         entity.addComponent(new TransformComponent());
         entity.addComponent(new TagComponent());
         entity.getComponent(TagComponent.class).tag = name.isEmpty() ? "Entity" : name;
@@ -260,6 +266,11 @@ public class Scene {
                 entityIdMapping.put(lastId + 1, entity.getEntity());
                 lastId++;
                 Log.trace("BoxCollider2DComponent Unimplemented");
+            }
+            case IDComponent ic -> {
+                entityIdMapping.put(lastId + 1, entity.getEntity());
+                lastId++;
+                Log.trace("IDComponent Unimplemented");
             }
             default -> Log.error("Invalid component type");
         }

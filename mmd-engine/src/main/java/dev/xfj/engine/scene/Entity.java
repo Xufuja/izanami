@@ -3,6 +3,7 @@ package dev.xfj.engine.scene;
 import dev.dominion.ecs.engine.IntEntity;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.scene.components.Component;
+import dev.xfj.engine.scene.components.IDComponent;
 
 public class Entity {
     private final dev.dominion.ecs.api.Entity entityHandle;
@@ -41,6 +42,10 @@ public class Entity {
     //The entityId is not available from the interface so perhaps that it is not supposed to be accessed?
     public int getId() {
         return ((IntEntity) entityHandle).getId();
+    }
+
+    public long getUUID() {
+        return getComponent(IDComponent.class).id.getUUID();
     }
 
     public boolean equals(Entity other) {

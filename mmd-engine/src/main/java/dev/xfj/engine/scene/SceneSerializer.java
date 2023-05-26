@@ -2,6 +2,7 @@ package dev.xfj.engine.scene;
 
 
 import dev.xfj.engine.core.Log;
+import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.components.*;
 import dev.xfj.protobuf.*;
 import org.joml.Vector2f;
@@ -23,6 +24,67 @@ public class SceneSerializer {
         this.scene = scene;
     }
 
+    public void serializeEntity(dev.xfj.protobuf.EntityFile.Builder entityBuilder, Entity entity) {
+        entityBuilder.setEntity(entity.getUUID());
+
+        if (entity.hasComponent(TagComponent.class)) {
+            entityBuilder.setTag(TagFile.newBuilder()
+                    .setTag(entity.getComponent(TagComponent.class).tag).build());
+        }
+
+        if (entity.hasComponent(TransformComponent.class)) {
+            TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
+            entityBuilder.setTransform(TransformFile.newBuilder()
+                    .addAllTranslation(Arrays.asList(transformComponent.translation.x, transformComponent.translation.y, transformComponent.translation.z))
+                    .addAllRotation(Arrays.asList(transformComponent.rotation.x, transformComponent.rotation.y, transformComponent.rotation.z))
+                    .addAllScale(Arrays.asList(transformComponent.scale.x, transformComponent.scale.y, transformComponent.scale.z))
+                    .build());
+        }
+
+        if (entity.hasComponent(CameraComponent.class)) {
+            CameraComponent cameraComponent = entity.getComponent(CameraComponent.class);
+            SceneCamera camera = cameraComponent.camera;
+            entityBuilder.setCamera(CameraFile.newBuilder()
+                            .setProjectionType(camera.getProjectionType() == SceneCamera.ProjectionType.Perspective ? CameraFile.ProjectionType.Perspective : CameraFile.ProjectionType.Orthographic)
+                            .setPerspectiveFov(camera.getPerspectiveVerticalFoV())
+                            .setPerspectiveNear(camera.getPerspectiveNear())
+                            .setPerspectiveFar(camera.getPerspectiveFar())
+                            .setOrthographicSize(camera.getOrthographicSize())
+                            .setOrthographicNear(camera.getOrthographicNear())
+                            .setOrthographicFar(camera.getOrthographicFar())
+                            .setPrimary(cameraComponent.primary)
+                            .setFixedAspectRatio(cameraComponent.fixedAspectRatio))
+                    .build();
+        }
+
+        if (entity.hasComponent(SpriteRendererComponent.class)) {
+            Vector4f color = entity.getComponent(SpriteRendererComponent.class).color;
+            entityBuilder.setSpriteRenderer(SpriteRendererFile.newBuilder()
+                    .addAllColor(Arrays.asList(color.x, color.y, color.z, color.w))).build();
+        }
+
+        if (entity.hasComponent(Rigidbody2DComponent.class)) {
+            Rigidbody2DComponent rigidbody2DComponent = entity.getComponent(Rigidbody2DComponent.class);
+
+            entityBuilder.setRigidbody2D(Rigidbody2DFile.newBuilder()
+                    .setBodyType(rigidBody2DBodyTypeToEnum(rigidbody2DComponent.type))
+                    .setFixedRotation(rigidbody2DComponent.fixedRotation));
+        }
+
+        if (entity.hasComponent(BoxCollider2DComponent.class)) {
+            BoxCollider2DComponent boxCollider2DComponent = entity.getComponent(BoxCollider2DComponent.class);
+
+            entityBuilder.setBoxCollider2D(BoxCollider2DFile.newBuilder()
+                            .addAllOffset(Arrays.asList(boxCollider2DComponent.offset.x, boxCollider2DComponent.offset.y))
+                            .addAllSize(Arrays.asList(boxCollider2DComponent.size.x, boxCollider2DComponent.size.y))
+                            .setDensity(boxCollider2DComponent.density)
+                            .setFriction(boxCollider2DComponent.friction)
+                            .setRestitution(boxCollider2DComponent.restitution)
+                            .setRestitutionThreshold(boxCollider2DComponent.restitutionThreshold))
+                    .build();
+        }
+    }
+
     public void serialize(Path filePath) {
         SceneFile.Builder sceneBuilder = SceneFile.newBuilder();
         sceneBuilder.setName("Untitled");
@@ -30,62 +92,7 @@ public class SceneSerializer {
         for (Entity entity : scene.getAllEntities()) {
             dev.xfj.protobuf.EntityFile.Builder entityBuilder = dev.xfj.protobuf.EntityFile.newBuilder();
 
-            if (entity.hasComponent(TagComponent.class)) {
-                entityBuilder.setTag(TagFile.newBuilder()
-                        .setTag(entity.getComponent(TagComponent.class).tag).build());
-            }
-
-            if (entity.hasComponent(TransformComponent.class)) {
-                TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
-                entityBuilder.setTransform(TransformFile.newBuilder()
-                        .addAllTranslation(Arrays.asList(transformComponent.translation.x, transformComponent.translation.y, transformComponent.translation.z))
-                        .addAllRotation(Arrays.asList(transformComponent.rotation.x, transformComponent.rotation.y, transformComponent.rotation.z))
-                        .addAllScale(Arrays.asList(transformComponent.scale.x, transformComponent.scale.y, transformComponent.scale.z))
-                        .build());
-            }
-
-            if (entity.hasComponent(CameraComponent.class)) {
-                CameraComponent cameraComponent = entity.getComponent(CameraComponent.class);
-                SceneCamera camera = cameraComponent.camera;
-                entityBuilder.setCamera(CameraFile.newBuilder()
-                                .setProjectionType(camera.getProjectionType() == SceneCamera.ProjectionType.Perspective ? CameraFile.ProjectionType.Perspective : CameraFile.ProjectionType.Orthographic)
-                                .setPerspectiveFov(camera.getPerspectiveVerticalFoV())
-                                .setPerspectiveNear(camera.getPerspectiveNear())
-                                .setPerspectiveFar(camera.getPerspectiveFar())
-                                .setOrthographicSize(camera.getOrthographicSize())
-                                .setOrthographicNear(camera.getOrthographicNear())
-                                .setOrthographicFar(camera.getOrthographicFar())
-                                .setPrimary(cameraComponent.primary)
-                                .setFixedAspectRatio(cameraComponent.fixedAspectRatio))
-                        .build();
-            }
-
-            if (entity.hasComponent(SpriteRendererComponent.class)) {
-                Vector4f color = entity.getComponent(SpriteRendererComponent.class).color;
-                entityBuilder.setSpriteRenderer(SpriteRendererFile.newBuilder()
-                        .addAllColor(Arrays.asList(color.x, color.y, color.z, color.w))).build();
-            }
-
-            if (entity.hasComponent(Rigidbody2DComponent.class)) {
-                Rigidbody2DComponent rigidbody2DComponent = entity.getComponent(Rigidbody2DComponent.class);
-
-                entityBuilder.setRigidbody2D(Rigidbody2DFile.newBuilder()
-                        .setBodyType(rigidBody2DBodyTypeToEnum(rigidbody2DComponent.type))
-                        .setFixedRotation(rigidbody2DComponent.fixedRotation));
-            }
-
-            if (entity.hasComponent(BoxCollider2DComponent.class)) {
-                BoxCollider2DComponent boxCollider2DComponent = entity.getComponent(BoxCollider2DComponent.class);
-
-                entityBuilder.setBoxCollider2D(BoxCollider2DFile.newBuilder()
-                                .addAllOffset(Arrays.asList(boxCollider2DComponent.offset.x, boxCollider2DComponent.offset.y))
-                                .addAllSize(Arrays.asList(boxCollider2DComponent.size.x, boxCollider2DComponent.size.y))
-                                .setDensity(boxCollider2DComponent.density)
-                                .setFriction(boxCollider2DComponent.friction)
-                                .setRestitution(boxCollider2DComponent.restitution)
-                                .setRestitutionThreshold(boxCollider2DComponent.restitutionThreshold))
-                        .build();
-            }
+            serializeEntity(entityBuilder, entity);
 
             sceneBuilder.addEntities(entityBuilder.build());
         }
@@ -130,12 +137,14 @@ public class SceneSerializer {
         if (!sceneFile.getEntitiesList().isEmpty()) {
             String name = "";
             for (EntityFile entity : sceneFile.getEntitiesList()) {
+                long uuid = entity.getEntity();
+
                 if (entity.hasTag()) {
                     name = entity.getTag().getTag();
                 }
 
-                Log.debug(String.format("Deserialized entity with name = %1$s", name));
-                Entity deserializedEntity = scene.createEntity(name);
+                Log.debug(String.format("Deserialized entity with ID = %1$d, name = %2$s", uuid, name));
+                Entity deserializedEntity = scene.createEntityWithUUID(new UUID(uuid), name);
 
                 if (entity.hasTransform()) {
                     TransformFile transformFile = entity.getTransform();
@@ -162,7 +171,6 @@ public class SceneSerializer {
 
                     cameraComponent.primary = cameraFile.getPrimary();
                     cameraComponent.fixedAspectRatio = cameraFile.getFixedAspectRatio();
-
                 }
 
                 if (entity.hasSpriteRenderer()) {
