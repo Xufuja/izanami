@@ -45,19 +45,21 @@ public class SceneHierarchyPanel {
     public void onImGuiRender() {
         ImGui.begin("Scene Hierarchy");
 
-        context.getRegistry().findEntitiesWith(TagComponent.class)
-                .stream().forEach(result -> {
-                    Entity entity = new Entity(result.entity(), context);
-                    drawEntityNode(entity);
-                });
-        if (ImGui.isMouseDown(0) && ImGui.isWindowHovered()) {
-            selectionContext = null;
-        }
-        if (ImGui.beginPopupContextWindow("0", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems)) {
-            if (ImGui.menuItem("Create Empty Entity")) {
-                context.createEntity("Empty Entity");
+        if (context != null) {
+            context.getRegistry().findEntitiesWith(TagComponent.class)
+                    .stream().forEach(result -> {
+                        Entity entity = new Entity(result.entity(), context);
+                        drawEntityNode(entity);
+                    });
+            if (ImGui.isMouseDown(0) && ImGui.isWindowHovered()) {
+                selectionContext = null;
             }
-            ImGui.endPopup();
+            if (ImGui.beginPopupContextWindow("0", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems)) {
+                if (ImGui.menuItem("Create Empty Entity")) {
+                    context.createEntity("Empty Entity");
+                }
+                ImGui.endPopup();
+            }
         }
         ImGui.end();
         ImGui.begin("Properties");
@@ -66,6 +68,7 @@ public class SceneHierarchyPanel {
         }
         ImGui.end();
     }
+
 
     public void setSelectedEntity(Entity entity) {
         selectionContext = entity;

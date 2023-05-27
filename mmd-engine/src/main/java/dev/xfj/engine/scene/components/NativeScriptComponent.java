@@ -25,4 +25,10 @@ public class NativeScriptComponent<T extends ScriptableEntity> implements Compon
         };
         destroyScript = nsc -> nsc.instance = null;
     }
+
+    public NativeScriptComponent(NativeScriptComponent<T> other) {
+        this.instance = other.instance;
+        this.instantiateScript = other.instantiateScript;
+        this.destroyScript = other.destroyScript;
+    }
 }

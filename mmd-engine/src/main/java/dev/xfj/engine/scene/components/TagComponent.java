@@ -10,4 +10,5 @@ public class TagComponent implements Component {
     public TagComponent(String tag) {
         this.tag = tag;
     }
+
 }

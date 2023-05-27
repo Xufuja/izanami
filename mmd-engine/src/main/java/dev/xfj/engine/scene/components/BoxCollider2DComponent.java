@@ -21,4 +21,14 @@ public class BoxCollider2DComponent implements Component {
         restitutionThreshold = 0.5f;
         runtimeFixture = null;
     }
+
+    public BoxCollider2DComponent(BoxCollider2DComponent other) {
+        this.offset = new Vector2f(other.offset);
+        this.size = new Vector2f(other.size);
+        this.density = other.density;
+        this.friction = other.friction;
+        this.restitution = other.restitution;
+        this.restitutionThreshold = other.restitutionThreshold;
+        this.runtimeFixture = other.runtimeFixture;
+    }
 }

@@ -48,6 +48,8 @@ public class EditorLayer extends Layer {
     private VertexArray squareVA;
     private Framebuffer framebuffer;
     private Scene activeScene;
+    private Scene editorScene;
+    private Path editorScenePath;
     private Entity squareEntity;
     private Entity cameraEntity;
     private Entity secondCamera;
@@ -128,8 +130,6 @@ public class EditorLayer extends Layer {
         }
 
         editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-
-        sceneHierarchyPanel.setContext(activeScene);
     }
 
     @Override
@@ -411,9 +411,19 @@ public class EditorLayer extends Layer {
                 }
             }
             case KeyCodes.S -> {
-                if (control && shift) {
-                    saveSceneAs();
+                if (control) {
+                    if (shift) {
+                        saveSceneAs();
+                    } else {
+                        saveScene();
+                    }
                     return true;
+                }
+
+            }
+            case KeyCodes.D -> {
+                if (control) {
+                    onDuplicateEntity();
                 }
             }
             case KeyCodes.Q -> {
@@ -474,9 +484,20 @@ public class EditorLayer extends Layer {
         SceneSerializer serializer = new SceneSerializer(newScene);
 
         if (serializer.deserialize(filePath)) {
-            activeScene = newScene;
-            activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
-            sceneHierarchyPanel.setContext(activeScene);
+            editorScene = newScene;
+            editorScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
+            sceneHierarchyPanel.setContext(editorScene);
+
+            activeScene = editorScene;
+            editorScenePath = filePath;
+        }
+    }
+
+    private void saveScene() {
+        if (editorScenePath != null) {
+            serializeScene(activeScene, editorScenePath);
+        } else {
+            saveSceneAs();
         }
     }
 
@@ -484,18 +505,38 @@ public class EditorLayer extends Layer {
         Optional<String> filePath = WindowsPlatformUtils.saveFile("Scene (*.scene)\0*.scene\0");
 
         if (filePath.isPresent()) {
-            SceneSerializer serializer = new SceneSerializer(activeScene);
-            serializer.serialize(Path.of(filePath.get()));
+            Path path = Path.of(filePath.get());
+            serializeScene(activeScene, path);
+            editorScenePath = path;
         }
+    }
+
+    private void serializeScene(Scene scene, Path filePath) {
+        SceneSerializer serializer = new SceneSerializer(scene);
+        serializer.serialize(filePath);
     }
 
     private void onScenePlay() {
         sceneState = SceneState.Play;
+        activeScene = Scene.copy(editorScene);
         activeScene.onRuntimeStart();
+        sceneHierarchyPanel.setContext(activeScene);
     }
 
     private void onSceneStop() {
         sceneState = SceneState.Edit;
         activeScene.onRuntimeStop();
+        activeScene = editorScene;
+        sceneHierarchyPanel.setContext(activeScene);
+    }
+
+    private void onDuplicateEntity() {
+        if (sceneState != SceneState.Edit) {
+            return;
+        }
+        Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
+        if (selectedEntity != null) {
+            editorScene.duplicateEntity(selectedEntity);
+        }
     }
 }

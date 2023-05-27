@@ -19,8 +19,15 @@ public class TransformComponent implements Component {
         this.scale = new Vector3f(1.0f, 1.0f, 1.0f);
     }
 
+    public TransformComponent(TransformComponent other) {
+        this.translation = new Vector3f(other.translation);
+        this.rotation = new Vector3f(other.rotation);
+        this.scale = new Vector3f(other.scale);
+    }
+
     public Matrix4f getTransform() {
         Matrix4f rotation = new Matrix4f().rotate(new Quaternionf().rotateXYZ(this.rotation.x, this.rotation.y, this.rotation.z));
         return new Matrix4f().translate(translation).mul(rotation).mul(new Matrix4f().scale(scale));
     }
+
 }

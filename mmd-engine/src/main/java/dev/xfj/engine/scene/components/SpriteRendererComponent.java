@@ -16,4 +16,10 @@ public class SpriteRendererComponent implements Component {
         this.color = color;
         this.tilingFactor = 1.0f;
     }
+
+    public SpriteRendererComponent(SpriteRendererComponent other) {
+        this.color = new Vector4f(other.color);
+        this.texture = other.texture;
+        this.tilingFactor = other.tilingFactor;
+    }
 }

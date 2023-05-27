@@ -12,4 +12,10 @@ public class CameraComponent implements Component {
         this.primary = true;
         this.fixedAspectRatio = false;
     }
+
+    public CameraComponent(CameraComponent other) {
+        this.camera = other.camera;
+        this.primary = other.primary;
+        this.fixedAspectRatio = other.fixedAspectRatio;
+    }
 }

@@ -12,6 +12,8 @@ import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.scene.components.*;
 import org.joml.Matrix4f;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,64 @@ public class Scene {
         this.lastId = 0;
         this.viewportWidth = 0;
         this.viewportHeight = 0;
+    }
+
+    public static void copyComponent(Class<?> componentType, Dominion src, Map<UUID, dev.dominion.ecs.api.Entity> entityMap) {
+        for (var it = src.findEntitiesWith(componentType).iterator(); it.hasNext(); ) {
+            var entity = it.next();
+
+            UUID uuid = entity.entity().get(IDComponent.class).id;
+            //Some sort of exception HZ_CORE_ASSERT(enttMap.find(uuid) != enttMap.end());
+            dev.dominion.ecs.api.Entity dstEntityId = entityMap.get(uuid);
+
+            if (dstEntityId.has(componentType)) {
+                dstEntityId.remove(dstEntityId.get(componentType));
+            }
+            dstEntityId.add(duplicateComponent(componentType, entity.entity().get(componentType)));
+        }
+    }
+
+    public static void copyComponentIfExists(Class<?> componentType, Entity dst, Entity src) {
+        if (src.hasComponent(componentType)) {
+            dst.addOrReplaceComponent(duplicateComponent(componentType, src.getComponent(componentType)));
+        }
+    }
+
+    private static Object duplicateComponent(Class<?> componentType, Object src) {
+        try {
+            Constructor<?> constructor = componentType.getConstructor(componentType);
+            constructor.setAccessible(true);
+            return constructor.newInstance(src);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static Scene copy(Scene other) {
+        Scene newScene = new Scene();
+
+        newScene.viewportWidth = other.viewportWidth;
+        newScene.viewportHeight = other.viewportHeight;
+
+        Dominion srcSceneRegistry = other.registry;
+        Map<UUID, dev.dominion.ecs.api.Entity> entityMap = new HashMap<>();
+
+        for (var it = srcSceneRegistry.findEntitiesWith(IDComponent.class).iterator(); it.hasNext(); ) {
+            var entity = it.next();
+            UUID uuid = entity.entity().get(IDComponent.class).id;
+            String name = entity.entity().get(TagComponent.class).tag;
+            Entity newEntity = newScene.createEntityWithUUID(uuid, name);
+            entityMap.put(uuid, newEntity.getEntity());
+        }
+
+        copyComponent(TransformComponent.class, srcSceneRegistry, entityMap);
+        copyComponent(SpriteRendererComponent.class, srcSceneRegistry, entityMap);
+        copyComponent(CameraComponent.class, srcSceneRegistry, entityMap);
+        copyComponent(NativeScriptComponent.class, srcSceneRegistry, entityMap);
+        copyComponent(Rigidbody2DComponent.class, srcSceneRegistry, entityMap);
+        copyComponent(BoxCollider2DComponent.class, srcSceneRegistry, entityMap);
+
+        return newScene;
     }
 
     public Entity createEntity(String name) {
@@ -188,6 +248,18 @@ public class Scene {
                         cameraComponent.camera.setViewportSize(width, height);
                     }
                 });
+    }
+
+    public void duplicateEntity(Entity entity) {
+        String name = entity.getName();
+        Entity newEntity = createEntity(name);
+
+        copyComponentIfExists(TransformComponent.class, newEntity, entity);
+        copyComponentIfExists(SpriteRendererComponent.class, newEntity, entity);
+        copyComponentIfExists(CameraComponent.class, newEntity, entity);
+        copyComponentIfExists(NativeScriptComponent.class, newEntity, entity);
+        copyComponentIfExists(Rigidbody2DComponent.class, newEntity, entity);
+        copyComponentIfExists(BoxCollider2DComponent.class, newEntity, entity);
     }
 
     public Entity getPrimaryCameraEntity() {

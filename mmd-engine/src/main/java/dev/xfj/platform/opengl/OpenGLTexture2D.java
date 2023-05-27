@@ -95,6 +95,7 @@ public class OpenGLTexture2D extends Texture2D {
         }
     }
 
+
     @Override
     public int getWidth() {
         return this.width;

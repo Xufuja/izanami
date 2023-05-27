@@ -4,6 +4,7 @@ import dev.dominion.ecs.engine.IntEntity;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.scene.components.Component;
 import dev.xfj.engine.scene.components.IDComponent;
+import dev.xfj.engine.scene.components.TagComponent;
 
 public class Entity {
     private final dev.dominion.ecs.api.Entity entityHandle;
@@ -34,7 +35,7 @@ public class Entity {
         if (!hasComponent(componentType)) {
             Log.error("Entity does not have component!");
         }
-        return (T) entityHandle.get(componentType);
+        return entityHandle.get(componentType);
     }
 
     public boolean hasComponent(Class<?> componentType) {
@@ -56,6 +57,10 @@ public class Entity {
 
     public long getUUID() {
         return getComponent(IDComponent.class).id.getUUID();
+    }
+
+    public String getName() {
+        return getComponent(TagComponent.class).tag;
     }
 
     public boolean equals(Entity other) {

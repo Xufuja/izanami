@@ -18,4 +18,10 @@ public class Rigidbody2DComponent implements Component {
         fixedRotation = false;
         runtimeBody = null;
     }
+
+    public Rigidbody2DComponent(Rigidbody2DComponent other) {
+        this.type = other.type;
+        this.fixedRotation = other.fixedRotation;
+        this.runtimeBody = other.runtimeBody;
+    }
 }
