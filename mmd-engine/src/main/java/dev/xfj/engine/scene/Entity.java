@@ -19,6 +19,16 @@ public class Entity {
         scene.onComponentAdded(this, (Component) entityHandle.get(component.getClass()));
     }
 
+    public void addOrReplaceComponent(Object component) {
+        Class<?> componentType = component.getClass();
+
+        if (hasComponent(componentType)) {
+            removeComponent(componentType);
+        }
+
+        addComponent(component);
+    }
+
     public <T> T getComponent(Class<T> componentType) {
         //Should be some sort of exception
         if (!hasComponent(componentType)) {

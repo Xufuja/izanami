@@ -51,10 +51,15 @@ public class Scene {
 
     public Entity createEntityWithUUID(UUID uuid, String name) {
         Entity entity = new Entity(registry.createEntity(), this);
+
         entity.addComponent(new IDComponent(uuid));
         entity.addComponent(new TransformComponent());
         entity.addComponent(new TagComponent());
         entity.getComponent(TagComponent.class).tag = name.isEmpty() ? "Entity" : name;
+
+        entityIdMapping.put(lastId + 1, entity.getEntity());
+        lastId++;
+
         return entity;
     }
 
@@ -232,46 +237,15 @@ public class Scene {
 
     protected <T extends Component> void onComponentAdded(Entity entity, T component) {
         switch (component) {
-            case TransformComponent tfc -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                Log.trace("TransformComponent Unimplemented");
-            }
-            case CameraComponent cc -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
-            }
-            case SpriteRendererComponent src -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                Log.trace("SpriteRendererComponent Unimplemented");
-            }
-            case TagComponent tc -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                Log.trace("TagComponent Unimplemented");
-            }
-            case NativeScriptComponent<?> nsc -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                Log.trace("NativeScriptComponent<?> Unimplemented");
-            }
-            case Rigidbody2DComponent rb2dc -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                Log.trace("Rigidbody2DComponent Unimplemented");
-            }
-            case BoxCollider2DComponent bc2dc -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                Log.trace("BoxCollider2DComponent Unimplemented");
-            }
-            case IDComponent ic -> {
-                entityIdMapping.put(lastId + 1, entity.getEntity());
-                lastId++;
-                Log.trace("IDComponent Unimplemented");
-            }
+            case TransformComponent tfc -> Log.trace("TransformComponent Unimplemented");
+            case CameraComponent cc ->
+                    ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
+            case SpriteRendererComponent src -> Log.trace("SpriteRendererComponent Unimplemented");
+            case TagComponent tc -> Log.trace("TagComponent Unimplemented");
+            case NativeScriptComponent<?> nsc -> Log.trace("NativeScriptComponent<?> Unimplemented");
+            case Rigidbody2DComponent rb2dc -> Log.trace("Rigidbody2DComponent Unimplemented");
+            case BoxCollider2DComponent bc2dc -> Log.trace("BoxCollider2DComponent Unimplemented");
+            case IDComponent ic -> Log.trace("IDComponent Unimplemented");
             default -> Log.error("Invalid component type");
         }
     }

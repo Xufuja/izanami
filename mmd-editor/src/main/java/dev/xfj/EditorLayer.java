@@ -464,7 +464,7 @@ public class EditorLayer extends Layer {
         if (sceneState != SceneState.Edit) {
             onSceneStop();
         }
-        
+
         if (!filePath.getFileName().toString().endsWith(".scene")) {
             Log.warn(String.format("Could not load %s - not a scene file", filePath.getFileName()));
             return;
