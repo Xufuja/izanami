@@ -27,7 +27,7 @@ public class Renderer2D {
     public static void init() {
         data.quadVertexArray = VertexArray.create();
 
-        data.quadVertexBuffer = VertexBuffer.create(Renderer2DData.maxVertices * QuadVertex.getQuadVertexSize());
+        data.quadVertexBuffer = VertexBuffer.create(Renderer2DData.maxVertices * QuadVertex.getVertexSize());
         data.quadVertexBuffer.setLayout(new BufferLayout(
                 new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position"),
                 new BufferElement(BufferElement.ShaderDataType.Float4, "a_Color"),
@@ -37,8 +37,8 @@ public class Renderer2D {
                 new BufferElement(BufferElement.ShaderDataType.Int, "a_EntityID")));
 
         data.quadVertexArray.addVertexBuffer(data.quadVertexBuffer);
-
         data.quadVertexBufferBase = new ArrayList<>();
+
         while (data.quadVertexBufferBase.size() < Renderer2DData.maxIndices) {
             data.quadVertexBufferBase.add(new QuadVertex());
         }
@@ -60,6 +60,25 @@ public class Renderer2D {
         IndexBuffer quadIB = IndexBuffer.create(quadIndices, Renderer2DData.maxIndices);
         data.quadVertexArray.setIndexBuffer(quadIB);
 
+        data.circleVertexArray = VertexArray.create();
+
+        data.circleVertexBuffer = VertexBuffer.create(Renderer2DData.maxVertices * CircleVertex.getVertexSize());
+        data.circleVertexBuffer.setLayout(new BufferLayout(
+                new BufferElement(BufferElement.ShaderDataType.Float3, "a_WorldPosition"),
+                new BufferElement(BufferElement.ShaderDataType.Float3, "a_LocalPosition"),
+                new BufferElement(BufferElement.ShaderDataType.Float4, "a_Color"),
+                new BufferElement(BufferElement.ShaderDataType.Float, "a_Thickness"),
+                new BufferElement(BufferElement.ShaderDataType.Float, "a_Fade"),
+                new BufferElement(BufferElement.ShaderDataType.Int, "a_EntityID")));
+
+        data.circleVertexArray.addVertexBuffer(data.circleVertexBuffer);
+        data.circleVertexArray.setIndexBuffer(quadIB);
+        data.circleVertexBufferBase = new ArrayList<>();
+
+        while (data.circleVertexBufferBase.size() < Renderer2DData.maxIndices) {
+            data.circleVertexBufferBase.add(new CircleVertex());
+        }
+
         try {
             data.whiteTexture = Texture2D.create(1, 1);
             int whiteTextureData = 0xffffffff;
@@ -74,7 +93,8 @@ public class Renderer2D {
                 samplers[i] = i;
             }
 
-            Renderer2D.data.textureShader = Shader.create(Path.of("assets/shaders/Texture.glsl"));
+            Renderer2D.data.quadShader = Shader.create(Path.of("assets/shaders/Renderer2D_Quad.glsl"));
+            Renderer2D.data.circleShader = Shader.create(Path.of("assets/shaders/Renderer2D_Circle.glsl"));
 
             Renderer2D.data.textureSlots[0] = Renderer2D.data.whiteTexture;
 
@@ -126,30 +146,47 @@ public class Renderer2D {
         data.quadIndexCount = 0;
         data.quadVertexBufferPtr = 0;
 
+        data.circleIndexCount = 0;
+        data.circleVertexBufferPtr = 0;
+
         data.textureSlotIndex = 1;
     }
 
     public static void flush() {
-        if (data.quadIndexCount == 0) {
-            return;
+        if (data.quadIndexCount > 0) {
+            ArrayList<ByteBuffer> quadVertexBuffers = new ArrayList<>();
+
+            for (int i = 0; i < data.quadVertexBufferPtr; i++) {
+                quadVertexBuffers.add(data.quadVertexBufferBase.get(i).getAsBuffer());
+            }
+
+            data.quadVertexBuffer.setData(quadVertexBuffers, QuadVertex.getFloatArrayCount(), QuadVertex.getIntArrayCount());
+
+            for (int i = 0; i < data.textureSlotIndex; i++) {
+                data.textureSlots[i].bind(i);
+            }
+
+            Renderer2D.data.quadShader.bind();
+
+            RenderCommand.drawIndexed(data.quadVertexArray, data.quadIndexCount);
+            data.stats.drawCalls++;
         }
 
-        ArrayList<ByteBuffer> quadVertexBuffers = new ArrayList<>();
+        if (data.circleIndexCount > 0) {
+            ArrayList<ByteBuffer> circleVertexBuffers = new ArrayList<>();
 
-        for (int i = 0; i < data.quadVertexBufferPtr; i++) {
-            quadVertexBuffers.add(data.quadVertexBufferBase.get(i).getAsBuffer());
+            for (int i = 0; i < data.circleVertexBufferPtr; i++) {
+                circleVertexBuffers.add(data.circleVertexBufferBase.get(i).getAsBuffer());
+            }
+
+            data.circleVertexBuffer.setData(circleVertexBuffers, CircleVertex.getFloatArrayCount(), CircleVertex.getIntArrayCount());
+
+            Renderer2D.data.circleShader.bind();
+
+            RenderCommand.drawIndexed(data.circleVertexArray, data.circleIndexCount);
+            data.stats.drawCalls++;
         }
 
-        data.quadVertexBuffer.setData(quadVertexBuffers, QuadVertex.getFloatArrayCount(), QuadVertex.getIntArrayCount());
-
-        for (int i = 0; i < data.textureSlotIndex; i++) {
-            data.textureSlots[i].bind(i);
-        }
-
-        Renderer2D.data.textureShader.bind();
-
-        RenderCommand.drawIndexed(data.quadVertexArray, data.quadIndexCount);
-        data.stats.drawCalls++;
     }
 
     private static void nextBatch() {
@@ -290,6 +327,34 @@ public class Renderer2D {
     public static void drawRotatedQuad(Vector3f position, Vector2f size, float rotation, Texture2D texture, float tilingFactor, Vector4f tintColor) {
         Matrix4f transform = new Matrix4f().translate(position.x, position.y, position.z).mul(new Matrix4f().rotate((float) Math.toRadians(rotation), new Vector3f(0.0f, 0.0f, 1.0f))).mul(new Matrix4f().scale(size.x, size.y, 1.0f));
         drawQuad(transform, texture, tilingFactor, tintColor, -1);
+    }
+
+    public static void drawCircle(Matrix4f transform, Vector4f color) {
+        drawCircle(transform, color, 1.0f);
+    }
+
+    public static void drawCircle(Matrix4f transform, Vector4f color, float thickness) {
+        drawCircle(transform, color, thickness, 0.005f);
+    }
+
+    public static void drawCircle(Matrix4f transform, Vector4f color, float thickness, float fade) {
+        drawCircle(transform, color, thickness, fade, -1);
+    }
+
+    public static void drawCircle(Matrix4f transform, Vector4f color, float thickness, float fade, int entityId) {
+        //Needs circle version
+        /*if (data.quadIndexCount >= Renderer2DData.maxIndices) {
+            nextBatch();
+        }*/
+
+        for (int i = 0; i < 4; i++) {
+            Vector4f local = new Vector4f(data.quadVertexPositions[i]).mul(2.0f);
+            data.circleVertexBufferBase.get(data.circleVertexBufferPtr).setCircleVertex(transformPosition(transform, i), new Vector3f(local.x, local.y, local.z), color, thickness, fade, entityId);
+            data.circleVertexBufferPtr++;
+        }
+
+        data.circleIndexCount += 6;
+        data.stats.quadCount++;
     }
 
     public static void drawSprite(Matrix4f transform, SpriteRendererComponent src, int entityId) {

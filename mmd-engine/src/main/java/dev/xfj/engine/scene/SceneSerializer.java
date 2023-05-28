@@ -63,6 +63,14 @@ public class SceneSerializer {
                     .addAllColor(Arrays.asList(color.x, color.y, color.z, color.w))).build();
         }
 
+        if (entity.hasComponent(CircleRendererComponent.class)) {
+            CircleRendererComponent circleRendererComponent = entity.getComponent(CircleRendererComponent.class);
+            entityBuilder.setCircleRenderer(CircleRendererFile.newBuilder()
+                    .addAllColor(Arrays.asList(circleRendererComponent.color.x, circleRendererComponent.color.y, circleRendererComponent.color.z, circleRendererComponent.color.w))
+                    .setThickness(circleRendererComponent.thickness)
+                    .setFade(circleRendererComponent.fade)).build();
+        }
+
         if (entity.hasComponent(Rigidbody2DComponent.class)) {
             Rigidbody2DComponent rigidbody2DComponent = entity.getComponent(Rigidbody2DComponent.class);
 
@@ -175,32 +183,22 @@ public class SceneSerializer {
 
                 if (entity.hasSpriteRenderer()) {
                     SpriteRendererFile spriteRendererFile = entity.getSpriteRenderer();
-                    deserializedEntity.addComponent(new SpriteRendererComponent());
-                    SpriteRendererComponent spriteRendererComponent = deserializedEntity.getComponent(SpriteRendererComponent.class);
+                    deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3))));
+                }
 
-                    spriteRendererComponent.color = new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3));
+                if (entity.hasCircleRenderer()) {
+                    CircleRendererFile circleRendererFile = entity.getCircleRenderer();
+                    deserializedEntity.addComponent(new CircleRendererComponent(new Vector4f(circleRendererFile.getColor(0), circleRendererFile.getColor(1), circleRendererFile.getColor(2), circleRendererFile.getColor(3)), circleRendererFile.getThickness(), circleRendererFile.getFade()));
                 }
 
                 if (entity.hasRigidbody2D()) {
                     Rigidbody2DFile rigidbody2DFile = entity.getRigidbody2D();
-                    deserializedEntity.addComponent(new Rigidbody2DComponent());
-                    Rigidbody2DComponent rigidbody2DComponent = deserializedEntity.getComponent(Rigidbody2DComponent.class);
-
-                    rigidbody2DComponent.type = rigidBody2DBodyTypeFromEnum(rigidbody2DFile.getBodyType());
-                    rigidbody2DComponent.fixedRotation = rigidbody2DFile.getFixedRotation();
+                    deserializedEntity.addComponent(new Rigidbody2DComponent(rigidBody2DBodyTypeFromEnum(rigidbody2DFile.getBodyType()), rigidbody2DFile.getFixedRotation()));
                 }
 
                 if (entity.hasBoxCollider2D()) {
                     BoxCollider2DFile boxCollider2DFile = entity.getBoxCollider2D();
-                    deserializedEntity.addComponent(new BoxCollider2DComponent());
-                    BoxCollider2DComponent boxCollider2DComponent = deserializedEntity.getComponent(BoxCollider2DComponent.class);
-
-                    boxCollider2DComponent.offset = new Vector2f(boxCollider2DFile.getOffset(0), boxCollider2DFile.getOffset(1));
-                    boxCollider2DComponent.size = new Vector2f(boxCollider2DFile.getSize(0), boxCollider2DFile.getSize(1));
-                    boxCollider2DComponent.density = boxCollider2DFile.getDensity();
-                    boxCollider2DComponent.friction = boxCollider2DFile.getFriction();
-                    boxCollider2DComponent.restitution = boxCollider2DFile.getRestitution();
-                    boxCollider2DComponent.restitutionThreshold = boxCollider2DFile.getRestitutionThreshold();
+                    deserializedEntity.addComponent(new BoxCollider2DComponent(new Vector2f(boxCollider2DFile.getOffset(0), boxCollider2DFile.getOffset(1)), new Vector2f(boxCollider2DFile.getSize(0), boxCollider2DFile.getSize(1)), boxCollider2DFile.getDensity(), boxCollider2DFile.getFriction(), boxCollider2DFile.getRestitution(), boxCollider2DFile.getRestitutionThreshold()));
                 }
             }
         }

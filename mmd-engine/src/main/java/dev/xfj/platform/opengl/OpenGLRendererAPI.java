@@ -65,8 +65,8 @@ public class OpenGLRendererAPI extends RendererAPIBase {
 
     @Override
     public void drawIndexed(VertexArray vertexArray, int indexCount) {
+        vertexArray.bind();
         int count = indexCount > 0 ? indexCount : vertexArray.getIndexBuffer().getCount();
         GL45.glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, NULL);
-        GL45.glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

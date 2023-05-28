@@ -8,9 +8,13 @@ public class CameraComponent implements Component {
     public boolean fixedAspectRatio;
 
     public CameraComponent() {
-        this.camera = new SceneCamera();
-        this.primary = true;
-        this.fixedAspectRatio = false;
+        this(new SceneCamera(), true, false);
+    }
+
+    public CameraComponent(SceneCamera camera, boolean primary, boolean fixedAspectRatio) {
+        this.camera = camera;
+        this.primary = primary;
+        this.fixedAspectRatio = fixedAspectRatio;
     }
 
     public CameraComponent(CameraComponent other) {

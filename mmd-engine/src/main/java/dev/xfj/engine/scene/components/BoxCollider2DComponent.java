@@ -13,13 +13,21 @@ public class BoxCollider2DComponent implements Component {
     public Fixture runtimeFixture;
 
     public BoxCollider2DComponent() {
-        offset = new Vector2f(0.0f, 0.0f);
-        size = new Vector2f(0.5f, 0.5f);
-        density = 1.0f;
-        friction = 0.5f;
-        restitution = 0.0f;
-        restitutionThreshold = 0.5f;
-        runtimeFixture = null;
+        this(new Vector2f(0.0f, 0.0f), new Vector2f(0.5f, 0.5f), 1.0f, 0.5f, 0.0f, 0.5f);
+    }
+
+    public BoxCollider2DComponent(Vector2f offset, Vector2f size, float density, float friction, float restitution, float restitutionThreshold) {
+      this(offset, size, density, friction, restitution, restitutionThreshold, null);
+    }
+
+    public BoxCollider2DComponent(Vector2f offset, Vector2f size, float density, float friction, float restitution, float restitutionThreshold, Fixture runtimeFixture) {
+        this.offset = offset;
+        this.size = size;
+        this.density = density;
+        this.friction = friction;
+        this.restitution = restitution;
+        this.restitutionThreshold = restitutionThreshold;
+        this.runtimeFixture = runtimeFixture;
     }
 
     public BoxCollider2DComponent(BoxCollider2DComponent other) {

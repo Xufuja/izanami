@@ -14,9 +14,17 @@ public class Rigidbody2DComponent implements Component {
     }
 
     public Rigidbody2DComponent() {
-        type = BodyType.Static;
-        fixedRotation = false;
-        runtimeBody = null;
+        this(BodyType.Static, false);
+    }
+
+    public Rigidbody2DComponent(BodyType type, boolean fixedRotation) {
+        this(type, fixedRotation, null);
+    }
+
+    public Rigidbody2DComponent(BodyType type, boolean fixedRotation, Body runtimeBody) {
+        this.type = type;
+        this.fixedRotation = fixedRotation;
+        this.runtimeBody = runtimeBody;
     }
 
     public Rigidbody2DComponent(Rigidbody2DComponent other) {

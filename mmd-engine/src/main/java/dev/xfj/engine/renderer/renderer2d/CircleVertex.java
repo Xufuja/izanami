@@ -8,20 +8,20 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class QuadVertex {
-    public Vector3f position;
+public class CircleVertex {
+    public Vector3f worldPosition;
+    public Vector3f localPosition;
     public Vector4f color;
-    public Vector2f texCoord;
-    public float texIndex;
-    public float tilingFactor;
+    public float thickness;
+    public float fade;
     public int entityId;
 
-    public void setQuadVertex(Vector3f position, Vector4f color, Vector2f texCoord, float texIndex, float tilingFactor, int entityId) {
-        this.position = position;
+    public void setCircleVertex(Vector3f worldPosition, Vector3f localPosition, Vector4f color, float thickness, float fade, int entityId) {
+        this.worldPosition = worldPosition;
+        this.localPosition = localPosition;
         this.color = color;
-        this.texCoord = texCoord;
-        this.texIndex = texIndex;
-        this.tilingFactor = tilingFactor;
+        this.thickness = thickness;
+        this.fade = fade;
         this.entityId = entityId;
     }
 
@@ -63,7 +63,7 @@ public class QuadVertex {
 
     public static int getFloatArrayCount() {
         int size = 0;
-        for (Field field : QuadVertex.class.getDeclaredFields()) {
+        for (Field field : CircleVertex.class.getDeclaredFields()) {
             Class<?> fieldType = field.getType();
             if (fieldType.equals(float.class) || fieldType.equals(Float.class)) {
                 size += 1;
@@ -80,7 +80,7 @@ public class QuadVertex {
 
     public static int getIntArrayCount() {
         int size = 0;
-        for (Field field : QuadVertex.class.getDeclaredFields()) {
+        for (Field field : CircleVertex.class.getDeclaredFields()) {
             Class<?> fieldType = field.getType();
             if (fieldType.equals(int.class) || fieldType.equals(Integer.class)) {
                 size += 1;

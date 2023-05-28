@@ -97,6 +97,7 @@ public class Scene {
 
         copyComponent(TransformComponent.class, srcSceneRegistry, entityMap);
         copyComponent(SpriteRendererComponent.class, srcSceneRegistry, entityMap);
+        copyComponent(CircleRendererComponent.class, srcSceneRegistry, entityMap);
         copyComponent(CameraComponent.class, srcSceneRegistry, entityMap);
         copyComponent(NativeScriptComponent.class, srcSceneRegistry, entityMap);
         copyComponent(Rigidbody2DComponent.class, srcSceneRegistry, entityMap);
@@ -219,6 +220,13 @@ public class Scene {
                         Renderer2D.drawSprite(transform.getTransform(), sprite, findEntityId(entity.entity()));
                     });
 
+            registry.findEntitiesWith(TransformComponent.class, CircleRendererComponent.class)
+                    .stream().forEach(entity -> {
+                        TransformComponent transform = entity.comp1();
+                        CircleRendererComponent circle = entity.comp2();
+                        Renderer2D.drawCircle(transform.getTransform(), circle.color, circle.thickness, circle.fade, findEntityId(entity.entity()));
+                    });
+
             Renderer2D.endScene();
         }
     }
@@ -231,6 +239,13 @@ public class Scene {
                     TransformComponent transform = entity.comp1();
                     SpriteRendererComponent sprite = entity.comp2();
                     Renderer2D.drawSprite(transform.getTransform(), sprite, findEntityId(entity.entity()));
+                });
+
+        registry.findEntitiesWith(TransformComponent.class, CircleRendererComponent.class)
+                .stream().forEach(entity -> {
+                    TransformComponent transform = entity.comp1();
+                    CircleRendererComponent circle = entity.comp2();
+                    Renderer2D.drawCircle(transform.getTransform(), circle.color, circle.thickness, circle.fade, findEntityId(entity.entity()));
                 });
 
         Renderer2D.endScene();
@@ -256,6 +271,7 @@ public class Scene {
 
         copyComponentIfExists(TransformComponent.class, newEntity, entity);
         copyComponentIfExists(SpriteRendererComponent.class, newEntity, entity);
+        copyComponentIfExists(CircleRendererComponent.class, newEntity, entity);
         copyComponentIfExists(CameraComponent.class, newEntity, entity);
         copyComponentIfExists(NativeScriptComponent.class, newEntity, entity);
         copyComponentIfExists(Rigidbody2DComponent.class, newEntity, entity);
@@ -318,6 +334,7 @@ public class Scene {
             case Rigidbody2DComponent rb2dc -> Log.trace("Rigidbody2DComponent Unimplemented");
             case BoxCollider2DComponent bc2dc -> Log.trace("BoxCollider2DComponent Unimplemented");
             case IDComponent ic -> Log.trace("IDComponent Unimplemented");
+            case CircleRendererComponent crc -> Log.trace("CircleRendererComponent Unimplemented");
             default -> Log.error("Invalid component type");
         }
     }

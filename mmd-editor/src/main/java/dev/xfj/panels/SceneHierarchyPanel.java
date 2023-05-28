@@ -264,6 +264,13 @@ public class SceneHierarchyPanel {
                 }
             }
 
+            if (!selectionContext.hasComponent(CircleRendererComponent.class)) {
+                if (ImGui.menuItem("Circle Renderer")) {
+                    selectionContext.addComponent(new CircleRendererComponent());
+                    ImGui.closeCurrentPopup();
+                }
+            }
+
             if (!selectionContext.hasComponent(Rigidbody2DComponent.class)) {
                 if (ImGui.menuItem("Rigidbody 2D")) {
                     selectionContext.addComponent(new Rigidbody2DComponent());
@@ -379,6 +386,23 @@ public class SceneHierarchyPanel {
             float[] newTilingFactor = new float[]{component.tilingFactor};
             ImGui.dragFloat("Tiling Factor", newTilingFactor, 0.1f, 0.0f, 100.0f);
             component.tilingFactor = newTilingFactor[0];
+        });
+
+        drawComponent(CircleRendererComponent.class, "Box Collider 2D", entity, component -> {
+            float[] newColor = {component.color.x, component.color.y, component.color.z, component.color.w};
+            ImGui.colorEdit4("Color", newColor);
+            component.color.x = newColor[0];
+            component.color.y = newColor[1];
+            component.color.z = newColor[2];
+            component.color.w = newColor[3];
+
+            float[] newThickness = new float[]{component.thickness};
+            ImGui.dragFloat("Density", newThickness, 0.025f, 0.0f, 1.0f);
+            component.thickness = newThickness[0];
+
+            float[] newFade = new float[]{component.fade};
+            ImGui.dragFloat("Fade", newFade, 0.00025f, 0.0f, 1.0f);
+            component.fade = newFade[0];
         });
 
         drawComponent(Rigidbody2DComponent.class, "Rigidbody 2D", entity, component -> {

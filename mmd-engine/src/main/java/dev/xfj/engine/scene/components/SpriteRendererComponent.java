@@ -13,8 +13,12 @@ public class SpriteRendererComponent implements Component {
     }
 
     public SpriteRendererComponent(Vector4f color) {
+        this(color, 1.0f);
+    }
+
+    public SpriteRendererComponent(Vector4f color, float tilingFactor) {
         this.color = color;
-        this.tilingFactor = 1.0f;
+        this.tilingFactor = tilingFactor;
     }
 
     public SpriteRendererComponent(SpriteRendererComponent other) {

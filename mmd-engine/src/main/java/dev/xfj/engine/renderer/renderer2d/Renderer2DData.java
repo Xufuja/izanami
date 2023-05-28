@@ -17,12 +17,21 @@ public class Renderer2DData {
 
     public VertexArray quadVertexArray;
     public VertexBuffer quadVertexBuffer;
-    public Shader textureShader;
+    public Shader quadShader;
     public Texture2D whiteTexture;
+
+    public VertexArray circleVertexArray;
+    public VertexBuffer circleVertexBuffer;
+    public Shader circleShader;
 
     public int quadIndexCount = 0;
     public List<QuadVertex> quadVertexBufferBase;
     public int quadVertexBufferPtr;
+
+    public int circleIndexCount = 0;
+    public List<CircleVertex> circleVertexBufferBase;
+    public int circleVertexBufferPtr;
+
     public Texture2D[] textureSlots = new Texture2D[maxTextureSlots];
     public int textureSlotIndex = 1;
 

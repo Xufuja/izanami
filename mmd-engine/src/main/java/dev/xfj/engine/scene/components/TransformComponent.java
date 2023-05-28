@@ -14,9 +14,17 @@ public class TransformComponent implements Component {
     }
 
     public TransformComponent(Vector3f translation) {
+        this(translation, new Vector3f(0.0f, 0.0f, 0.0f));
+    }
+
+    public TransformComponent(Vector3f translation, Vector3f rotation) {
+        this(translation, rotation, new Vector3f(1.0f, 1.0f, 1.0f));
+    }
+
+    public TransformComponent(Vector3f translation, Vector3f rotation, Vector3f scale) {
         this.translation = translation;
-        this.rotation = new Vector3f(0.0f, 0.0f, 0.0f);
-        this.scale = new Vector3f(1.0f, 1.0f, 1.0f);
+        this.rotation = rotation;
+        this.scale = scale;
     }
 
     public TransformComponent(TransformComponent other) {

@@ -19,6 +19,7 @@ message EntityFile {
   CameraFile camera = 5;
   Rigidbody2DFile rigidbody_2d = 6;
   BoxCollider2DFile box_collider_2d = 7;
+  CircleRendererFile circle_renderer = 8;
 }
 
 message TagFile {
@@ -69,4 +70,10 @@ message BoxCollider2DFile {
   float friction = 4;
   float restitution = 5;
   float restitution_threshold = 6;
+}
+
+message CircleRendererFile {
+  repeated float color = 1;
+  float thickness = 2;
+  float fade = 3;
 }
