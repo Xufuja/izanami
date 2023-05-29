@@ -20,6 +20,7 @@ message EntityFile {
   Rigidbody2DFile rigidbody_2d = 6;
   BoxCollider2DFile box_collider_2d = 7;
   CircleRendererFile circle_renderer = 8;
+  CircleCollider2DFile circle_collider_2d = 9;
 }
 
 message TagFile {
@@ -76,4 +77,13 @@ message CircleRendererFile {
   repeated float color = 1;
   float thickness = 2;
   float fade = 3;
+}
+
+message CircleCollider2DFile {
+  repeated float offset = 1;
+  float radius = 2;
+  float density = 3;
+  float friction = 4;
+  float restitution = 5;
+  float restitution_threshold = 6;
 }

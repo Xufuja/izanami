@@ -284,6 +284,14 @@ public class SceneHierarchyPanel {
                     ImGui.closeCurrentPopup();
                 }
             }
+
+            if (!selectionContext.hasComponent(CircleCollider2DComponent.class)) {
+                if (ImGui.menuItem("Circle Collider 2D")) {
+                    selectionContext.addComponent(new CircleCollider2DComponent());
+                    ImGui.closeCurrentPopup();
+                }
+            }
+
             ImGui.endPopup();
         }
         ImGui.popItemWidth();
@@ -388,7 +396,7 @@ public class SceneHierarchyPanel {
             component.tilingFactor = newTilingFactor[0];
         });
 
-        drawComponent(CircleRendererComponent.class, "Box Collider 2D", entity, component -> {
+        drawComponent(CircleRendererComponent.class, "Circle Renderer", entity, component -> {
             float[] newColor = {component.color.x, component.color.y, component.color.z, component.color.w};
             ImGui.colorEdit4("Color", newColor);
             component.color.x = newColor[0];
@@ -438,6 +446,33 @@ public class SceneHierarchyPanel {
             ImGui.dragFloat2("Size", newSize);
             component.size.x = newSize[0];
             component.size.y = newSize[1];
+
+            float[] newDensity = new float[]{component.density};
+            ImGui.dragFloat("Density", newDensity, 0.01f, 0.0f, 1.0f);
+            component.density = newDensity[0];
+
+            float[] newFriction = new float[]{component.friction};
+            ImGui.dragFloat("Friction", newFriction, 0.01f, 0.0f, 1.0f);
+            component.friction = newFriction[0];
+
+            float[] newRestitution = new float[]{component.restitution};
+            ImGui.dragFloat("Restitution", newRestitution, 0.01f, 0.0f, 1.0f);
+            component.restitution = newRestitution[0];
+
+            float[] newRestitutionThreshold = new float[]{component.restitutionThreshold};
+            ImGui.dragFloat("Restitution Threshold", newRestitutionThreshold, 0.01f, 0.0f, 1.0f);
+            component.restitutionThreshold = newRestitutionThreshold[0];
+        });
+
+        drawComponent(CircleCollider2DComponent.class, "Circle Collider 2D", entity, component -> {
+            float[] newOffset = new float[]{component.offset.x, component.offset.y};
+            ImGui.dragFloat2("Offset", newOffset);
+            component.offset.x = newOffset[0];
+            component.offset.y = newOffset[1];
+
+            float[] newRadius = new float[]{component.radius};
+            ImGui.dragFloat("Radius", newRadius);
+            component.radius = newRadius[0];
 
             float[] newDensity = new float[]{component.density};
             ImGui.dragFloat("Density", newDensity, 0.01f, 0.0f, 1.0f);

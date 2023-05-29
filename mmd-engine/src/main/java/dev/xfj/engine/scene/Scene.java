@@ -101,6 +101,7 @@ public class Scene {
         copyComponent(NativeScriptComponent.class, srcSceneRegistry, entityMap);
         copyComponent(Rigidbody2DComponent.class, srcSceneRegistry, entityMap);
         copyComponent(BoxCollider2DComponent.class, srcSceneRegistry, entityMap);
+        copyComponent(CircleCollider2DComponent.class, srcSceneRegistry, entityMap);
 
         return newScene;
     }
@@ -129,6 +130,7 @@ public class Scene {
 
     public void onRuntimeStart() {
         physicsWorld = new World(new Vector2(0.0f, -9.8f), true);
+
         registry.findEntitiesWith(Rigidbody2DComponent.class)
                 .stream().forEach(component -> {
                     Entity entity = new Entity(component.entity(), this);
@@ -155,6 +157,21 @@ public class Scene {
                         fixtureDef.density = bc2dc.density;
                         fixtureDef.friction = bc2dc.friction;
                         fixtureDef.restitution = bc2dc.restitution;
+                        body.createFixture(fixtureDef);
+                    }
+
+                    if (entity.hasComponent(CircleCollider2DComponent.class)) {
+                        CircleCollider2DComponent cc2dc = entity.getComponent(CircleCollider2DComponent.class);
+
+                        CircleShape circleShape = new CircleShape();
+                        circleShape.setPosition(new Vector2(cc2dc.offset.x, cc2dc.offset.y));
+                        circleShape.setRadius(cc2dc.radius);
+
+                        FixtureDef fixtureDef = new FixtureDef();
+                        fixtureDef.shape = circleShape;
+                        fixtureDef.density = cc2dc.density;
+                        fixtureDef.friction = cc2dc.friction;
+                        fixtureDef.restitution = cc2dc.restitution;
                         body.createFixture(fixtureDef);
                     }
                 });
@@ -275,6 +292,7 @@ public class Scene {
         copyComponentIfExists(NativeScriptComponent.class, newEntity, entity);
         copyComponentIfExists(Rigidbody2DComponent.class, newEntity, entity);
         copyComponentIfExists(BoxCollider2DComponent.class, newEntity, entity);
+        copyComponentIfExists(CircleCollider2DComponent.class, newEntity, entity);
     }
 
     public Entity getPrimaryCameraEntity() {
@@ -334,6 +352,7 @@ public class Scene {
             case BoxCollider2DComponent bc2dc -> Log.trace("BoxCollider2DComponent Unimplemented");
             case IDComponent ic -> Log.trace("IDComponent Unimplemented");
             case CircleRendererComponent crc -> Log.trace("CircleRendererComponent Unimplemented");
+            case CircleCollider2DComponent cc2dc -> Log.trace("CircleCollider2DComponent Unimplemented");
             default -> Log.error("Invalid component type");
         }
     }

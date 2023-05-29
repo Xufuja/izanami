@@ -91,6 +91,19 @@ public class SceneSerializer {
                             .setRestitutionThreshold(boxCollider2DComponent.restitutionThreshold))
                     .build();
         }
+
+        if (entity.hasComponent(CircleCollider2DComponent.class)) {
+            CircleCollider2DComponent circleCollider2DComponent = entity.getComponent(CircleCollider2DComponent.class);
+
+            entityBuilder.setCircleCollider2D(CircleCollider2DFile.newBuilder()
+                            .addAllOffset(Arrays.asList(circleCollider2DComponent.offset.x, circleCollider2DComponent.offset.y))
+                            .setRadius(circleCollider2DComponent.radius)
+                            .setDensity(circleCollider2DComponent.density)
+                            .setFriction(circleCollider2DComponent.friction)
+                            .setRestitution(circleCollider2DComponent.restitution)
+                            .setRestitutionThreshold(circleCollider2DComponent.restitutionThreshold))
+                    .build();
+        }
     }
 
     public void serialize(Path filePath) {
@@ -199,6 +212,11 @@ public class SceneSerializer {
                 if (entity.hasBoxCollider2D()) {
                     BoxCollider2DFile boxCollider2DFile = entity.getBoxCollider2D();
                     deserializedEntity.addComponent(new BoxCollider2DComponent(new Vector2f(boxCollider2DFile.getOffset(0), boxCollider2DFile.getOffset(1)), new Vector2f(boxCollider2DFile.getSize(0), boxCollider2DFile.getSize(1)), boxCollider2DFile.getDensity(), boxCollider2DFile.getFriction(), boxCollider2DFile.getRestitution(), boxCollider2DFile.getRestitutionThreshold()));
+                }
+
+                if (entity.hasCircleCollider2D()) {
+                    CircleCollider2DFile circleCollider2DFile = entity.getCircleCollider2D();
+                    deserializedEntity.addComponent(new CircleCollider2DComponent(new Vector2f(circleCollider2DFile.getOffset(0), circleCollider2DFile.getOffset(1)), circleCollider2DFile.getRadius(), circleCollider2DFile.getDensity(), circleCollider2DFile.getFriction(), circleCollider2DFile.getRestitution(), circleCollider2DFile.getRestitutionThreshold()));
                 }
             }
         }
