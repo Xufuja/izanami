@@ -22,6 +22,9 @@ public abstract class RendererAPIBase implements RendererAPI {
     public abstract void drawIndexed(VertexArray vertexArray);
     public abstract void drawIndexed(VertexArray vertexArray, int indexCount);
 
+    public abstract void drawLines(VertexArray vertexArray, int vertexCount);
+
+    public abstract void setLineWidth(float width);
 
     public static API getAPI() {
         return api;

@@ -30,7 +30,10 @@ public interface RendererAPI {
     void clear();
 
     void drawIndexed(VertexArray vertexArray);
+
     void drawIndexed(VertexArray vertexArray, int indexCount);
 
+    void drawLines(VertexArray vertexArray, int vertexCount);
 
+    void setLineWidth(float width);
 }

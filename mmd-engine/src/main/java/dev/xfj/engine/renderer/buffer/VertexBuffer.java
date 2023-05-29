@@ -39,7 +39,7 @@ public interface VertexBuffer {
 
     void unbind();
 
-    void setData(ArrayList<ByteBuffer> data, int floatSize, int intSize);
+    void setData(ArrayList<ByteBuffer> data, int floatCount, int intCount);
 
     BufferLayout getLayout();
 

@@ -24,6 +24,10 @@ public class Renderer2DData {
     public VertexBuffer circleVertexBuffer;
     public Shader circleShader;
 
+    public VertexArray lineVertexArray;
+    public VertexBuffer lineVertexBuffer;
+    public Shader lineShader;
+
     public int quadIndexCount = 0;
     public List<QuadVertex> quadVertexBufferBase;
     public int quadVertexBufferPtr;
@@ -31,6 +35,12 @@ public class Renderer2DData {
     public int circleIndexCount = 0;
     public List<CircleVertex> circleVertexBufferBase;
     public int circleVertexBufferPtr;
+
+    public int lineVertexCount = 0;
+    public List<LineVertex> lineVertexBufferBase;
+    public int lineVertexBufferPtr;
+
+    public float lineWidth = 2.0f;
 
     public Texture2D[] textureSlots = new Texture2D[maxTextureSlots];
     public int textureSlotIndex = 1;

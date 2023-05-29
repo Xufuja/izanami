@@ -28,7 +28,16 @@ public class RenderCommand {
     public static void drawIndexed(VertexArray vertexArray) {
         rendererAPI.drawIndexed(vertexArray);
     }
+
     public static void drawIndexed(VertexArray vertexArray, int indexCount) {
         rendererAPI.drawIndexed(vertexArray, indexCount);
+    }
+
+    public static void drawLines(VertexArray vertexArray, int vertexCount) {
+        rendererAPI.drawLines(vertexArray, vertexCount);
+    }
+
+    public static void setLineWidth(float width) {
+        rendererAPI.setLineWidth(width);
     }
 }

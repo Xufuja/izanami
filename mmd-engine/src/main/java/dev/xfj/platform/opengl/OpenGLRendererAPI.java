@@ -22,6 +22,7 @@ public class OpenGLRendererAPI extends RendererAPIBase {
         GL45.glEnable(GL_BLEND);
         GL45.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GL45.glEnable(GL_DEPTH_TEST);
+        GL45.glEnable(GL_LINE_SMOOTH);
 
         if (ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0) {
             GL45.glEnable(GL_DEBUG_OUTPUT);
@@ -68,5 +69,16 @@ public class OpenGLRendererAPI extends RendererAPIBase {
         vertexArray.bind();
         int count = indexCount > 0 ? indexCount : vertexArray.getIndexBuffer().getCount();
         GL45.glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, NULL);
+    }
+
+    @Override
+    public void drawLines(VertexArray vertexArray, int vertexCount) {
+        vertexArray.bind();
+        GL45.glDrawArrays(GL_LINES, 0, vertexCount);
+    }
+
+    @Override
+    public void setLineWidth(float width) {
+        GL45.glLineWidth(width);
     }
 }
