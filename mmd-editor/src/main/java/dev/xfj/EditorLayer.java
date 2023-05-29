@@ -18,8 +18,7 @@ import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneSerializer;
-import dev.xfj.engine.scene.components.TagComponent;
-import dev.xfj.engine.scene.components.TransformComponent;
+import dev.xfj.engine.scene.components.*;
 import dev.xfj.panels.ContentBrowserPanel;
 import dev.xfj.panels.SceneHierarchyPanel;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
@@ -29,10 +28,7 @@ import imgui.extension.imguizmo.flag.Mode;
 import imgui.extension.imguizmo.flag.Operation;
 import imgui.flag.*;
 import imgui.type.ImBoolean;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,6 +61,7 @@ public class EditorLayer extends Layer {
     private Vector2f[] viewportBounds;
     private Vector4f squareColor;
     private int gizmoType;
+    private boolean showPhysicsColliders;
     private SceneState sceneState;
 
     private final SceneHierarchyPanel sceneHierarchyPanel;
@@ -93,6 +90,7 @@ public class EditorLayer extends Layer {
         this.sceneHierarchyPanel = new SceneHierarchyPanel();
         this.contentBrowserPanel = new ContentBrowserPanel();
         this.gizmoType = -1;
+        this.showPhysicsColliders = false;
         this.sceneState = SceneState.Edit;
     }
 
@@ -181,6 +179,8 @@ public class EditorLayer extends Layer {
             hoveredEntity = activeScene.getEntityById(pixelData);
         }
 
+        onOverlayRender();
+
         framebuffer.unbind();
     }
 
@@ -267,6 +267,12 @@ public class EditorLayer extends Layer {
         ImGui.text(String.format("Vertices: %1$d", stats.getTotalVertexCount()));
         ImGui.text(String.format("Indices: %1$d", stats.getTotalIndexCount()));
 
+        ImGui.end();
+
+        ImGui.begin("Settings");
+        if (ImGui.checkbox("Show Physics Colliders", showPhysicsColliders)) {
+            showPhysicsColliders = !showPhysicsColliders;
+        }
         ImGui.end();
 
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
@@ -457,6 +463,45 @@ public class EditorLayer extends Layer {
             }
         }
         return false;
+    }
+
+    private void onOverlayRender() {
+        if (sceneState == SceneState.Play) {
+            Entity camera = activeScene.getPrimaryCameraEntity();
+            Renderer2D.beginScene(camera.getComponent(CameraComponent.class).camera, camera.getComponent(TransformComponent.class).getTransform());
+        } else {
+            Renderer2D.beginScene(editorCamera);
+        }
+
+        if (showPhysicsColliders) {
+            activeScene.getRegistry().findEntitiesWith(TransformComponent.class, BoxCollider2DComponent.class)
+                    .stream().forEach(component -> {
+                        TransformComponent tc = component.comp1();
+                        BoxCollider2DComponent bc2dc = component.comp2();
+
+                        Vector3f translation = new Vector3f(tc.translation).add(new Vector3f(bc2dc.offset, 0.001f));
+                        Vector3f scale = new Vector3f(tc.scale).mul(new Vector3f(new Vector2f(bc2dc.size).mul(2.0f), 1.0f));
+
+                        Matrix4f rotation = new Matrix4f().rotate(new Quaternionf().rotateZ(tc.rotation.z));
+                        Matrix4f transform = new Matrix4f().translate(translation).mul(rotation).mul(new Matrix4f().scale(scale));
+
+                        Renderer2D.drawRect(transform, new Vector4f(0, 1, 0, 1));
+                    });
+
+            activeScene.getRegistry().findEntitiesWith(TransformComponent.class, CircleCollider2DComponent.class)
+                    .stream().forEach(component -> {
+                        TransformComponent tc = component.comp1();
+                        CircleCollider2DComponent cc2dc = component.comp2();
+
+                        Vector3f translation = new Vector3f(tc.translation).add(new Vector3f(cc2dc.offset, 0.001f));
+                        Vector3f scale = new Vector3f(tc.scale).mul(new Vector3f(cc2dc.radius * 2.0f));
+
+                        Matrix4f transform = new Matrix4f().translate(translation).mul(new Matrix4f().scale(scale));
+
+                        Renderer2D.drawCircle(transform, new Vector4f(0, 1, 0, 1), 0.01f);
+                    });
+        }
+        Renderer2D.endScene();
     }
 
     private void newScene() {

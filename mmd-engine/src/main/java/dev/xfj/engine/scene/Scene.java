@@ -15,6 +15,7 @@ import org.joml.Matrix4f;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Scene {
@@ -165,7 +166,7 @@ public class Scene {
 
                         CircleShape circleShape = new CircleShape();
                         circleShape.setPosition(new Vector2(cc2dc.offset.x, cc2dc.offset.y));
-                        circleShape.setRadius(cc2dc.radius);
+                        circleShape.setRadius(transform.scale.x * cc2dc.radius);
 
                         FixtureDef fixtureDef = new FixtureDef();
                         fixtureDef.shape = circleShape;
@@ -338,7 +339,6 @@ public class Scene {
         }
         return -1;
     }
-
 
     protected <T extends Component> void onComponentAdded(Entity entity, T component) {
         switch (component) {
