@@ -236,6 +236,10 @@ public class EditorLayer extends Layer {
                     openScene();
                 }
 
+                if (ImGui.menuItem("Save...", "Ctrl+S")) {
+                    saveScene();
+                }
+
                 if (ImGui.menuItem("Save As...", "Ctrl+Shift+S")) {
                     saveSceneAs();
                 }
