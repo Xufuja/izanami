@@ -4,16 +4,23 @@ import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.shader.Shader;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.GL45;
 import org.lwjgl.opengl.GL46;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.util.shaderc.Shaderc;
+import org.lwjgl.util.spvc.Spvc;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,9 +104,18 @@ public class OpenGLShader implements Shader {
 
     public OpenGLShader(Path filePath) {
         this.filePath = filePath;
+        this.vulkanSPIRV = new HashMap<>();
+        this.openGLSPIRV = new HashMap<>();
+        this.openGLSourceCode = new HashMap<>();
+
+        OpenGLShader.createCacheDirectoryIfNeeded();
+
         String source = readFile(filePath);
         HashMap<Integer, String> shaderSources = preProcess(source);
-        compile(shaderSources);
+
+        compileOrGetVulkanBinaries(shaderSources);
+        compileOrGetOpenGLBinaries();
+        createProgram();
 
         String fullName = filePath.getFileName().toString();
         int lastDot = fullName.lastIndexOf(".");
@@ -112,7 +128,10 @@ public class OpenGLShader implements Shader {
         HashMap<Integer, String> sources = new HashMap<>();
         sources.put(GL_VERTEX_SHADER, vertexSrc);
         sources.put(GL_FRAGMENT_SHADER, fragmentSrc);
-        compile(sources);
+
+        compileOrGetVulkanBinaries(sources);
+        compileOrGetOpenGLBinaries();
+        createProgram();
     }
 
     private String readFile(Path filePath) {
@@ -212,7 +231,7 @@ public class OpenGLShader implements Shader {
     private void compileOrGetVulkanBinaries(Map<Integer, String> shaderSources) {
         int program = GL45.glCreateProgram();
         long compiler = shaderc_compiler_initialize();
-        long options = 0;
+        long options = shaderc_compile_options_initialize();
         shaderc_compile_options_set_target_env(options, shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
 
         boolean optimize = true;
@@ -233,17 +252,92 @@ public class OpenGLShader implements Shader {
             Path cachedPath = cacheDirectory.resolve(shaderFilePath.getFileName().toString() + gLShaderStageCachedVulkanFileExtension(stage));
 
             if (Files.exists(cachedPath)) {
+                try (InputStream in = Files.newInputStream(cachedPath)) {
+                    long size = Files.size(cachedPath);
+                    ByteBuffer byteBuffer = ByteBuffer.allocate((int) size);
+                    in.read(byteBuffer.array());
+                    byteBuffer.flip();
+                    shaderData.put(stage, byteBuffer);
+                } catch (IOException e) {
+                    Log.error("Could not open file: " + filePath);
+                    throw new RuntimeException(e);
+                }
+            } else {
+                long result = Shaderc.shaderc_compile_into_spv(compiler, source, gLShaderStageToShaderC(stage), filePath.toString(), "main", options);
+                Shaderc.shaderc_result_get_compilation_status(result);
 
+                if (Shaderc.shaderc_result_get_compilation_status(result) != Shaderc.shaderc_compilation_status_success) {
+                    //Some sort of exception
+                    Log.error(Shaderc.shaderc_result_get_error_message(result));
+                }
+
+                long length = Shaderc.shaderc_result_get_length(result);
+                ByteBuffer byteBuffer = Shaderc.shaderc_result_get_bytes(result);
+
+                byte[] byteArray = new byte[(int) length];
+                byteBuffer.get(byteArray);
+
+                byteBuffer.flip();
+
+                shaderData.put(stage, byteBuffer);
+
+                try (OutputStream outputStream = Files.newOutputStream(cachedPath, StandardOpenOption.CREATE)) {
+                    outputStream.write(byteArray);
+                } catch (IOException e) {
+                    Log.error("Could not open file: " + cachedPath);
+                    throw new RuntimeException(e);
+                }
+                Shaderc.shaderc_result_release(result);
+            }
+        }
+
+
+        //for (Map.Entry<Integer, ByteBuffer> entry : shaderData.entrySet()) {
+        //reflect(entry.getKey(), entry.getValue());
+        //}
+    }
+
+
+    private void compileOrGetOpenGLBinaries() {
+        Map<Integer, ByteBuffer> shaderData = openGLSPIRV;
+        long compiler = shaderc_compiler_initialize();
+        long options = shaderc_compile_options_initialize();
+        shaderc_compile_options_set_target_env(options, shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
+
+        boolean optimize = false;
+        if (optimize) {
+            shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
+        }
+
+        Path cacheDirectory = getCacheDirectory();
+
+        shaderData.clear();
+        openGLSourceCode.clear();
+
+        for (Map.Entry<Integer, ByteBuffer> entry : vulkanSPIRV.entrySet()) {
+            int stage = entry.getKey();
+            ByteBuffer source = entry.getValue();
+
+            Path shaderFilePath = filePath;
+            Path cachedPath = cacheDirectory.resolve(shaderFilePath.getFileName().toString() + gLShaderStageCachedOpenGLFileExtension(stage));
+
+            if (Files.exists(cachedPath)) {
+                try (InputStream in = Files.newInputStream(cachedPath)) {
+                    long size = Files.size(cachedPath);
+                    ByteBuffer byteBuffer = ByteBuffer.allocate((int) size);
+                    in.read(byteBuffer.array());
+                    byteBuffer.flip();
+
+                    shaderData.put(stage, byteBuffer);
+                } catch (IOException e) {
+                    Log.error("Could not open file: " + filePath);
+                    throw new RuntimeException(e);
+                }
             } else {
 
             }
 
         }
-    }
-
-
-    private void compileOrGetOpenGLBinaries() {
-
     }
 
     private void createProgram() {
@@ -253,7 +347,6 @@ public class OpenGLShader implements Shader {
         for (Map.Entry<Integer, ByteBuffer> entry : openGLSPIRV.entrySet()) {
             int stage = entry.getKey();
             ByteBuffer spirv = entry.getValue();
-
             int[] shaderId = new int[1];
             shaderId[0] = GL45.glCreateShader(stage);
             shaderIds.add(shaderId[0]);
@@ -291,8 +384,34 @@ public class OpenGLShader implements Shader {
         rendererId = program;
     }
 
-    private void reflect(int stage, List<Integer> shaderData) {
+    private void reflect(int stage, ByteBuffer shaderData) {
+        /*try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer bytecode = shaderData.asIntBuffer();
+            bytecode.flip();
 
+            PointerBuffer contextPtr = stack.callocPointer(1);
+            PointerBuffer compilerPtr = stack.callocPointer(1);
+            PointerBuffer ir = stack.callocPointer(1);
+
+            Spvc.spvc_context_create(contextPtr);
+            long context = contextPtr.get(0);
+
+            Spvc.spvc_context_parse_spirv(context, bytecode, bytecode.array().length, ir);
+
+            Spvc.spvc_context_create_compiler(
+                    context,
+                    Spvc.SPVC_BACKEND_GLSL,
+                    ir.get(0),
+                    Spvc.SPVC_CAPTURE_MODE_TAKE_OWNERSHIP,
+                    compilerPtr
+            );
+
+            long compiler = compilerPtr.get(0);
+
+            PointerBuffer resourcesPtr = MemoryUtil.memAllocPointer(1);
+            Spvc.spvc_compiler_create_shader_resources(compiler, resourcesPtr);
+            long resources = resourcesPtr.get(0);
+        }*/
     }
 
     @Override
