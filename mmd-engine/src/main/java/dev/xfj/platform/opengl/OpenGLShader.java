@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL46;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,7 +22,6 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL46.GL_SHADER_BINARY_FORMAT_SPIR_V;
-import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.util.shaderc.Shaderc.*;
 
 public class OpenGLShader implements Shader {
@@ -41,6 +41,57 @@ public class OpenGLShader implements Shader {
                 Log.error("Unknown Shader Type!");
                 yield 0;
             }
+        };
+    }
+
+    static int gLShaderStageToShaderC(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> shaderc_glsl_vertex_shader;
+            case GL_FRAGMENT_SHADER -> shaderc_glsl_fragment_shader;
+            //Some sort of exception
+            default -> 0;
+        };
+    }
+
+    static String gLShaderStageToString(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> "GL_VERTEX_SHADER";
+            case GL_FRAGMENT_SHADER -> "GL_FRAGMENT_SHADER";
+            //Some sort of exception
+            default -> null;
+        };
+    }
+
+    static Path getCacheDirectory() {
+        return Path.of("assets/cache/shader/opengl");
+    }
+
+    static void createCacheDirectoryIfNeeded() {
+        Path cacheDirectory = getCacheDirectory();
+        if (!Files.exists(cacheDirectory)) {
+            try {
+                Files.createDirectories(cacheDirectory);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+
+    static String gLShaderStageCachedOpenGLFileExtension(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> ".cached_opengl.vert";
+            case GL_FRAGMENT_SHADER -> ".cached_opengl.frag";
+            //Some sort of exception
+            default -> null;
+        };
+    }
+
+    static String gLShaderStageCachedVulkanFileExtension(int stage) {
+        return switch (stage) {
+            case GL_VERTEX_SHADER -> ".cached_vulkan.vert";
+            case GL_FRAGMENT_SHADER -> ".cached_vulkan.frag";
+            //Some sort of exception
+            default -> null;
         };
     }
 
@@ -171,7 +222,7 @@ public class OpenGLShader implements Shader {
 
         Path cacheDirectory = getCacheDirectory();
 
-        Map<Integer, List<Integer>> shaderData = vulkanSPIRV;
+        Map<Integer, ByteBuffer> shaderData = vulkanSPIRV;
         shaderData.clear();
 
         for (Map.Entry<Integer, String> entry : shaderSources.entrySet()) {
