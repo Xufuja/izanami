@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL45;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.system.Pointer;
 import org.lwjgl.util.shaderc.Shaderc;
 import org.lwjgl.util.spvc.Spvc;
 
@@ -252,10 +253,10 @@ public class OpenGLShader implements Shader {
             Path cachedPath = cacheDirectory.resolve(shaderFilePath.getFileName().toString() + gLShaderStageCachedVulkanFileExtension(stage));
 
             if (Files.exists(cachedPath)) {
-                try (InputStream in = Files.newInputStream(cachedPath)) {
-                    long size = Files.size(cachedPath);
-                    ByteBuffer byteBuffer = ByteBuffer.allocate((int) size);
-                    in.read(byteBuffer.array());
+                try (InputStream inputStream = Files.newInputStream(cachedPath)) {
+                    byte[] byteArray = inputStream.readAllBytes();
+                    ByteBuffer byteBuffer = ByteBuffer.allocate(byteArray.length);
+                    byteBuffer.put(byteArray);
                     byteBuffer.flip();
                     shaderData.put(stage, byteBuffer);
                 } catch (IOException e) {
@@ -316,25 +317,85 @@ public class OpenGLShader implements Shader {
 
         for (Map.Entry<Integer, ByteBuffer> entry : vulkanSPIRV.entrySet()) {
             int stage = entry.getKey();
-            ByteBuffer source = entry.getValue();
-
+            ByteBuffer spirv = entry.getValue();
+            
             Path shaderFilePath = filePath;
             Path cachedPath = cacheDirectory.resolve(shaderFilePath.getFileName().toString() + gLShaderStageCachedOpenGLFileExtension(stage));
 
             if (Files.exists(cachedPath)) {
-                try (InputStream in = Files.newInputStream(cachedPath)) {
-                    long size = Files.size(cachedPath);
-                    ByteBuffer byteBuffer = ByteBuffer.allocate((int) size);
-                    in.read(byteBuffer.array());
+                try (InputStream inputStream = Files.newInputStream(cachedPath)) {
+                    byte[] byteArray = inputStream.readAllBytes();
+                    ByteBuffer byteBuffer = ByteBuffer.allocate(byteArray.length);
+                    byteBuffer.put(byteArray);
                     byteBuffer.flip();
-
                     shaderData.put(stage, byteBuffer);
                 } catch (IOException e) {
                     Log.error("Could not open file: " + filePath);
                     throw new RuntimeException(e);
                 }
             } else {
+                try (MemoryStack stack = MemoryStack.stackPush()) {
 
+                    int[] intArray = new int[spirv.remaining() / 4];
+                    spirv.asIntBuffer().get(intArray);
+
+                    IntBuffer bytecode = MemoryUtil.memAllocInt(intArray.length);
+                    bytecode.put(intArray, 0, intArray.length);
+                    bytecode.flip();
+
+                    PointerBuffer contextPtr = stack.callocPointer(1);
+                    PointerBuffer compilerPtr = stack.callocPointer(1);
+                    PointerBuffer ir = stack.callocPointer(1);
+
+                    Spvc.spvc_context_create(contextPtr);
+                    long context = contextPtr.get(0);
+
+                    Spvc.spvc_context_parse_spirv(context, bytecode, intArray.length, ir);
+
+                    Spvc.spvc_context_create_compiler(
+                            context,
+                            Spvc.SPVC_BACKEND_GLSL,
+                            ir.get(0),
+                            Spvc.SPVC_CAPTURE_MODE_TAKE_OWNERSHIP,
+                            compilerPtr
+                    );
+
+                    long glslCompiler = compilerPtr.get(0);
+
+                    PointerBuffer glslResult = stack.callocPointer(1);
+                    Spvc.spvc_compiler_compile(glslCompiler, glslResult);
+
+                    String shaderCode = MemoryUtil.memUTF8(glslResult.get(0));
+                    openGLSourceCode.put(stage, shaderCode);
+
+                    String source = openGLSourceCode.get(stage);
+
+                    long result = Shaderc.shaderc_compile_into_spv(compiler, source, gLShaderStageToShaderC(stage), filePath.toString(), "main", options);
+                    Shaderc.shaderc_result_get_compilation_status(result);
+
+                    if (Shaderc.shaderc_result_get_compilation_status(result) != Shaderc.shaderc_compilation_status_success) {
+                        //Some sort of exception
+                        Log.error(Shaderc.shaderc_result_get_error_message(result));
+                    }
+
+                    long length = Shaderc.shaderc_result_get_length(result);
+                    ByteBuffer byteBuffer = Shaderc.shaderc_result_get_bytes(result);
+
+                    byte[] byteArray = new byte[(int) length];
+                    byteBuffer.get(byteArray);
+
+                    byteBuffer.flip();
+
+                    shaderData.put(stage, byteBuffer);
+
+                    try (OutputStream outputStream = Files.newOutputStream(cachedPath, StandardOpenOption.CREATE)) {
+                        outputStream.write(byteArray);
+                    } catch (IOException e) {
+                        Log.error("Could not open file: " + cachedPath);
+                        throw new RuntimeException(e);
+                    }
+                    Shaderc.shaderc_result_release(result);
+                }
             }
 
         }
