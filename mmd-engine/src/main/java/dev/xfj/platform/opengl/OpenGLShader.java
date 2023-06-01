@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,6 +31,7 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL46.GL_SHADER_BINARY_FORMAT_SPIR_V;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.util.shaderc.Shaderc.*;
 
 public class OpenGLShader implements Shader {
@@ -255,7 +257,7 @@ public class OpenGLShader implements Shader {
             if (Files.exists(cachedPath)) {
                 try (InputStream inputStream = Files.newInputStream(cachedPath)) {
                     byte[] byteArray = inputStream.readAllBytes();
-                    ByteBuffer byteBuffer = ByteBuffer.allocate(byteArray.length);
+                    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(byteArray.length).order(ByteOrder.nativeOrder());
                     byteBuffer.put(byteArray);
                     byteBuffer.flip();
                     shaderData.put(stage, byteBuffer);
@@ -318,14 +320,14 @@ public class OpenGLShader implements Shader {
         for (Map.Entry<Integer, ByteBuffer> entry : vulkanSPIRV.entrySet()) {
             int stage = entry.getKey();
             ByteBuffer spirv = entry.getValue();
-            
+
             Path shaderFilePath = filePath;
             Path cachedPath = cacheDirectory.resolve(shaderFilePath.getFileName().toString() + gLShaderStageCachedOpenGLFileExtension(stage));
 
             if (Files.exists(cachedPath)) {
                 try (InputStream inputStream = Files.newInputStream(cachedPath)) {
                     byte[] byteArray = inputStream.readAllBytes();
-                    ByteBuffer byteBuffer = ByteBuffer.allocate(byteArray.length);
+                    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(byteArray.length).order(ByteOrder.nativeOrder());
                     byteBuffer.put(byteArray);
                     byteBuffer.flip();
                     shaderData.put(stage, byteBuffer);
@@ -334,8 +336,8 @@ public class OpenGLShader implements Shader {
                     throw new RuntimeException(e);
                 }
             } else {
-                try (MemoryStack stack = MemoryStack.stackPush()) {
-
+                long glslCompiler;
+                try (MemoryStack stack = stackPush()) {
                     int[] intArray = new int[spirv.remaining() / 4];
                     spirv.asIntBuffer().get(intArray);
 
@@ -360,8 +362,10 @@ public class OpenGLShader implements Shader {
                             compilerPtr
                     );
 
-                    long glslCompiler = compilerPtr.get(0);
+                    glslCompiler = compilerPtr.get(0);
 
+                }
+                try (MemoryStack stack = stackPush()) {
                     PointerBuffer glslResult = stack.callocPointer(1);
                     Spvc.spvc_compiler_compile(glslCompiler, glslResult);
 
@@ -408,12 +412,17 @@ public class OpenGLShader implements Shader {
         for (Map.Entry<Integer, ByteBuffer> entry : openGLSPIRV.entrySet()) {
             int stage = entry.getKey();
             ByteBuffer spirv = entry.getValue();
+
             int[] shaderId = new int[1];
             shaderId[0] = GL45.glCreateShader(stage);
             shaderIds.add(shaderId[0]);
 
             GL45.glShaderBinary(shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv);
-            GL46.glSpecializeShader(shaderId[0], "main", new int[]{0}, new int[]{0});
+
+            //Apparently this is a bug in LWGJL: https://github.com/LWJGL/lwjgl3/issues/551
+            try (MemoryStack stack = stackPush()) {
+                GL46.glSpecializeShader(shaderId[0], stack.UTF8("main"), stack.mallocInt(0), stack.mallocInt(0));
+            }
             GL45.glAttachShader(program, shaderId[0]);
         }
 
