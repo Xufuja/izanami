@@ -431,7 +431,8 @@ public class OpenGLShader implements Shader {
         }
         try (MemoryStack stack = MemoryStack.stackPush()) {
             //scenery is the only example I could find for how to use the SPIRV-Cross bindings for LWJGL
-            //https://github.com/scenerygraphics/scenery/blob/master/src/main/kotlin/graphics/scenery/backends/ShaderIntrospection.kt
+            //Discovered it when looking into spirvcrossj (no longer maintainted)
+            //https://github.com/scenerygraphics/scenery/commit/a651c28c5a6f876b1bd7a20c1ae65cda8e49c347#diff-e20bbb9f0ddb65241527e96ac3190d1d3553e1fe5a08ff16cd8d62682f2275c3
             List<UBOSpec> list = resourceListForType(resources, Spvc.SPVC_RESOURCE_TYPE_UNIFORM_BUFFER, resource -> {
                 int descriptorSet = Spvc.spvc_compiler_get_decoration(compiler, resource.id(), SpvDecorationDescriptorSet);
                 int binding = Spvc.spvc_compiler_get_decoration(compiler, resource.id(), SpvDecorationBinding);
