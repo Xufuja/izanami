@@ -3,15 +3,15 @@ package dev.xfj.platform.opengl;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.renderer.shader.Shader;
 import org.joml.*;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.GL45;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.system.Pointer;
 import org.lwjgl.util.shaderc.Shaderc;
 import org.lwjgl.util.spvc.Spvc;
+import org.lwjgl.util.spvc.SpvcBufferRange;
+import org.lwjgl.util.spvc.SpvcReflectedResource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,16 +23,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL46.GL_SHADER_BINARY_FORMAT_SPIR_V;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.util.shaderc.Shaderc.*;
+import static org.lwjgl.util.spvc.Spv.SpvDecorationBinding;
+import static org.lwjgl.util.spvc.Spv.SpvDecorationDescriptorSet;
 
 public class OpenGLShader implements Shader {
     private int rendererId;
@@ -170,67 +170,6 @@ public class OpenGLShader implements Shader {
         return shaderSources;
     }
 
-
-    private void compile(HashMap<Integer, String> shaderSources) {
-        int program = GL45.glCreateProgram();
-        //Some sort of exception if shaderSources has more than 2 entries
-        List<Integer> shaderIds = new ArrayList<>(2);
-        int glShaderIDIndex = 0;
-
-        for (Map.Entry<Integer, String> entry : shaderSources.entrySet()) {
-            int type = entry.getKey();
-            String source = entry.getValue();
-
-            int shader = GL45.glCreateShader(type);
-
-            GL45.glShaderSource(shader, source);
-
-            GL45.glCompileShader(shader);
-
-            IntBuffer isCompiled = BufferUtils.createIntBuffer(1);
-            GL45.glGetShaderiv(shader, GL_COMPILE_STATUS, isCompiled);
-            if (isCompiled.get(0) == GL_FALSE) {
-                int[] maxLength = new int[]{0};
-                GL45.glGetShaderiv(shader, GL_INFO_LOG_LENGTH, maxLength);
-
-                String infoLog = glGetShaderInfoLog(shader, maxLength[0]);
-
-                GL45.glDeleteShader(shader);
-                Log.error("Shader compilation failure: " + infoLog);
-                break;
-            }
-            GL45.glAttachShader(program, shader);
-            shaderIds.add(glShaderIDIndex++, shader);
-        }
-
-        this.rendererId = program;
-
-        GL45.glLinkProgram(program);
-
-        IntBuffer isLinked = BufferUtils.createIntBuffer(1);
-        GL45.glGetProgramiv(program, GL_LINK_STATUS, isLinked);
-
-        if (isLinked.get(0) == GL_FALSE) {
-            int[] maxLength = new int[]{0};
-            GL45.glGetProgramiv(program, GL_INFO_LOG_LENGTH, maxLength);
-
-            String infoLog = glGetProgramInfoLog(program, maxLength[0]);
-
-            GL45.glDeleteProgram(program);
-
-            for (int id : shaderIds) {
-                GL45.glDeleteShader(id);
-            }
-            //Should be some sort of exception
-            Log.error("Shader link failure " + infoLog);
-            return;
-        }
-        for (int id : shaderIds) {
-            GL45.glDetachShader(program, id);
-            GL45.glDeleteShader(id);
-        }
-    }
-
     private void compileOrGetVulkanBinaries(Map<Integer, String> shaderSources) {
         int program = GL45.glCreateProgram();
         long compiler = shaderc_compiler_initialize();
@@ -294,10 +233,9 @@ public class OpenGLShader implements Shader {
             }
         }
 
-
-        //for (Map.Entry<Integer, ByteBuffer> entry : shaderData.entrySet()) {
-        //reflect(entry.getKey(), entry.getValue());
-        //}
+        for (Map.Entry<Integer, ByteBuffer> entry : shaderData.entrySet()) {
+            reflect(entry.getKey(), entry.getValue());
+        }
     }
 
 
@@ -454,9 +392,16 @@ public class OpenGLShader implements Shader {
         rendererId = program;
     }
 
+
     private void reflect(int stage, ByteBuffer shaderData) {
-        /*try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer bytecode = shaderData.asIntBuffer();
+        long compiler;
+        long resources;
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            int[] intArray = new int[shaderData.remaining() / 4];
+            shaderData.asIntBuffer().get(intArray);
+
+            IntBuffer bytecode = MemoryUtil.memAllocInt(intArray.length);
+            bytecode.put(intArray, 0, intArray.length);
             bytecode.flip();
 
             PointerBuffer contextPtr = stack.callocPointer(1);
@@ -466,7 +411,7 @@ public class OpenGLShader implements Shader {
             Spvc.spvc_context_create(contextPtr);
             long context = contextPtr.get(0);
 
-            Spvc.spvc_context_parse_spirv(context, bytecode, bytecode.array().length, ir);
+            Spvc.spvc_context_parse_spirv(context, bytecode, intArray.length, ir);
 
             Spvc.spvc_context_create_compiler(
                     context,
@@ -476,12 +421,115 @@ public class OpenGLShader implements Shader {
                     compilerPtr
             );
 
-            long compiler = compilerPtr.get(0);
+            compiler = compilerPtr.get(0);
 
             PointerBuffer resourcesPtr = MemoryUtil.memAllocPointer(1);
             Spvc.spvc_compiler_create_shader_resources(compiler, resourcesPtr);
-            long resources = resourcesPtr.get(0);
-        }*/
+            resources = resourcesPtr.get(0);
+
+            resourcesPtr.free();
+        }
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            List<UBOSpec> list = resourceListForType(resources, Spvc.SPVC_RESOURCE_TYPE_UNIFORM_BUFFER, resource -> {
+                int descriptorSet = Spvc.spvc_compiler_get_decoration(compiler, resource.id(), SpvDecorationDescriptorSet);
+                int binding = Spvc.spvc_compiler_get_decoration(compiler, resource.id(), SpvDecorationBinding);
+
+                PointerBuffer ranges = stack.callocPointer(1);
+                PointerBuffer rangesCount = stack.callocPointer(1);
+
+                Spvc.spvc_compiler_get_active_buffer_ranges(compiler, resource.id(), ranges, rangesCount);
+
+                LinkedHashMap<String, UBOMemberSpec> members = new LinkedHashMap<>();
+
+                var uboRange = SpvcBufferRange.create(ranges.get(0), (int) rangesCount.get(0));
+                for (int i = 0; i < uboRange.capacity(); i++) {
+                    var memberRange = uboRange.get(i);
+                    String name = Spvc.spvc_compiler_get_member_name(compiler, resource.base_type_id(), memberRange.index());
+
+                    members.put(name, new UBOMemberSpec(
+                            name,
+                            memberRange.index(),
+                            memberRange.offset(),
+                            memberRange.range()
+                    ));
+                }
+
+                return new UBOSpec(
+                        resource.nameString(),
+                        descriptorSet,
+                        binding,
+                        UBOSpecType.UniformBuffer,
+                        members
+                );
+            });
+
+            Log.trace(String.format("OpenGLShader.reflect - %1$s %2$s", gLShaderStageToString(stage), filePath));
+
+            for (UBOSpec resource : list) {
+                Log.trace(resource.name);
+                Log.trace(String.valueOf(resource.size));
+                Log.trace(String.valueOf(resource.binding));
+                Log.trace(String.valueOf(resource.members.size()));
+            }
+        }
+        shaderData.rewind();
+    }
+
+    public enum UBOSpecType {
+        UniformBuffer,
+        SampledImage1D, SampledImage2D, SampledImage3D,
+        Image1D, Image2D, Image3D,
+        StorageBuffer, StorageBufferDynamic
+    }
+
+    public static class UBOSpec {
+        public String name;
+        public long set;
+        public long binding;
+        public UBOSpecType type;
+        public LinkedHashMap<String, UBOMemberSpec> members;
+        public int size;
+
+        public UBOSpec(String name, long set, long binding, UBOSpecType type, LinkedHashMap<String, UBOMemberSpec> members) {
+            this.name = name;
+            this.set = set;
+            this.binding = binding;
+            this.type = type;
+            this.members = members;
+            this.size = 1;
+        }
+    }
+
+    public static class UBOMemberSpec {
+        public String name;
+        public long index;
+        public long offset;
+        public long range;
+
+        public UBOMemberSpec(String name, long index, long offset, long range) {
+            this.name = name;
+            this.index = index;
+            this.offset = offset;
+            this.range = range;
+        }
+    }
+
+    private List<UBOSpec> resourceListForType(long resources, int type, Function<SpvcReflectedResource, UBOSpec> converter) {
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            PointerBuffer list = stack.callocPointer(1);
+            PointerBuffer count = stack.callocPointer(1);
+
+            Spvc.spvc_resources_get_resource_list_for_type(resources, type, list, count);
+
+            var reflectedResources = SpvcReflectedResource.create(list.get(0), (int) count.get(0));
+            List<UBOSpec> result = new ArrayList<>();
+            for (int i = 0; i < count.get(0); i++) {
+                result.add(converter.apply(reflectedResources.get(i)));
+            }
+
+            return result;
+        }
     }
 
     @Override
