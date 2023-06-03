@@ -92,8 +92,6 @@ public class Application {
         eventDispatcher.dispatch(WindowCloseEvent.class, this::onWindowClose);
         eventDispatcher.dispatch(WindowResizeEvent.class, this::onWindowResize);
 
-        Log.trace(event.toString());
-
         ListIterator<Layer> it = layerStack.getLayers().listIterator(layerStack.getLayers().size());
         while (it.hasPrevious()) {
             Layer layer = it.previous();

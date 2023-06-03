@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 public class Log {
     private static Logger coreLogger;
     private static Logger clientLogger;
+    private static Level logLevel = Level.TRACE;
 
     private Log() {
         //https://stackoverflow.com/questions/16910955/programmatically-configure-logback-appender
@@ -68,7 +69,7 @@ public class Log {
         Logger logger = (Logger) LoggerFactory.getLogger(name);
         logger.addAppender(consoleAppender);
         logger.addAppender(fileAppender);
-        logger.setLevel(Level.DEBUG);
+        logger.setLevel(logLevel);
         logger.setAdditive(false);
 
         return logger;
