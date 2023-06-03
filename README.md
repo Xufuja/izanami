@@ -2,7 +2,7 @@
 
 ## Description
 
-The original goal of this project was to do something else but it turned into porting the [Hazel Engine](https://github.com/TheCherno/Hazel) to Java to practice Java.
+The original goal of this project was to do something else, but it turned into porting the [Hazel Engine](https://github.com/TheCherno/Hazel) to Java to practice Java.
 
 The approach will be to go through every video in the [playlist](https://www.youtube.com/watch?v=d5wL6eZnWMU&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT) one by one and replicate the exact behavior as in the C++ version.
 
