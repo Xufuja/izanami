@@ -1,6 +1,7 @@
 package dev.xfj.platform.opengl;
 
 import dev.xfj.engine.core.Log;
+import dev.xfj.engine.core.Timer;
 import dev.xfj.engine.renderer.shader.Shader;
 import org.joml.*;
 import org.lwjgl.PointerBuffer;
@@ -116,9 +117,11 @@ public class OpenGLShader implements Shader {
         String source = readFile(filePath);
         HashMap<Integer, String> shaderSources = preProcess(source);
 
+        Timer timer = new Timer();
         compileOrGetVulkanBinaries(shaderSources);
         compileOrGetOpenGLBinaries();
         createProgram();
+        Log.warn(String.format("Shader creation took %1$f ms", timer.elapsedMillis()));
 
         String fullName = filePath.getFileName().toString();
         int lastDot = fullName.lastIndexOf(".");
@@ -206,22 +209,10 @@ public class OpenGLShader implements Shader {
                 }
             } else {
                 long result = Shaderc.shaderc_compile_into_spv(compiler, source, gLShaderStageToShaderC(stage), filePath.toString(), "main", options);
-                Shaderc.shaderc_result_get_compilation_status(result);
+                byte[] byteArray = compileShader(result);
 
-                if (Shaderc.shaderc_result_get_compilation_status(result) != Shaderc.shaderc_compilation_status_success) {
-                    //Some sort of exception
-                    Log.error(Shaderc.shaderc_result_get_error_message(result));
-                }
-
-                long length = Shaderc.shaderc_result_get_length(result);
-                ByteBuffer byteBuffer = Shaderc.shaderc_result_get_bytes(result);
-
-                byte[] byteArray = new byte[(int) length];
-                byteBuffer.get(byteArray);
-
-                byteBuffer.flip();
-
-                shaderData.put(stage, byteBuffer);
+                //For some reason, if I do not "fix" it by converting the result to a byteArray and then back to ByteBuffer, I get a nullptr in Spvc.spvc_context_create_compiler()
+                shaderData.put(stage, fixShadercResult(byteArray));
 
                 try (OutputStream outputStream = Files.newOutputStream(cachedPath, StandardOpenOption.CREATE)) {
                     outputStream.write(byteArray);
@@ -238,6 +229,27 @@ public class OpenGLShader implements Shader {
         }
     }
 
+    private byte[] compileShader(long result) {
+        if (Shaderc.shaderc_result_get_compilation_status(result) != Shaderc.shaderc_compilation_status_success) {
+            //Some sort of exception
+            Log.error(Shaderc.shaderc_result_get_error_message(result));
+        }
+
+        ByteBuffer byteBuffer = Shaderc.shaderc_result_get_bytes(result);
+
+        byte[] byteArray = new byte[(int) Shaderc.shaderc_result_get_length(result)];
+        byteBuffer.get(byteArray);
+
+        return byteArray;
+    }
+
+    private ByteBuffer fixShadercResult(byte[] byteArray) {
+        ByteBuffer result = ByteBuffer.allocateDirect(byteArray.length).order(ByteOrder.nativeOrder());
+        result.put(byteArray);
+        result.flip();
+
+        return result;
+    }
 
     private void compileOrGetOpenGLBinaries() {
         Map<Integer, ByteBuffer> shaderData = openGLSPIRV;
@@ -274,35 +286,8 @@ public class OpenGLShader implements Shader {
                     throw new RuntimeException(e);
                 }
             } else {
-                long glslCompiler;
-                try (MemoryStack stack = stackPush()) {
-                    int[] intArray = new int[spirv.remaining() / 4];
-                    spirv.asIntBuffer().get(intArray);
+                long glslCompiler = initSpvc(spirv)[0];
 
-                    IntBuffer bytecode = MemoryUtil.memAllocInt(intArray.length);
-                    bytecode.put(intArray, 0, intArray.length);
-                    bytecode.flip();
-
-                    PointerBuffer contextPtr = stack.callocPointer(1);
-                    PointerBuffer compilerPtr = stack.callocPointer(1);
-                    PointerBuffer ir = stack.callocPointer(1);
-
-                    Spvc.spvc_context_create(contextPtr);
-                    long context = contextPtr.get(0);
-
-                    Spvc.spvc_context_parse_spirv(context, bytecode, intArray.length, ir);
-
-                    Spvc.spvc_context_create_compiler(
-                            context,
-                            Spvc.SPVC_BACKEND_GLSL,
-                            ir.get(0),
-                            Spvc.SPVC_CAPTURE_MODE_TAKE_OWNERSHIP,
-                            compilerPtr
-                    );
-
-                    glslCompiler = compilerPtr.get(0);
-
-                }
                 try (MemoryStack stack = stackPush()) {
                     PointerBuffer glslResult = stack.callocPointer(1);
                     Spvc.spvc_compiler_compile(glslCompiler, glslResult);
@@ -311,24 +296,10 @@ public class OpenGLShader implements Shader {
                     openGLSourceCode.put(stage, shaderCode);
 
                     String source = openGLSourceCode.get(stage);
-
                     long result = Shaderc.shaderc_compile_into_spv(compiler, source, gLShaderStageToShaderC(stage), filePath.toString(), "main", options);
-                    Shaderc.shaderc_result_get_compilation_status(result);
+                    byte[] byteArray = compileShader(result);
 
-                    if (Shaderc.shaderc_result_get_compilation_status(result) != Shaderc.shaderc_compilation_status_success) {
-                        //Some sort of exception
-                        Log.error(Shaderc.shaderc_result_get_error_message(result));
-                    }
-
-                    long length = Shaderc.shaderc_result_get_length(result);
-                    ByteBuffer byteBuffer = Shaderc.shaderc_result_get_bytes(result);
-
-                    byte[] byteArray = new byte[(int) length];
-                    byteBuffer.get(byteArray);
-
-                    byteBuffer.flip();
-
-                    shaderData.put(stage, byteBuffer);
+                    shaderData.put(stage, fixShadercResult(byteArray));
 
                     try (OutputStream outputStream = Files.newOutputStream(cachedPath, StandardOpenOption.CREATE)) {
                         outputStream.write(byteArray);
@@ -361,6 +332,7 @@ public class OpenGLShader implements Shader {
             try (MemoryStack stack = stackPush()) {
                 GL46.glSpecializeShader(shaderId[0], stack.UTF8("main"), stack.mallocInt(0), stack.mallocInt(0));
             }
+
             GL45.glAttachShader(program, shaderId[0]);
         }
 
@@ -392,10 +364,10 @@ public class OpenGLShader implements Shader {
         rendererId = program;
     }
 
-
-    private void reflect(int stage, ByteBuffer shaderData) {
+    private long[] initSpvc(ByteBuffer shaderData) {
         long compiler;
         long resources;
+
         try (MemoryStack stack = MemoryStack.stackPush()) {
             int[] intArray = new int[shaderData.remaining() / 4];
             shaderData.asIntBuffer().get(intArray);
@@ -429,109 +401,60 @@ public class OpenGLShader implements Shader {
 
             resourcesPtr.free();
         }
+        return new long[]{compiler, resources};
+    }
+
+    private void reflect(int stage, ByteBuffer shaderData) {
+        long[] pointers = initSpvc(shaderData);
+        long compiler = pointers[0];
+        long resources = pointers[1];
+
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            //scenery is the only example I could find for how to use the SPIRV-Cross bindings for LWJGL
+            //scenery is the only example I could find with examples of how to use the SPIRV-Cross bindings for LWJGL
             //Discovered it when looking into spirvcrossj (no longer maintainted)
             //https://github.com/scenerygraphics/scenery/commit/a651c28c5a6f876b1bd7a20c1ae65cda8e49c347#diff-e20bbb9f0ddb65241527e96ac3190d1d3553e1fe5a08ff16cd8d62682f2275c3
-            List<UBOSpec> list = resourceListForType(resources, Spvc.SPVC_RESOURCE_TYPE_UNIFORM_BUFFER, resource -> {
-                int descriptorSet = Spvc.spvc_compiler_get_decoration(compiler, resource.id(), SpvDecorationDescriptorSet);
-                int binding = Spvc.spvc_compiler_get_decoration(compiler, resource.id(), SpvDecorationBinding);
+            UniformBufferObject uniformBuffers = getUniformBufferObject(resources, Spvc.SPVC_RESOURCE_TYPE_UNIFORM_BUFFER);
+
+            Log.trace(String.format("OpenGLShader.reflect - %1$s %2$s", gLShaderStageToString(stage), filePath));
+            Log.trace(String.format("    %1$d uniform buffers", uniformBuffers.count));
+            Log.trace(String.format("    %1$d resources", getUniformBufferObject(resources, Spvc.SPVC_RESOURCE_TYPE_SAMPLED_IMAGE).count));
+
+            Log.trace("Uniform buffers:");
+
+            for (int i = 0; i < uniformBuffers.count; i++) {
+                SpvcReflectedResource resource = uniformBuffers.resources.get(i);
 
                 PointerBuffer ranges = stack.callocPointer(1);
                 PointerBuffer rangesCount = stack.callocPointer(1);
 
                 Spvc.spvc_compiler_get_active_buffer_ranges(compiler, resource.id(), ranges, rangesCount);
 
-                LinkedHashMap<String, UBOMemberSpec> members = new LinkedHashMap<>();
+                SpvcBufferRange.Buffer range = SpvcBufferRange.create(ranges.get(0), (int) rangesCount.get(0));
 
-                var uboRange = SpvcBufferRange.create(ranges.get(0), (int) rangesCount.get(0));
-                for (int i = 0; i < uboRange.capacity(); i++) {
-                    var memberRange = uboRange.get(i);
-                    String name = Spvc.spvc_compiler_get_member_name(compiler, resource.base_type_id(), memberRange.index());
+                for (int j = 0; j < range.capacity(); j++) {
+                    SpvcBufferRange memberRange = range.get(i);
 
-                    members.put(name, new UBOMemberSpec(
-                            name,
-                            memberRange.index(),
-                            memberRange.offset(),
-                            memberRange.range()
-                    ));
+                    Log.trace(String.format("   %1$s", resource.nameString()));
+                    Log.trace(String.format("    Size = %1$s", memberRange.range()));
+                    Log.trace(String.format("    Binding = %1$s", Spvc.spvc_compiler_get_decoration(compiler, resource.id(), SpvDecorationBinding)));
+                    Log.trace(String.format("    Members = %1$s", range.capacity()));
                 }
-
-                return new UBOSpec(
-                        resource.nameString(),
-                        descriptorSet,
-                        binding,
-                        UBOSpecType.UniformBuffer,
-                        members
-                );
-            });
-
-            Log.trace(String.format("OpenGLShader.reflect - %1$s %2$s", gLShaderStageToString(stage), filePath));
-
-            for (UBOSpec resource : list) {
-                Log.trace(resource.name);
-                Log.trace(String.valueOf(resource.size));
-                Log.trace(String.valueOf(resource.binding));
-                Log.trace(String.valueOf(resource.members.size()));
             }
         }
         shaderData.rewind();
     }
 
-    public enum UBOSpecType {
-        UniformBuffer,
-        SampledImage1D, SampledImage2D, SampledImage3D,
-        Image1D, Image2D, Image3D,
-        StorageBuffer, StorageBufferDynamic
+    private record UniformBufferObject(SpvcReflectedResource.Buffer resources, int count) {
     }
 
-    public static class UBOSpec {
-        public String name;
-        public long set;
-        public long binding;
-        public UBOSpecType type;
-        public LinkedHashMap<String, UBOMemberSpec> members;
-        public int size;
-
-        public UBOSpec(String name, long set, long binding, UBOSpecType type, LinkedHashMap<String, UBOMemberSpec> members) {
-            this.name = name;
-            this.set = set;
-            this.binding = binding;
-            this.type = type;
-            this.members = members;
-            this.size = 1;
-        }
-    }
-
-    public static class UBOMemberSpec {
-        public String name;
-        public long index;
-        public long offset;
-        public long range;
-
-        public UBOMemberSpec(String name, long index, long offset, long range) {
-            this.name = name;
-            this.index = index;
-            this.offset = offset;
-            this.range = range;
-        }
-    }
-
-    private List<UBOSpec> resourceListForType(long resources, int type, Function<SpvcReflectedResource, UBOSpec> converter) {
-
+    private UniformBufferObject getUniformBufferObject(long resources, int type) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             PointerBuffer list = stack.callocPointer(1);
             PointerBuffer count = stack.callocPointer(1);
 
             Spvc.spvc_resources_get_resource_list_for_type(resources, type, list, count);
 
-            var reflectedResources = SpvcReflectedResource.create(list.get(0), (int) count.get(0));
-            List<UBOSpec> result = new ArrayList<>();
-            for (int i = 0; i < count.get(0); i++) {
-                result.add(converter.apply(reflectedResources.get(i)));
-            }
-
-            return result;
+            return new UniformBufferObject(SpvcReflectedResource.create(list.get(0), (int) count.get(0)), (int) count.get(0));
         }
     }
 

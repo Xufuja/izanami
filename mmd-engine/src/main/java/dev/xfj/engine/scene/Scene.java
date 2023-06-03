@@ -342,17 +342,26 @@ public class Scene {
 
     protected <T extends Component> void onComponentAdded(Entity entity, T component) {
         switch (component) {
-            case TransformComponent tfc -> Log.trace("TransformComponent Unimplemented");
+            case TransformComponent tfc -> {
+            }
             case CameraComponent cc ->
                     ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
-            case SpriteRendererComponent src -> Log.trace("SpriteRendererComponent Unimplemented");
-            case TagComponent tc -> Log.trace("TagComponent Unimplemented");
-            case NativeScriptComponent<?> nsc -> Log.trace("NativeScriptComponent<?> Unimplemented");
-            case Rigidbody2DComponent rb2dc -> Log.trace("Rigidbody2DComponent Unimplemented");
-            case BoxCollider2DComponent bc2dc -> Log.trace("BoxCollider2DComponent Unimplemented");
-            case IDComponent ic -> Log.trace("IDComponent Unimplemented");
-            case CircleRendererComponent crc -> Log.trace("CircleRendererComponent Unimplemented");
-            case CircleCollider2DComponent cc2dc -> Log.trace("CircleCollider2DComponent Unimplemented");
+            case SpriteRendererComponent src -> {
+            }
+            case TagComponent tc -> {
+            }
+            case NativeScriptComponent<?> nsc -> {
+            }
+            case Rigidbody2DComponent rb2dc -> {
+            }
+            case BoxCollider2DComponent bc2dc -> {
+            }
+            case IDComponent ic -> {
+            }
+            case CircleRendererComponent crc -> {
+            }
+            case CircleCollider2DComponent cc2dc -> {
+            }
             default -> Log.error("Invalid component type");
         }
     }
