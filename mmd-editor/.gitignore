@@ -80,3 +80,4 @@ fabric.properties
 *.pmm
 *.pmx
 *.log
+assets/cache/shader/*
