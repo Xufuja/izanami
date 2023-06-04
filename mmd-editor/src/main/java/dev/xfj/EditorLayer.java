@@ -55,6 +55,7 @@ public class EditorLayer extends Layer {
     private Texture2D checkerBoardTexture;
     private Texture2D iconPlay;
     private Texture2D iconStop;
+    private Texture2D iconSimulate;
     private boolean viewportFocused;
     private boolean viewportHovered;
     private final Vector2f viewportSize;
@@ -75,7 +76,8 @@ public class EditorLayer extends Layer {
 
     public enum SceneState {
         Edit,
-        Play
+        Play,
+        Simulate
     }
 
     public EditorLayer() {
@@ -103,6 +105,7 @@ public class EditorLayer extends Layer {
         try {
             iconPlay = Texture2D.create(Paths.get(classLoader.getResource("icons/PlayButton.png").toURI()));
             iconStop = Texture2D.create(Paths.get(classLoader.getResource("icons/StopButton.png").toURI()));
+            iconSimulate = Texture2D.create(Paths.get(classLoader.getResource("icons/SimulateButton.png").toURI()));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -117,7 +120,8 @@ public class EditorLayer extends Layer {
 
         framebuffer = Framebuffer.create(fbSpec);
 
-        activeScene = new Scene();
+        editorScene = new Scene();
+        activeScene = editorScene;
 
         ApplicationCommandLineArgs commandLineArgs = Application.getApplication().getCommandLineArgs();
 
@@ -161,6 +165,10 @@ public class EditorLayer extends Layer {
                 }
                 editorCamera.onUpdate(ts);
                 activeScene.onUpdateEditor(ts, editorCamera);
+            }
+            case Simulate -> {
+                editorCamera.onUpdate(ts);
+                activeScene.onUpdateSimulation(ts, editorCamera);
             }
             case Play -> activeScene.onUpdateRuntime(ts);
         }
@@ -373,14 +381,33 @@ public class EditorLayer extends Layer {
 
         ImGui.begin("##toolbar", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
 
+        boolean toolbarEnabled = activeScene != null;
+
+        Vector4f tintColor = new Vector4f(1, 1, 1, 1);
+
+        if (!toolbarEnabled) {
+            tintColor.w = 0.5f;
+        }
+
         float size = ImGui.getWindowHeight() - 4.0f;
-        Texture2D icon = sceneState == SceneState.Edit ? iconPlay : iconStop;
+        Texture2D editSimulateIcon = (sceneState == SceneState.Edit || sceneState == SceneState.Simulate) ? iconPlay : iconStop;
         ImGui.setCursorPosX((ImGui.getWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 
-        if (ImGui.imageButton(icon.getRendererId(), size, size, 0, 0, 1, 1, 0)) {
-            if (sceneState == SceneState.Edit) {
+        if (ImGui.imageButton(editSimulateIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
+            if (sceneState == SceneState.Edit || sceneState == SceneState.Simulate) {
                 onScenePlay();
             } else if (sceneState == SceneState.Play) {
+                onSceneStop();
+            }
+        }
+
+        ImGui.sameLine();
+
+        Texture2D editPlayIcon = (sceneState == SceneState.Edit || sceneState == SceneState.Play) ? iconSimulate : iconStop;
+        if (ImGui.imageButton(editPlayIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
+            if (sceneState == SceneState.Edit || sceneState == SceneState.Play) {
+                onSimulatePlay();
+            } else if (sceneState == SceneState.Simulate) {
                 onSceneStop();
             }
         }
@@ -472,6 +499,11 @@ public class EditorLayer extends Layer {
     private void onOverlayRender() {
         if (sceneState == SceneState.Play) {
             Entity camera = activeScene.getPrimaryCameraEntity();
+
+            if (camera == null) {
+                return;
+            }
+
             Renderer2D.beginScene(camera.getComponent(CameraComponent.class).camera, camera.getComponent(TransformComponent.class).getTransform());
         } else {
             Renderer2D.beginScene(editorCamera);
@@ -566,15 +598,37 @@ public class EditorLayer extends Layer {
     }
 
     private void onScenePlay() {
+        if (sceneState == SceneState.Simulate) {
+            onSceneStop();
+        }
+
         sceneState = SceneState.Play;
         activeScene = Scene.copy(editorScene);
         activeScene.onRuntimeStart();
         sceneHierarchyPanel.setContext(activeScene);
     }
 
+    private void onSimulatePlay() {
+        if (sceneState == SceneState.Play) {
+            onSceneStop();
+        }
+
+        sceneState = SceneState.Simulate;
+        activeScene = Scene.copy(editorScene);
+        activeScene.onSimulationStart();
+        sceneHierarchyPanel.setContext(activeScene);
+    }
+
     private void onSceneStop() {
+        //Some sort of exception HZ_CORE_ASSERT(m_SceneState == SceneState::Play || m_SceneState == SceneState::Simulate);
+        if (sceneState == SceneState.Play) {
+            activeScene.onRuntimeStop();
+        } else if (sceneState == SceneState.Simulate) {
+            activeScene.onSimulationStop();
+        }
+
         sceneState = SceneState.Edit;
-        activeScene.onRuntimeStop();
+
         activeScene = editorScene;
         sceneHierarchyPanel.setContext(activeScene);
     }
