@@ -95,14 +95,7 @@ public class Scene {
             entityMap.put(uuid, newEntity.getEntity());
         }
 
-        copyComponent(TransformComponent.class, srcSceneRegistry, entityMap);
-        copyComponent(SpriteRendererComponent.class, srcSceneRegistry, entityMap);
-        copyComponent(CircleRendererComponent.class, srcSceneRegistry, entityMap);
-        copyComponent(CameraComponent.class, srcSceneRegistry, entityMap);
-        copyComponent(NativeScriptComponent.class, srcSceneRegistry, entityMap);
-        copyComponent(Rigidbody2DComponent.class, srcSceneRegistry, entityMap);
-        copyComponent(BoxCollider2DComponent.class, srcSceneRegistry, entityMap);
-        copyComponent(CircleCollider2DComponent.class, srcSceneRegistry, entityMap);
+        Component.allComponents.forEach(component -> copyComponent(component, srcSceneRegistry, entityMap));
 
         return newScene;
     }
@@ -230,7 +223,7 @@ public class Scene {
                     transform.translation.y = position.y;
                     transform.rotation.z = body.getAngle();
                 });
-        
+
         renderScene(camera);
     }
 
@@ -252,17 +245,8 @@ public class Scene {
     }
 
     public void duplicateEntity(Entity entity) {
-        String name = entity.getName();
-        Entity newEntity = createEntity(name);
-
-        copyComponentIfExists(TransformComponent.class, newEntity, entity);
-        copyComponentIfExists(SpriteRendererComponent.class, newEntity, entity);
-        copyComponentIfExists(CircleRendererComponent.class, newEntity, entity);
-        copyComponentIfExists(CameraComponent.class, newEntity, entity);
-        copyComponentIfExists(NativeScriptComponent.class, newEntity, entity);
-        copyComponentIfExists(Rigidbody2DComponent.class, newEntity, entity);
-        copyComponentIfExists(BoxCollider2DComponent.class, newEntity, entity);
-        copyComponentIfExists(CircleCollider2DComponent.class, newEntity, entity);
+        Entity newEntity = createEntity(entity.getName());
+        Component.allComponents.forEach(component -> copyComponentIfExists(component, newEntity, entity));
     }
 
     public Entity getPrimaryCameraEntity() {
