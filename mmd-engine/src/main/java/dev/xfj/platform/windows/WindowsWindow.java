@@ -83,7 +83,7 @@ public class WindowsWindow implements Window {
             public void invoke(long window, int key, int scanCode, int action, int mods) {
                 switch (action) {
                     case GLFW_PRESS -> {
-                        KeyPressedEvent event = new KeyPressedEvent(key, 0);
+                        KeyPressedEvent event = new KeyPressedEvent(key);
                         windowData.eventCallback.handle(event);
                     }
                     case GLFW_RELEASE -> {
@@ -91,7 +91,7 @@ public class WindowsWindow implements Window {
                         windowData.eventCallback.handle(event);
                     }
                     case GLFW_REPEAT -> {
-                        KeyPressedEvent event = new KeyPressedEvent(key, 1);
+                        KeyPressedEvent event = new KeyPressedEvent(key, true);
                         windowData.eventCallback.handle(event);
                     }
                 }

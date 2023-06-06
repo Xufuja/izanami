@@ -427,7 +427,7 @@ public class EditorLayer extends Layer {
     }
 
     private boolean onKeyPressed(KeyPressedEvent event) {
-        if (event.getRepeatCount() > 0) {
+        if (event.isRepeat()) {
             return false;
         }
 
