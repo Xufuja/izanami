@@ -15,7 +15,7 @@ public class WindowsInput extends Input {
     protected boolean isKeyPressedImpl(int keyCode) {
         long window = Application.getApplication().getWindow().getNativeWindow();
         int state = glfwGetKey(window, keyCode);
-        return state == GLFW_PRESS || state == GLFW_REPEAT;
+        return state == GLFW_PRESS;
     }
 
     @Override
