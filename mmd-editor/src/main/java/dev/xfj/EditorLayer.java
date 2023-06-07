@@ -424,7 +424,7 @@ public class EditorLayer extends Layer {
         if (sceneState == SceneState.Edit) {
             editorCamera.onEvent(event);
         }
-        
+
         EventDispatcher eventDispatcher = new EventDispatcher(event);
         eventDispatcher.dispatch(KeyPressedEvent.class, this::onKeyPressed);
         eventDispatcher.dispatch(MouseButtonPressedEvent.class, this::onMouseButtonPressed);

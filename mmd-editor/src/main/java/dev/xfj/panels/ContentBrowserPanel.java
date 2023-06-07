@@ -55,8 +55,7 @@ public class ContentBrowserPanel {
 
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(currentDirectory)) {
             for (Path directoryEntry : directoryStream) {
-                Path relativePath = assetPath.relativize(directoryEntry);
-                String filenameString = relativePath.getFileName().toString();
+                String filenameString = directoryEntry.getFileName().toString();
 
                 ImGui.pushID(filenameString);
 
@@ -66,6 +65,7 @@ public class ContentBrowserPanel {
                 ImGui.imageButton(icon.getRendererId(), thumbnailSize, thumbnailSize, 0, 1, 1, 0);
 
                 if (ImGui.beginDragDropSource()) {
+                    Path relativePath = assetPath.relativize(directoryEntry);
                     ImGui.setDragDropPayload("CONTENT_BROWSER_ITEM", new ImGuiStringPayload(relativePath.toString()));
                     ImGui.endDragDropSource();
                 }
