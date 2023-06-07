@@ -124,7 +124,7 @@ public class OpenGLTexture2D extends Texture2D {
 
     @Override
     public boolean equals(Texture other) {
-        return rendererId == ((OpenGLTexture2D) other).rendererId;
+        return rendererId == other.getRendererId();
     }
 
     @Override
