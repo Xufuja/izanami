@@ -258,7 +258,7 @@ public class SceneHierarchyPanel {
 
             ImGui.endPopup();
         }
-        
+
         ImGui.popItemWidth();
 
         drawComponent(TransformComponent.class, "Transform", entity, component -> {
