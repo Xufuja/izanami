@@ -10,6 +10,7 @@ import dev.xfj.engine.events.application.WindowResizeEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.renderer.Renderer;
 import dev.xfj.engine.utils.PlatformUtils;
+import dev.xfj.platform.windows.WindowsPlatformUtils;
 
 import java.util.ListIterator;
 
@@ -59,7 +60,7 @@ public class Application {
 
     public void run() {
         while (running) {
-            float time = (float) glfwGetTime();
+            float time = WindowsPlatformUtils.getTime();
             TimeStep timeStep = new TimeStep(time - lastFrameTime);
             lastFrameTime = time;
 

@@ -11,6 +11,7 @@ import dev.xfj.engine.utils.PlatformUtils;
 
 import java.util.Optional;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFWNativeWin32.glfwGetWin32Window;
 
 public class WindowsPlatformUtils extends PlatformUtils {
@@ -139,4 +140,8 @@ public class WindowsPlatformUtils extends PlatformUtils {
         }
     }
 
+    @Override
+    protected float getTimeImpl() {
+        return (float) glfwGetTime();
+    }
 }

@@ -28,6 +28,12 @@ public abstract class PlatformUtils {
 
     protected abstract Optional<String> saveFileImpl(String filter);
 
+    public static float getTime() {
+        return platformUtils.getTimeImpl();
+    }
+
+    protected abstract float getTimeImpl();
+
     public static PlatformUtils getPlatformUtils() {
         return platformUtils;
     }
