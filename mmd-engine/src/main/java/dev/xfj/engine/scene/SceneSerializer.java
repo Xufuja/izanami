@@ -147,7 +147,7 @@ public class SceneSerializer {
             byte[] bytes = inputStream.readAllBytes();
             sceneBuilder.mergeFrom(bytes);
         } catch (IOException e) {
-            Log.error("Could not open file: " + filePath);
+            Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
             throw new RuntimeException(e);
         }
 
