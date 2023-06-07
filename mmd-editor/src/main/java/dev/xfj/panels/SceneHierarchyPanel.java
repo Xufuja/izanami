@@ -19,6 +19,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import javax.swing.*;
+import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
@@ -248,52 +249,16 @@ public class SceneHierarchyPanel {
         }
 
         if (ImGui.beginPopup("AddComponent")) {
-
-
-            if (!selectionContext.hasComponent(CameraComponent.class)) {
-                if (ImGui.menuItem("Camera")) {
-                    selectionContext.addComponent(new CameraComponent());
-                    ImGui.closeCurrentPopup();
-                }
-            }
-
-            if (!selectionContext.hasComponent(SpriteRendererComponent.class)) {
-                if (ImGui.menuItem("Sprite Renderer")) {
-                    selectionContext.addComponent(new SpriteRendererComponent());
-                    ImGui.closeCurrentPopup();
-                }
-            }
-
-            if (!selectionContext.hasComponent(CircleRendererComponent.class)) {
-                if (ImGui.menuItem("Circle Renderer")) {
-                    selectionContext.addComponent(new CircleRendererComponent());
-                    ImGui.closeCurrentPopup();
-                }
-            }
-
-            if (!selectionContext.hasComponent(Rigidbody2DComponent.class)) {
-                if (ImGui.menuItem("Rigidbody 2D")) {
-                    selectionContext.addComponent(new Rigidbody2DComponent());
-                    ImGui.closeCurrentPopup();
-                }
-            }
-
-            if (!selectionContext.hasComponent(BoxCollider2DComponent.class)) {
-                if (ImGui.menuItem("Box Collider 2D")) {
-                    selectionContext.addComponent(new BoxCollider2DComponent());
-                    ImGui.closeCurrentPopup();
-                }
-            }
-
-            if (!selectionContext.hasComponent(CircleCollider2DComponent.class)) {
-                if (ImGui.menuItem("Circle Collider 2D")) {
-                    selectionContext.addComponent(new CircleCollider2DComponent());
-                    ImGui.closeCurrentPopup();
-                }
-            }
+            displayAddComponentEntry(CameraComponent.class, "Camera");
+            displayAddComponentEntry(SpriteRendererComponent.class, "Sprite Renderer");
+            displayAddComponentEntry(CircleRendererComponent.class, "Circle Renderer");
+            displayAddComponentEntry(Rigidbody2DComponent.class, "Rigidbody 2D");
+            displayAddComponentEntry(BoxCollider2DComponent.class, "Box Collider 2D");
+            displayAddComponentEntry(CircleCollider2DComponent.class, "Circle Collider 2D");
 
             ImGui.endPopup();
         }
+        
         ImGui.popItemWidth();
 
         drawComponent(TransformComponent.class, "Transform", entity, component -> {
@@ -490,6 +455,20 @@ public class SceneHierarchyPanel {
             ImGui.dragFloat("Restitution Threshold", newRestitutionThreshold, 0.01f, 0.0f, 1.0f);
             component.restitutionThreshold = newRestitutionThreshold[0];
         });
+    }
 
+    private <T> void displayAddComponentEntry(Class<T> componentType, String entryName) {
+        if (!selectionContext.hasComponent(componentType)) {
+            if (ImGui.menuItem(entryName)) {
+                try {
+                    Constructor<?> constructor = componentType.getConstructor();
+                    constructor.setAccessible(true);
+                    selectionContext.addComponent(constructor.newInstance());
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+                ImGui.closeCurrentPopup();
+            }
+        }
     }
 }
