@@ -541,6 +541,13 @@ public class EditorLayer extends Layer {
                         Renderer2D.drawCircle(transform, new Vector4f(0, 1, 0, 1), 0.01f);
                     });
         }
+
+        Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
+        if (selectedEntity != null) {
+            TransformComponent transformComponent = selectedEntity.getComponent(TransformComponent.class);
+            Renderer2D.drawRect(transformComponent.getTransform(), new Vector4f(1, 0, 0, 1));
+        }
+
         Renderer2D.endScene();
     }
 
