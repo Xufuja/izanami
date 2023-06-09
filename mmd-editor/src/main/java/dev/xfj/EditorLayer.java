@@ -132,6 +132,8 @@ public class EditorLayer extends Layer {
         }
 
         editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
+        Renderer2D.setLineWidth(4.0f);
     }
 
     @Override
@@ -545,7 +547,7 @@ public class EditorLayer extends Layer {
         Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
         if (selectedEntity != null) {
             TransformComponent transformComponent = selectedEntity.getComponent(TransformComponent.class);
-            Renderer2D.drawRect(transformComponent.getTransform(), new Vector4f(1, 0, 0, 1));
+            Renderer2D.drawRect(transformComponent.getTransform(), new Vector4f(0.5f, 0.0f, 1.0f, 1.0f));
         }
 
         Renderer2D.endScene();
