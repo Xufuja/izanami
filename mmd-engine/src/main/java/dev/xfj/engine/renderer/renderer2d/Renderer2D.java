@@ -249,10 +249,10 @@ public class Renderer2D {
         Vector3f p2 = new Vector3f(position.x + size.x * 0.5f, position.y + size.y * 0.5f, position.z);
         Vector3f p3 = new Vector3f(position.x - size.x * 0.5f, position.y + size.y * 0.5f, position.z);
 
-        drawLine(p0, p1, color);
-        drawLine(p1, p2, color);
-        drawLine(p2, p3, color);
-        drawLine(p3, p0, color);
+        drawLine(p0, p1, color, entityId);
+        drawLine(p1, p2, color, entityId);
+        drawLine(p2, p3, color, entityId);
+        drawLine(p3, p0, color, entityId);
     }
 
     public static void drawRect(Matrix4f transform, Vector4f color) {
@@ -266,10 +266,10 @@ public class Renderer2D {
             lineVertices[i] = transformQuadPosition(transform, i);
         }
 
-        drawLine(lineVertices[0], lineVertices[1], color);
-        drawLine(lineVertices[1], lineVertices[2], color);
-        drawLine(lineVertices[2], lineVertices[3], color);
-        drawLine(lineVertices[3], lineVertices[0], color);
+        drawLine(lineVertices[0], lineVertices[1], color, entityId);
+        drawLine(lineVertices[1], lineVertices[2], color, entityId);
+        drawLine(lineVertices[2], lineVertices[3], color, entityId);
+        drawLine(lineVertices[3], lineVertices[0], color, entityId);
     }
 
     public static void drawQuad(Vector2f position, Vector2f size, Vector4f color) {
