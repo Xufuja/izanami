@@ -111,6 +111,10 @@ public class OpenGLTexture2D extends Texture2D {
         return this.rendererId;
     }
 
+    @Override
+    public String getPath() {
+        return path.toString();
+    }
 
     @Override
     public void setData(ByteBuffer data, int size) {

@@ -3,6 +3,7 @@ package dev.xfj.engine.scene;
 
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
+import dev.xfj.engine.renderer.Texture2D;
 import dev.xfj.engine.scene.components.*;
 import dev.xfj.protobuf.*;
 import org.joml.Vector2f;
@@ -58,9 +59,11 @@ public class SceneSerializer {
         }
 
         if (entity.hasComponent(SpriteRendererComponent.class)) {
-            Vector4f color = entity.getComponent(SpriteRendererComponent.class).color;
+            SpriteRendererComponent spriteRendererComponent = entity.getComponent(SpriteRendererComponent.class);
             entityBuilder.setSpriteRenderer(SpriteRendererFile.newBuilder()
-                    .addAllColor(Arrays.asList(color.x, color.y, color.z, color.w))).build();
+                    .addAllColor(Arrays.asList(spriteRendererComponent.color.x, spriteRendererComponent.color.y, spriteRendererComponent.color.z, spriteRendererComponent.color.w))
+                    .setTexturePath(spriteRendererComponent.texture != null ? spriteRendererComponent.texture.getPath() : "")
+                    .setTilingFactor(spriteRendererComponent.tilingFactor)).build();
         }
 
         if (entity.hasComponent(CircleRendererComponent.class)) {
@@ -196,7 +199,13 @@ public class SceneSerializer {
 
                 if (entity.hasSpriteRenderer()) {
                     SpriteRendererFile spriteRendererFile = entity.getSpriteRenderer();
-                    deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3))));
+                    String texturePath = spriteRendererFile.getTexturePath();
+                    if (!texturePath.isEmpty() && !texturePath.isBlank()) {
+                        deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), Texture2D.create(Path.of(spriteRendererFile.getTexturePath())), spriteRendererFile.getTilingFactor()));
+                    } else {
+                        deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), spriteRendererFile.getTilingFactor()));
+
+                    }
                 }
 
                 if (entity.hasCircleRenderer()) {

@@ -9,6 +9,8 @@ public interface Texture {
 
     int getRendererId();
 
+    String getPath();
+
     void setData(ByteBuffer data, int size);
     boolean equals(Texture other);
 

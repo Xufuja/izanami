@@ -52,6 +52,8 @@ message CameraFile {
 
 message SpriteRendererFile {
   repeated float color = 1;
+  string texture_path = 2;
+  float tiling_factor = 3;
 }
 
 message Rigidbody2DFile {

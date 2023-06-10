@@ -21,6 +21,12 @@ public class SpriteRendererComponent implements Component {
         this.tilingFactor = tilingFactor;
     }
 
+    public SpriteRendererComponent(Vector4f color, Texture2D texture, float tilingFactor) {
+        this.color = color;
+        this.texture = texture;
+        this.tilingFactor = tilingFactor;
+    }
+
     public SpriteRendererComponent(SpriteRendererComponent other) {
         this.color = new Vector4f(other.color);
         this.texture = other.texture;
