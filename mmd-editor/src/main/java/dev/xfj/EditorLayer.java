@@ -245,7 +245,7 @@ public class EditorLayer extends Layer {
                     openScene();
                 }
 
-                if (ImGui.menuItem("Save...", "Ctrl+S")) {
+                if (ImGui.menuItem("Save", "Ctrl+S")) {
                     saveScene();
                 }
 
