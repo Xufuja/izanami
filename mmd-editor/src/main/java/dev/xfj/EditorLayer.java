@@ -97,7 +97,6 @@ public class EditorLayer extends Layer {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void onAttach() {
         checkerBoardTexture = Texture2D.create(Path.of("assets/textures/Checkerboard.png"));
 
@@ -123,7 +122,7 @@ public class EditorLayer extends Layer {
         editorScene = new Scene();
         activeScene = editorScene;
 
-        ApplicationCommandLineArgs commandLineArgs = Application.getApplication().getCommandLineArgs();
+        ApplicationCommandLineArgs commandLineArgs = Application.getApplication().getSpecification().commandLineArgs;
 
         if (commandLineArgs.count > 1) {
             String sceneFilePath = commandLineArgs.get(0);

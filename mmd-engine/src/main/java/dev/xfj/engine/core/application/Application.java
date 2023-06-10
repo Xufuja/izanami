@@ -14,11 +14,9 @@ import dev.xfj.platform.windows.WindowsPlatformUtils;
 
 import java.util.ListIterator;
 
-import static org.lwjgl.glfw.GLFW.glfwGetTime;
-
 public class Application {
-    private static Application application;
-    private final ApplicationCommandLineArgs commandLineArgs;
+    private static Application instance;
+    private final ApplicationSpecification specification;
     private final Window window;
     private final ImGuiLayer imGuiLayer;
     private boolean running;
@@ -33,34 +31,38 @@ public class Application {
         PlatformUtils.setPlatformUtils(PlatformUtils.create());
     }
 
-    public Application() {
-        this("MMD Application", new ApplicationCommandLineArgs());
-    }
-
-    public Application(String name, ApplicationCommandLineArgs commandLineArgs) {
-        if (application == null) {
-            application = this;
-        } else {
-            Log.error("Application already exists!");
-        }
-
-        this.commandLineArgs = commandLineArgs;
-        this.window = Window.create(new WindowProps(name));
+    public Application(ApplicationSpecification specification) {
         this.running = true;
         this.minimized = false;
         this.layerStack = new LayerStack();
+        this.lastFrameTime = 0.0f;
+
+        if (instance == null) {
+            instance = this;
+        } else {
+            //Some sort of exception HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
+            Log.error("Application already exists!");
+        }
+
+        this.specification = specification;
+
+        if (!specification.workingDirectory.isEmpty() && !specification.workingDirectory.isBlank()) {
+
+            System.setProperty("user.dir", specification.workingDirectory);
+        }
+
+        this.window = Window.create(new WindowProps(specification.name));
         this.window.setEventCallback(this::onEvent);
 
         Renderer.init();
 
-        imGuiLayer = new ImGuiLayer();
+        this.imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
-        lastFrameTime = 0.0f;
     }
 
     public void run() {
         while (running) {
-            float time = WindowsPlatformUtils.getTime();
+            float time = PlatformUtils.getTime();
             TimeStep timeStep = new TimeStep(time - lastFrameTime);
             lastFrameTime = time;
 
@@ -132,10 +134,10 @@ public class Application {
     }
 
     public static Application getApplication() {
-        return application;
+        return instance;
     }
 
-    public ApplicationCommandLineArgs getCommandLineArgs() {
-        return commandLineArgs;
+    public ApplicationSpecification getSpecification() {
+        return specification;
     }
 }
