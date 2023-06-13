@@ -1,9 +1,11 @@
 package dev.xfj.engine.scripting;
 
+import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import dev.xfj.engine.core.Log;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Engine;
 
 import javax.script.Invocable;
-import javax.script.ScriptEngineManager;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,8 +23,11 @@ public class ScriptEngine {
     }
 
     private static void initNashorn() {
-        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-        data.scriptEngine = scriptEngineManager.getEngineByName("nashorn");
+        data.scriptEngine = GraalJSScriptEngine.create(
+                Engine.newBuilder()
+                        .option("engine.WarnInterpreterOnly", "false")
+                        .build(),
+                Context.newBuilder("js"));
         data.coreJavaScript = loadJavaScriptFile("scripts/MMD-ScriptCore.js");
 
         try {
