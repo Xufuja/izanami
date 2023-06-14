@@ -1,11 +1,9 @@
 package dev.xfj.engine.scripting;
 
-import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import dev.xfj.engine.core.Log;
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Engine;
+import org.graalvm.polyglot.Value;
 
-import javax.script.Invocable;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,47 +13,40 @@ public class ScriptEngine {
     public static ScriptEngineData data = new ScriptEngineData();
 
     public static void init() {
-        initNashorn();
+        initPolyglot();
     }
 
     public static void shutdown() {
-        shutdownNashorn();
+        shutdownPolyglot();
     }
 
-    private static void initNashorn() {
-        data.scriptEngine = GraalJSScriptEngine.create(
-                Engine.newBuilder()
-                        .option("engine.WarnInterpreterOnly", "false")
-                        .build(),
-                Context.newBuilder("js"));
-        data.coreJavaScript = loadJavaScriptFile("scripts/MMD-ScriptCore.js");
+    private static void initPolyglot() {
+        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").build()) {
 
-        try {
-            data.scriptEngine.eval(data.coreJavaScript);
-            Invocable invocable = (Invocable) data.scriptEngine;
+            data.coreAssembly = loadJavaScriptFile("scripts/MMD-ScriptCore.js");
+            context.eval("js", data.coreAssembly);
 
-            invocable.invokeFunction("printMessage");
+            Value classConstructor = context.eval("js", "Main");
+            Value instance = classConstructor.newInstance("mainInstance");
 
-            invocable.invokeFunction("printInt", 1);
+            instance.invokeMember("printMessage");
+
+            instance.invokeMember("printInt", 1);
 
             int value = 5;
-            invocable.invokeFunction("printInt", value);
+            instance.invokeMember("printInt", value);
 
             int value2 = 508;
-            invocable.invokeFunction("printInts", value, value2);
+            instance.invokeMember("printInts", value, value2);
 
             String string = "Hello World from Java!";
 
-            invocable.invokeFunction("printCustomMessage", string);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            instance.invokeMember("printCustomMessage", string);
         }
     }
 
-    private static void shutdownNashorn() {
-        data.scriptEngine = null;
-        data.coreJavaScript = null;
+    private static void shutdownPolyglot() {
+        data.coreAssembly = null;
     }
 
     private static String loadJavaScriptFile(String filePath) {
