@@ -14,4 +14,7 @@ class Main {
      printCustomMessage(message) {
         console.log(`JavaScript says: ${message}`)
     }
+    log(text) {
+        Java.type('dev.xfj.engine.core.Log').info(`${text}, and it works`);
+    }
 }

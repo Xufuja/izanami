@@ -21,7 +21,7 @@ public class ScriptEngine {
     }
 
     private static void initPolyglot() {
-        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").build()) {
+        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").allowHostAccess(true).build()) {
 
             data.coreAssembly = loadJavaScriptFile("scripts/MMD-ScriptCore.js");
             context.eval("js", data.coreAssembly);
@@ -42,6 +42,8 @@ public class ScriptEngine {
             String string = "Hello World from Java!";
 
             instance.invokeMember("printCustomMessage", string);
+
+            instance.invokeMember("log", "Text passed from Java to JavaScript which calls a Java method");
         }
     }
 
