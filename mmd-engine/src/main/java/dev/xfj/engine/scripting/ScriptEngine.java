@@ -2,6 +2,7 @@ package dev.xfj.engine.scripting;
 
 import dev.xfj.engine.core.Log;
 import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
 import java.io.InputStream;
@@ -21,8 +22,7 @@ public class ScriptEngine {
     }
 
     private static void initPolyglot() {
-        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").allowHostAccess(true).build()) {
-
+        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").allowHostAccess(HostAccess.ALL).allowHostClassLookup(className -> true).build()) {
             data.coreAssembly = loadJavaScriptFile("scripts/MMD-ScriptCore.js");
             context.eval("js", data.coreAssembly);
 
