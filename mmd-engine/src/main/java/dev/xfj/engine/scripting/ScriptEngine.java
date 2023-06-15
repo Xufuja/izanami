@@ -22,7 +22,7 @@ public class ScriptEngine {
     }
 
     private static void initPolyglot() {
-        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").allowHostAccess(HostAccess.ALL).allowHostClassLookup(className -> true).build()) {
+        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").allowHostAccess(HostAccess.ALL).allowHostClassLookup(clazz -> clazz.equals("dev.xfj.engine.core.Log") || clazz.equals("dev.xfj.engine.core.application.Application")).build()) {
             data.coreAssembly = loadJavaScriptFile("scripts/MMD-ScriptCore.js");
             context.eval("js", data.coreAssembly);
 
@@ -44,6 +44,7 @@ public class ScriptEngine {
             instance.invokeMember("printCustomMessage", string);
 
             instance.invokeMember("log", "Text passed from Java to JavaScript which calls a Java method");
+            instance.invokeMember("getApplicationName");
         }
     }
 
