@@ -41,7 +41,7 @@ public class ScriptEngine {
 
     public static void shutdown() {
         shutdownPolyglot();
-        data.rootDomain.close();
+        data = null;
     }
 
     private static void initPolyglot() {
@@ -54,6 +54,8 @@ public class ScriptEngine {
 
     private static void shutdownPolyglot() {
         data.coreAssembly = null;
+        data.rootDomain.close();
+        data.rootDomain = null;
     }
 
     public static void loadAssembly(String filePath) {
