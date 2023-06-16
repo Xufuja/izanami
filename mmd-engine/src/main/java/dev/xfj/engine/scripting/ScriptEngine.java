@@ -11,48 +11,57 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ScriptEngine {
-    public static ScriptEngineData data = new ScriptEngineData();
+    public static ScriptEngineData data = null;
 
     public static void init() {
+        data = new ScriptEngineData();
         initPolyglot();
+        loadAssembly("scripts/MMD-ScriptCore.js");
+
+        Value classConstructor = data.rootDomain.eval("js", "Main");
+        Value instance = classConstructor.newInstance("mainInstance");
+
+        instance.invokeMember("printMessage");
+
+        instance.invokeMember("printInt", 1);
+
+        int value = 5;
+        instance.invokeMember("printInt", value);
+
+        int value2 = 508;
+        instance.invokeMember("printInts", value, value2);
+
+        String string = "Hello World from Java!";
+
+        instance.invokeMember("printCustomMessage", string);
+
+        instance.invokeMember("log", "Text passed from Java to JavaScript which calls a Java method");
+        instance.invokeMember("getApplicationName");
     }
 
     public static void shutdown() {
         shutdownPolyglot();
+        data.rootDomain.close();
     }
 
     private static void initPolyglot() {
-        try (Context context = Context.newBuilder().option("engine.WarnInterpreterOnly", "false").allowHostAccess(HostAccess.ALL).allowHostClassLookup(clazz -> clazz.equals("dev.xfj.engine.core.Log") || clazz.equals("dev.xfj.engine.core.application.Application")).build()) {
-            data.coreAssembly = loadJavaScriptFile("scripts/MMD-ScriptCore.js");
-            context.eval("js", data.coreAssembly);
-
-            Value classConstructor = context.eval("js", "Main");
-            Value instance = classConstructor.newInstance("mainInstance");
-
-            instance.invokeMember("printMessage");
-
-            instance.invokeMember("printInt", 1);
-
-            int value = 5;
-            instance.invokeMember("printInt", value);
-
-            int value2 = 508;
-            instance.invokeMember("printInts", value, value2);
-
-            String string = "Hello World from Java!";
-
-            instance.invokeMember("printCustomMessage", string);
-
-            instance.invokeMember("log", "Text passed from Java to JavaScript which calls a Java method");
-            instance.invokeMember("getApplicationName");
-        }
+        Context rootDomain = Context.newBuilder()
+                .option("engine.WarnInterpreterOnly", "false")
+                .allowHostAccess(HostAccess.ALL)
+                .allowHostClassLookup(clazz -> clazz.equals("dev.xfj.engine.core.Log") || clazz.equals("dev.xfj.engine.core.application.Application")).build();
+        data.rootDomain = rootDomain;
     }
 
     private static void shutdownPolyglot() {
         data.coreAssembly = null;
     }
 
-    private static String loadJavaScriptFile(String filePath) {
+    public static void loadAssembly(String filePath) {
+        data.coreAssembly = loadJavaScriptAssembly(filePath);
+        data.rootDomain.eval("js", data.coreAssembly);
+    }
+
+    private static String loadJavaScriptAssembly(String filePath) {
         ClassLoader classLoader = ScriptEngine.class.getClassLoader();
         String result;
         try (InputStream inputStream = Files.newInputStream(Paths.get(classLoader.getResource(filePath).toURI()))) {
