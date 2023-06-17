@@ -48,7 +48,7 @@ public class ScriptEngine {
         Context rootDomain = Context.newBuilder()
                 .option("engine.WarnInterpreterOnly", "false")
                 .allowHostAccess(HostAccess.ALL)
-                .allowHostClassLookup(clazz -> clazz.equals("dev.xfj.engine.core.Log") || clazz.equals("dev.xfj.engine.core.application.Application")).build();
+                .allowHostClassLookup(className -> true).build();
         data.rootDomain = rootDomain;
     }
 
