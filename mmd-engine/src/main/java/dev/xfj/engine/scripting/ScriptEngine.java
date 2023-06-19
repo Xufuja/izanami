@@ -13,30 +13,40 @@ import java.nio.file.Paths;
 public class ScriptEngine {
     public static ScriptEngineData data = null;
 
+    private static String loadJavaScriptAssembly(String filePath) {
+        ClassLoader classLoader = ScriptEngine.class.getClassLoader();
+        String result;
+        try (InputStream inputStream = Files.newInputStream(Paths.get(classLoader.getResource(filePath).toURI()))) {
+            byte[] bytes = inputStream.readAllBytes();
+            result = new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Log.error("Could not open file: " + filePath);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
     public static void init() {
         data = new ScriptEngineData();
         initPolyglot();
         loadAssembly("scripts/MMD-ScriptCore.js");
 
-        Value classConstructor = data.rootDomain.eval("js", "Main");
-        Value instance = classConstructor.newInstance("mainInstance");
+        data.entityClass = new ScriptClass("Entity");
 
-        instance.invokeMember("printMessage");
+        Value instance = data.entityClass.instantiate();
 
         instance.invokeMember("printInt", 1);
 
         int value = 5;
-        instance.invokeMember("printInt", value);
-
         int value2 = 508;
+
         instance.invokeMember("printInts", value, value2);
 
         String string = "Hello World from Java!";
 
         instance.invokeMember("printCustomMessage", string);
 
-        instance.invokeMember("log", "Text passed from Java to JavaScript which calls a Java method");
-        instance.invokeMember("getApplicationName");
+        instance.invokeMember("logVector3", string);
     }
 
     public static void shutdown() {
@@ -63,16 +73,4 @@ public class ScriptEngine {
         data.rootDomain.eval("js", data.coreAssembly);
     }
 
-    private static String loadJavaScriptAssembly(String filePath) {
-        ClassLoader classLoader = ScriptEngine.class.getClassLoader();
-        String result;
-        try (InputStream inputStream = Files.newInputStream(Paths.get(classLoader.getResource(filePath).toURI()))) {
-            byte[] bytes = inputStream.readAllBytes();
-            result = new String(bytes, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            Log.error("Could not open file: " + filePath);
-            throw new RuntimeException(e);
-        }
-        return result;
-    }
 }
