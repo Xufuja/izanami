@@ -45,8 +45,6 @@ public class ScriptEngine {
         String string = "Hello World from Java!";
 
         instance.invokeMember("printCustomMessage", string);
-
-        instance.invokeMember("logVector3", string);
     }
 
     public static void shutdown() {

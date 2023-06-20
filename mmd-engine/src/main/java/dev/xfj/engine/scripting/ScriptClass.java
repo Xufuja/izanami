@@ -2,10 +2,8 @@ package dev.xfj.engine.scripting;
 
 import org.graalvm.polyglot.Value;
 
-import java.util.Objects;
-
 public class ScriptClass {
-    private String className;
+    private final String className;
 
     public ScriptClass(String className) {
         this.className = className;
