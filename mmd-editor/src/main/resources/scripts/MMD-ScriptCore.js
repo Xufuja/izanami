@@ -20,6 +20,19 @@ class Vector3 {
     }
 }
 
+class InternalCalls {
+    static vector3f = Java.type("org.joml.Vector3f");
+    static logText(text, parameter) {
+        Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(`${text}`, parameter);
+    }
+    static logVector(parameter) {
+        return Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(new InternalCalls.vector3f(parameter.x, parameter.y, parameter.z), new InternalCalls.vector3f());
+    }
+    static logVectorDot(parameter) {
+        return Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(new InternalCalls.vector3f(parameter.x, parameter.y, parameter.z));
+    }
+}
+
 class Entity {
     constructor() {
         console.log('Main constructor!');
@@ -28,7 +41,7 @@ class Entity {
         let pos = new Vector3(5, 2.5, 1);
         let result = this.logVector(pos);
         console.log(`${result.x}, ${result.y}, ${result.z}`);
-        console.log(`${this.logVectorDot(pos)}`);
+        console.log(`${InternalCalls.logVectorDot(pos)}`);
     }
     printMessage() {
         console.log('Hello World from JavaScript!');
@@ -43,14 +56,9 @@ class Entity {
         console.log(`JavaScript says: ${message}`);
     }
     logText(text, parameter) {
-        Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(`${text}`, parameter);
+        InternalCalls.logText(text, parameter);
     }
     logVector(parameter) {
-         let vector3fClass = Java.type("org.joml.Vector3f");
-         return Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(new vector3fClass(parameter.x, parameter.y, parameter.z), new vector3fClass());
-    }
-    logVectorDot(parameter) {
-        let vector3fClass = Java.type("org.joml.Vector3f");
-        return Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(new vector3fClass(parameter.x, parameter.y, parameter.z));
+         return InternalCalls.logVector(parameter);
     }
 }
