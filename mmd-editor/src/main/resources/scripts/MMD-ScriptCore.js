@@ -1,37 +1,5 @@
-class Vector3 {
-    #float = Java.type('java.lang.Float');
-    #x;
-    #y;
-    #z;
-
-    constructor(x, y, z) {
-        this.#x = x;
-        this.#y = y;
-        this.#z = z;
-    }
-    get x() {
-        return new this.#float(this.#x);
-    }
-    get y() {
-        return new this.#float(this.#y);
-    }
-    get z() {
-        return new this.#float(this.#z);
-    }
-}
-
-class InternalCalls {
-    static vector3f = Java.type("org.joml.Vector3f");
-    static logText(text, parameter) {
-        Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(`${text}`, parameter);
-    }
-    static logVector(parameter) {
-        return Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(new InternalCalls.vector3f(parameter.x, parameter.y, parameter.z), new InternalCalls.vector3f());
-    }
-    static logVectorDot(parameter) {
-        return Java.type('dev.xfj.engine.scripting.ScriptGlue').nativeLog(new InternalCalls.vector3f(parameter.x, parameter.y, parameter.z));
-    }
-}
+const Vector3 = require('./Vector3');
+const InternalCalls = require('./InternalCalls');
 
 class Entity {
     constructor() {

@@ -12,9 +12,9 @@ import java.nio.file.Paths;
 
 public class ScriptEngine {
     public static ScriptEngineData data = null;
+    private static final ClassLoader classLoader = ScriptEngine.class.getClassLoader();
 
     private static String loadJavaScriptAssembly(String filePath) {
-        ClassLoader classLoader = ScriptEngine.class.getClassLoader();
         String result;
         try (InputStream inputStream = Files.newInputStream(Paths.get(classLoader.getResource(filePath).toURI()))) {
             byte[] bytes = inputStream.readAllBytes();
@@ -53,11 +53,19 @@ public class ScriptEngine {
     }
 
     private static void initPolyglot() {
-        Context rootDomain = Context.newBuilder()
-                .option("engine.WarnInterpreterOnly", "false")
-                .allowHostAccess(HostAccess.ALL)
-                .allowHostClassLookup(className -> true).build();
-        data.rootDomain = rootDomain;
+        try {
+            Context rootDomain = Context.newBuilder()
+                    .allowExperimentalOptions(true)
+                    .allowIO(true)
+                    .option("engine.WarnInterpreterOnly", "false")
+                    .option("js.commonjs-require", "true")
+                    .option("js.commonjs-require-cwd", Paths.get(classLoader.getResource("scripts").toURI()).toString())
+                    .allowHostAccess(HostAccess.ALL)
+                    .allowHostClassLookup(className -> true).build();
+            data.rootDomain = rootDomain;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     private static void shutdownPolyglot() {
