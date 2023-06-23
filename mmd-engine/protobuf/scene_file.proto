@@ -21,6 +21,7 @@ message EntityFile {
   BoxCollider2DFile box_collider_2d = 7;
   CircleRendererFile circle_renderer = 8;
   CircleCollider2DFile circle_collider_2d = 9;
+  ScriptFile script = 10;
 }
 
 message TagFile {
@@ -88,4 +89,8 @@ message CircleCollider2DFile {
   float friction = 4;
   float restitution = 5;
   float restitution_threshold = 6;
+}
+
+message ScriptFile {
+  string class_name = 1;
 }

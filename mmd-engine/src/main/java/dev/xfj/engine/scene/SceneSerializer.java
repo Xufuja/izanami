@@ -58,6 +58,12 @@ public class SceneSerializer {
                     .build();
         }
 
+        if (entity.hasComponent(ScriptComponent.class)) {
+            entityBuilder.setScript(ScriptFile.newBuilder()
+                            .setClassName(entity.getComponent(ScriptComponent.class).className))
+                    .build();
+        }
+
         if (entity.hasComponent(SpriteRendererComponent.class)) {
             SpriteRendererComponent spriteRendererComponent = entity.getComponent(SpriteRendererComponent.class);
             entityBuilder.setSpriteRenderer(SpriteRendererFile.newBuilder()
@@ -197,6 +203,11 @@ public class SceneSerializer {
                     cameraComponent.fixedAspectRatio = cameraFile.getFixedAspectRatio();
                 }
 
+                if (entity.hasScript()) {
+                    ScriptFile scriptFile = entity.getScript();
+                    deserializedEntity.addComponent(new ScriptComponent(scriptFile.getClassName()));
+                }
+
                 if (entity.hasSpriteRenderer()) {
                     SpriteRendererFile spriteRendererFile = entity.getSpriteRenderer();
                     String texturePath = spriteRendererFile.getTexturePath();
@@ -204,7 +215,6 @@ public class SceneSerializer {
                         deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), Texture2D.create(Path.of(spriteRendererFile.getTexturePath())), spriteRendererFile.getTilingFactor()));
                     } else {
                         deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), spriteRendererFile.getTilingFactor()));
-
                     }
                 }
 

@@ -27,6 +27,6 @@ class Entity {
         InternalCalls.logText(text, parameter);
     }
     logVector(parameter) {
-         return InternalCalls.logVector(parameter);
+        return InternalCalls.logVector(parameter);
     }
 }
