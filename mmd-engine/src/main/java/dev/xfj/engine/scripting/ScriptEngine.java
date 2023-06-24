@@ -9,6 +9,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ScriptEngine {
     public static ScriptEngineData data = null;
@@ -30,8 +34,9 @@ public class ScriptEngine {
         data = new ScriptEngineData();
         initPolyglot();
         loadAssembly("scripts/MMD-ScriptCore.js");
+        loadAssemblyClasses();
 
-        data.entityClass = new ScriptClass("Entity");
+        data.entityClass = getEntityClasses().get("Entity");
 
         Value instance = data.entityClass.instantiate();
 
@@ -79,4 +84,16 @@ public class ScriptEngine {
         data.rootDomain.eval("js", data.coreAssembly);
     }
 
+    public static Map<String, ScriptClass> getEntityClasses() {
+        return data.entityClasses;
+    }
+
+    public static void loadAssemblyClasses() {
+        //As far as I can see, there is no way to get all JS classes so just maintaining a Map inside the JS script
+        Value classes = ScriptEngine.data.rootDomain.eval("js", "classes");
+        Map<String, List<String>> map = classes.as(Map.class);
+        for (String clazz : map.get("entity")) {
+            data.entityClasses.put(clazz, new ScriptClass(clazz));
+        }
+    }
 }
