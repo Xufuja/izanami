@@ -40,16 +40,26 @@ public class ScriptEngine {
 
         Value instance = data.entityClass.instantiate();
 
-        instance.invokeMember("printInt", 1);
+        String printMessageFunc = data.entityClass.getMethod("printMessage", 0);
+        data.entityClass.invokeMethod(instance, printMessageFunc);
+
+        String printIntFunc = data.entityClass.getMethod("printInt", 1);
 
         int value = 5;
+
+        data.entityClass.invokeMethod(instance, printIntFunc, value);
+
+        String printIntsFunc = data.entityClass.getMethod("printInts", 2);
+
         int value2 = 508;
 
-        instance.invokeMember("printInts", value, value2);
+        data.entityClass.invokeMethod(instance, printIntsFunc, value, value2);
+
+        String printCustomMessageFunc = data.entityClass.getMethod("printCustomMessage", 1);
 
         String string = "Hello World from Java!";
 
-        instance.invokeMember("printCustomMessage", string);
+        data.entityClass.invokeMethod(instance, printCustomMessageFunc, string);
     }
 
     public static void shutdown() {
