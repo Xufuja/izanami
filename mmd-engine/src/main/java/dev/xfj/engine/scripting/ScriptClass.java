@@ -10,13 +10,8 @@ public class ScriptClass {
         this.className = className;
     }
 
-    private Value instantiateClass(String javaScriptClass) {
-        Value classConstructor = ScriptEngine.data.rootDomain.eval("js", javaScriptClass);
-        return classConstructor.newInstance("classInstance");
-    }
-
     public Value instantiate() {
-        return instantiateClass(className);
+        return ScriptEngine.instantiateClass(className);
     }
 
     public String getMethod(String name, int parameterCount) {
@@ -52,7 +47,6 @@ public class ScriptClass {
             return arguments.split(",").length;
         }
     }
-
 
     public void invokeMethod(Value instance, String method, Object... params) {
         instance.invokeMember(method, params);

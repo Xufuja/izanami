@@ -1,5 +1,7 @@
 package dev.xfj.engine.scripting;
 
+import dev.xfj.engine.core.UUID;
+import dev.xfj.engine.scene.Scene;
 import org.graalvm.polyglot.Context;
 
 import java.util.HashMap;
@@ -10,4 +12,6 @@ public class ScriptEngineData {
     public String coreAssembly = null;
     public ScriptClass entityClass = null;
     public Map<String, ScriptClass> entityClasses = new HashMap<>();
+    public Map<UUID, ScriptInstance> entityInstances =  new HashMap<>();
+    public Scene sceneContext = null;
 }

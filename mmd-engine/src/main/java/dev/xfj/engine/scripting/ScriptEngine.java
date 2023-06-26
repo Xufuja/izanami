@@ -1,6 +1,12 @@
 package dev.xfj.engine.scripting;
 
 import dev.xfj.engine.core.Log;
+import dev.xfj.engine.core.TimeStep;
+import dev.xfj.engine.core.Timer;
+import dev.xfj.engine.core.UUID;
+import dev.xfj.engine.scene.Entity;
+import dev.xfj.engine.scene.Scene;
+import dev.xfj.engine.scene.components.ScriptComponent;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
@@ -94,6 +100,35 @@ public class ScriptEngine {
         data.rootDomain.eval("js", data.coreAssembly);
     }
 
+    public static void onRunTimeStart(Scene scene) {
+        data.sceneContext = scene;
+    }
+
+    public static boolean entityClassExist(String className) {
+        return data.entityClasses.containsKey(className);
+    }
+
+    public static void onCreateEntity(Entity entity) {
+        ScriptComponent sc = entity.getComponent(ScriptComponent.class);
+
+        if (entityClassExist(sc.className)) {
+            ScriptInstance instance = new ScriptInstance(data.entityClasses.get(sc.className), entity);
+            data.entityInstances.put(new UUID(entity.getUUID()), instance);
+            instance.invokeOnCreate();
+        }
+    }
+
+    public static void onUpdateEntity(Entity entity, TimeStep ts) {
+        UUID entityUUID = new UUID(entity.getUUID());
+        //Some sort of exception if not present in entityInstances //HZ_CORE_ASSERT(s_Data->EntityInstances.find(entityUUID) != s_Data->EntityInstances.end());
+        ScriptInstance instance = data.entityInstances.get(entityUUID);
+        instance.invokeOnUpdate(ts.getTime());
+    }
+
+    public static Scene getSceneContext() {
+        return data.sceneContext;
+    }
+
     public static Map<String, ScriptClass> getEntityClasses() {
         return data.entityClasses;
     }
@@ -105,5 +140,10 @@ public class ScriptEngine {
         for (String clazz : map.get("entity")) {
             data.entityClasses.put(clazz, new ScriptClass(clazz));
         }
+    }
+
+    public static Value instantiateClass(String javaScriptClass) {
+        Value classConstructor = ScriptEngine.data.rootDomain.eval("js", javaScriptClass);
+        return classConstructor.newInstance("classInstance");
     }
 }

@@ -8,6 +8,7 @@ import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.*;
+import dev.xfj.engine.scripting.ScriptEngine;
 import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -250,6 +251,7 @@ public class SceneHierarchyPanel {
 
         if (ImGui.beginPopup("AddComponent")) {
             displayAddComponentEntry(CameraComponent.class, "Camera");
+            displayAddComponentEntry(ScriptComponent.class, "Script");
             displayAddComponentEntry(SpriteRendererComponent.class, "Sprite Renderer");
             displayAddComponentEntry(CircleRendererComponent.class, "Circle Renderer");
             displayAddComponentEntry(Rigidbody2DComponent.class, "Rigidbody 2D");
@@ -331,6 +333,24 @@ public class SceneHierarchyPanel {
                 if (ImGui.checkbox("Fixed Aspect Ratio", component.fixedAspectRatio)) {
                     component.fixedAspectRatio = !component.fixedAspectRatio;
                 }
+            }
+        });
+
+        drawComponent(ScriptComponent.class, "Script", entity, component -> {
+            boolean scriptClassExists = ScriptEngine.entityClassExist(component.className);
+
+            ImString buffer = new ImString(component.className, 64);
+
+            if (!scriptClassExists) {
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.9f, 0.2f, 0.3f, 1.0f);
+            }
+
+            if (ImGui.inputText("Class", buffer)) {
+                component.className = buffer.toString();
+            }
+
+            if (!scriptClassExists) {
+                ImGui.popStyleColor();;
             }
         });
 

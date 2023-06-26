@@ -372,6 +372,8 @@ public class Scene {
             }
             case CameraComponent cc ->
                     ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
+            case ScriptComponent sc -> {
+            }
             case SpriteRendererComponent src -> {
             }
             case TagComponent tc -> {
