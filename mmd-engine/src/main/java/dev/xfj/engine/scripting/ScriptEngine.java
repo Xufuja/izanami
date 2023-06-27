@@ -113,13 +113,13 @@ public class ScriptEngine {
 
         if (entityClassExist(sc.className)) {
             ScriptInstance instance = new ScriptInstance(data.entityClasses.get(sc.className), entity);
-            data.entityInstances.put(new UUID(entity.getUUID()), instance);
+            data.entityInstances.put(entity.getUUID(), instance);
             instance.invokeOnCreate();
         }
     }
 
     public static void onUpdateEntity(Entity entity, TimeStep ts) {
-        UUID entityUUID = new UUID(entity.getUUID());
+        UUID entityUUID = entity.getUUID();
         //Some sort of exception if not present in entityInstances //HZ_CORE_ASSERT(s_Data->EntityInstances.find(entityUUID) != s_Data->EntityInstances.end());
         ScriptInstance instance = data.entityInstances.get(entityUUID);
         instance.invokeOnUpdate(ts.getTime());
@@ -127,6 +127,11 @@ public class ScriptEngine {
 
     public static Scene getSceneContext() {
         return data.sceneContext;
+    }
+
+    public static void onRuntimeStop() {
+        data.sceneContext = null;
+        data.entityInstances.clear();
     }
 
     public static Map<String, ScriptClass> getEntityClasses() {

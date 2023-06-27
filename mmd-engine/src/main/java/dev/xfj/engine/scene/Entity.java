@@ -2,6 +2,7 @@ package dev.xfj.engine.scene;
 
 import dev.dominion.ecs.engine.IntEntity;
 import dev.xfj.engine.core.Log;
+import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.components.Component;
 import dev.xfj.engine.scene.components.IDComponent;
 import dev.xfj.engine.scene.components.TagComponent;
@@ -55,8 +56,8 @@ public class Entity {
         return ((IntEntity) entityHandle).getId();
     }
 
-    public long getUUID() {
-        return getComponent(IDComponent.class).id.getUUID();
+    public UUID getUUID() {
+        return getComponent(IDComponent.class).id;
     }
 
     public String getName() {

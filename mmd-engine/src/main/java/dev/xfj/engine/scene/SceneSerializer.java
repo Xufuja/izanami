@@ -26,7 +26,7 @@ public class SceneSerializer {
     }
 
     public void serializeEntity(dev.xfj.protobuf.EntityFile.Builder entityBuilder, Entity entity) {
-        entityBuilder.setEntity(entity.getUUID());
+        entityBuilder.setEntity(entity.getUUID().getUUID());
 
         if (entity.hasComponent(TagComponent.class)) {
             entityBuilder.setTag(TagFile.newBuilder()

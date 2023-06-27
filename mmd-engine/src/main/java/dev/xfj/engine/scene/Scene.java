@@ -10,6 +10,7 @@ import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.EditorCamera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.scene.components.*;
+import dev.xfj.engine.scripting.ScriptEngine;
 import org.joml.Matrix4f;
 
 import java.lang.reflect.Constructor;
@@ -22,6 +23,7 @@ public class Scene {
     private final Dominion registry;
     private final Map<Integer, dev.dominion.ecs.api.Entity> entityIdMapping;
     private int lastId;
+    private final Map<UUID, dev.dominion.ecs.api.Entity> entityMap;
     private int viewportWidth;
     private int viewportHeight;
     private World physicsWorld;
@@ -43,6 +45,7 @@ public class Scene {
         this.registry = Dominion.create();
         this.entityIdMapping = new HashMap<>();
         this.lastId = 0;
+        this.entityMap = new HashMap<>();
         this.viewportWidth = 0;
         this.viewportHeight = 0;
     }
@@ -112,22 +115,34 @@ public class Scene {
         entity.addComponent(new TagComponent());
         entity.getComponent(TagComponent.class).tag = name.isEmpty() ? "Entity" : name;
 
+        entityMap.put(uuid, entity.getEntity());
+
         entityIdMapping.put(lastId + 1, entity.getEntity());
         lastId++;
 
         return entity;
     }
 
-    public void destroyEntity(dev.dominion.ecs.api.Entity entity) {
-        registry.deleteEntity(entity);
+    public void destroyEntity(Entity entity) {
+        entityMap.remove(entity.getUUID());
+        registry.deleteEntity(entity.getEntity());
     }
 
     public void onRuntimeStart() {
         onPhysics2DStart();
+
+        ScriptEngine.onRunTimeStart(this);
+        registry.findEntitiesWith(ScriptComponent.class)
+                .stream().forEach(component -> {
+                    Entity entity = new Entity(component.entity(), this);
+                    ScriptEngine.onCreateEntity(entity);
+                });
+
     }
 
     public void onRuntimeStop() {
         onPhysics2DStop();
+        ScriptEngine.onRuntimeStop();
     }
 
     public void onSimulationStart() {
@@ -140,6 +155,12 @@ public class Scene {
 
     @SuppressWarnings("unchecked")
     public void onUpdateRuntime(TimeStep ts) {
+        registry.findEntitiesWith(ScriptComponent.class)
+                .stream().forEach(component -> {
+                    Entity entity = new Entity(component.entity(), this);
+                    ScriptEngine.onUpdateEntity(entity, ts);
+                });
+
         registry.findEntitiesWith(NativeScriptComponent.class)
                 .stream().forEach(entity -> {
                     NativeScriptComponent<ScriptableEntity> nsc = entity.comp();
@@ -228,7 +249,7 @@ public class Scene {
     }
 
     public void onUpdateEditor(TimeStep ts, EditorCamera camera) {
-      renderScene(camera);
+        renderScene(camera);
     }
 
     public void onViewportResize(int width, int height) {
@@ -291,6 +312,14 @@ public class Scene {
             }
         }
         return -1;
+    }
+
+    public Entity getEntityByUUID(UUID uuid) {
+        if (entityMap.containsKey(uuid)) {
+            return new Entity(entityMap.get(uuid), this);
+        } else {
+            return null;
+        }
     }
 
     private void onPhysics2DStart() {

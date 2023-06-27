@@ -10,4 +10,8 @@ public class ScriptComponent implements Component {
     public ScriptComponent(String className) {
         this.className = className;
     }
+
+    public ScriptComponent(ScriptComponent other) {
+        this.className = other.className;
+    }
 }

@@ -168,7 +168,7 @@
         <dependency>
             <groupId>dev.dominion.ecs</groupId>
             <artifactId>dominion-ecs-engine</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
+            <version>0.9.0-RC1</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>

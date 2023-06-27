@@ -1,5 +1,6 @@
 package dev.xfj.engine.scripting;
 
+import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.Entity;
 import org.graalvm.polyglot.Value;
 
@@ -17,7 +18,7 @@ public class ScriptInstance {
         this.onCreateMethod = scriptClass.getMethod("onCreate", 0);
         this.onUpdateMethod = scriptClass.getMethod("onUpdate", 0);
 
-        long entityId = entity.getUUID();
+        UUID entityId = entity.getUUID();
         scriptClass.invokeMethod(instance, constructor, entityId);
     }
 

@@ -104,7 +104,7 @@ public class SceneHierarchyPanel {
             ImGui.treePop();
         }
         if (entityDeleted) {
-            context.destroyEntity(entity.getEntity());
+            context.destroyEntity(entity);
             //I suppose in the C++ version the selectionContext is empty rather than null so there this is not needed
             if (selectionContext != null && selectionContext.equals(entity)) {
                 selectionContext = null;
