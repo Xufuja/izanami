@@ -42,7 +42,7 @@ public class ScriptEngine {
         loadAssembly("scripts/MMD-ScriptCore.js");
         loadAssemblyClasses();
 
-        data.entityClass = getEntityClasses().get("Entity");
+        data.entityClass = getEntityClasses().get("Player");
 
         Value instance = data.entityClass.instantiate();
 
