@@ -122,7 +122,9 @@ public class ScriptEngine {
         UUID entityUUID = entity.getUUID();
         //Some sort of exception if not present in entityInstances //HZ_CORE_ASSERT(s_Data->EntityInstances.find(entityUUID) != s_Data->EntityInstances.end());
         ScriptInstance instance = data.entityInstances.get(entityUUID);
-        instance.invokeOnUpdate(ts.getTime());
+        if (instance != null) {
+            instance.invokeOnUpdate(ts.getTime());
+        }
     }
 
     public static Scene getSceneContext() {
@@ -147,8 +149,11 @@ public class ScriptEngine {
         }
     }
 
-    public static Value instantiateClass(String javaScriptClass) {
+    public static Value instantiateClass(String javaScriptClass, Object... params) {
         Value classConstructor = ScriptEngine.data.rootDomain.eval("js", javaScriptClass);
-        return classConstructor.newInstance("classInstance");
+        Object[] arguments = new Object[params.length + 1];
+        System.arraycopy(params, 0, arguments, 1, params.length);
+        arguments[0] = "classInstance";
+        return classConstructor.newInstance(arguments);
     }
 }

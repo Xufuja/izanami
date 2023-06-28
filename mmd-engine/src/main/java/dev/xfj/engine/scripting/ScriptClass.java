@@ -10,23 +10,19 @@ public class ScriptClass {
         this.className = className;
     }
 
-    public Value instantiate() {
-        return ScriptEngine.instantiateClass(className);
+    public Value instantiate(Object... params) {
+        return ScriptEngine.instantiateClass(className, params);
     }
 
     public String getMethod(String name, int parameterCount) {
         Value clazz = ScriptEngine.data.rootDomain.getBindings("js").getMember(className);
         int arity = 0;
 
-        if (clazz.hasMember("constructor") && name.equals("constructor")) {
-            arity = getMethodArity(clazz.getMember(name));
+        if (clazz.getMember("prototype").hasMember(name)) {
+            arity = getMethodArity(clazz.getMember("prototype").getMember(name));
         } else {
-            if (clazz.getMember("prototype").hasMember(name)) {
-                arity = getMethodArity(clazz.getMember("prototype").getMember(name));
-            } else {
-                Log.error("Method not found!");
-                throw new RuntimeException();
-            }
+            Log.error("Method not found!");
+            throw new RuntimeException();
         }
 
         if (parameterCount == arity) {
@@ -39,7 +35,7 @@ public class ScriptClass {
 
     private int getMethodArity(Value methodValue) {
         String method = String.valueOf(methodValue);
-        String arguments = method.substring(method.indexOf("(") + 1,  method.indexOf(")"));
+        String arguments = method.substring(method.indexOf("(") + 1, method.indexOf(")"));
 
         if (arguments.isBlank() || arguments.isEmpty()) {
             return 0;

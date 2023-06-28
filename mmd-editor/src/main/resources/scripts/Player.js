@@ -1,11 +1,11 @@
 module.exports = class Player extends Entity {
-    constructor() {
+    constructor(entity) {
         super();
     }
     onCreate() {
         console.log('Created!');
     }
-    onUpdate() {
+    onUpdate(ts) {
         console.log('Updated!');
     }
 }
