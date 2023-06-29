@@ -6,6 +6,6 @@ module.exports = class Player extends Entity {
         console.log('Created!');
     }
     onUpdate(ts) {
-        console.log('Updated!');
+        console.log(`TimeStep: ${ts}`);
     }
 }
