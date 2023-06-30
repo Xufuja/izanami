@@ -2,7 +2,6 @@ package dev.xfj.engine.scripting;
 
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
-import dev.xfj.engine.core.Timer;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
@@ -15,8 +14,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
