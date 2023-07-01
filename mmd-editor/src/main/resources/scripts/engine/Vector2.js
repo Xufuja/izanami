@@ -10,8 +10,14 @@ module.exports = class Vector2 {
     get x() {
         return new this.#float(this.#x);
     }
+    set x(x) {
+        this.#x = x;
+    }
     get y() {
         return new this.#float(this.#y);
+    }
+    set y(y) {
+        this.#y = y;
     }
     static zero() {
         new Vector2(0, 0);

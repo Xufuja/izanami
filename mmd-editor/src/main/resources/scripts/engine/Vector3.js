@@ -12,13 +12,22 @@ module.exports = class Vector3 {
     get x() {
         return new this.#float(this.#x);
     }
+    set x(x) {
+        this.#x = x;
+    }
     get y() {
         return new this.#float(this.#y);
+    }
+    set y(y) {
+        this.#y = y;
     }
     get z() {
         return new this.#float(this.#z);
     }
+    set z(z) {
+        this.#z = z;
+    }
     static zero() {
-        new Vector3(0, 0, 0);
+        return new Vector3(0, 0, 0);
     }
 }

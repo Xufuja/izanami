@@ -7,12 +7,26 @@ module.exports = class Entity {
             throw new Error("Entity cannot be directly instantiated");
         }
         this.#id = id;
-        console.log(this.#id)
     }
     hasComponent(componentType) {
-        return true;
+        return InternalCalls.entityHasComponent(this.#id, componentType);
     }
     getComponent(componentType) {
-        return true;
+        if (this.hasComponent(componentType)) {
+            switch (componentType) {
+                case TransformComponent:
+                    return new TransformComponent(this);
+
+                case Rigidbody2DComponent:
+                    return new Rigidbody2DComponent(this);
+                default:
+                    console.log("Invalid component type!");
+            }
+        } else {
+            return null;
+        }
+    }
+    get id() {
+        return this.#id;
     }
 }

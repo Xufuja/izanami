@@ -63,6 +63,8 @@ public class ScriptEngine {
         String string = "Hello World from Java!";
 
         data.entityClass.invokeMethod(instance, printCustomMessageFunc, string);
+
+
     }
 
     public static void shutdown() {
@@ -148,9 +150,9 @@ public class ScriptEngine {
 
     public static Value instantiateClass(String javaScriptClass, Object... params) {
         Value classConstructor = ScriptEngine.data.rootDomain.eval("js", javaScriptClass);
-        Object[] arguments = new Object[params.length + 1];
-        System.arraycopy(params, 0, arguments, 1, params.length);
-        arguments[0] = "classInstance";
-        return classConstructor.newInstance(arguments);
+        //Object[] arguments = new Object[params.length + 1];
+        //System.arraycopy(params, 0, arguments, 1, params.length);
+        //arguments[0] = "classInstance";
+        return classConstructor.newInstance(params);
     }
 }

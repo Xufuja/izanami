@@ -17,7 +17,7 @@ public class ScriptInstance {
 
         UUID entityId = entity.getUUID();
         scriptClass.getMethod("constructor", 1);
-        this.instance = scriptClass.instantiate(entityId);
+        this.instance = scriptClass.instantiate(entityId.getUUID());
     }
 
     public void invokeOnCreate() {
