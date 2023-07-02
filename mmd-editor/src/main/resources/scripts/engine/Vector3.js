@@ -9,6 +9,14 @@ module.exports = class Vector3 {
         this.#y = y;
         this.#z = z;
     }
+
+    multiply(scalar) {
+        return new Vector3(this.#x * scalar, this.#y * scalar, this.#z * scalar);
+    }
+    add(other) {
+        return new Vector3(this.#x + other.x, this.#y + other.y, this.#z + other.z);
+    }
+
     get x() {
         return new this.#float(this.#x);
     }
@@ -28,6 +36,6 @@ module.exports = class Vector3 {
         this.#z = z;
     }
     static zero() {
-        return new Vector3(0, 0, 0);
+        return new Vector3(0.0, 0.0, 0.0);
     }
 }

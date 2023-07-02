@@ -39,7 +39,8 @@ public class ScriptEngine {
         loadAssembly("scripts/MMD-ScriptCore.js");
         loadAssemblyClasses();
 
-        data.entityClass = getEntityClasses().get("Player");
+        data.entityClass = new ScriptClass("Entity");
+        /*data.entityClass = getEntityClasses().get("Player");
 
         Value instance = data.entityClass.instantiate();
 
@@ -62,9 +63,7 @@ public class ScriptEngine {
 
         String string = "Hello World from Java!";
 
-        data.entityClass.invokeMethod(instance, printCustomMessageFunc, string);
-
-
+        data.entityClass.invokeMethod(instance, printCustomMessageFunc, string);*/
     }
 
     public static void shutdown() {

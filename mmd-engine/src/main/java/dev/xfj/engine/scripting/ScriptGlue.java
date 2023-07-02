@@ -29,6 +29,8 @@ public class ScriptGlue {
         return new Vector3f(parameter).dot(parameter);
     }
 
+    //For all the below, add some sort of exception if either Scene or Entity is null
+
     public static boolean entityHasComponent(long entityId, Class<?> componentType) {
         Scene scene = ScriptEngine.getSceneContext();
         Entity entity = scene.getEntityByUUID(new UUID(entityId));
@@ -40,10 +42,11 @@ public class ScriptGlue {
         Entity entity = scene.getEntityByUUID(new UUID(entityId));
         return entity.getComponent(TransformComponent.class).translation;
     }
-    public static void transformComponentSetTranslation(long entityId, Vector3f translation) {
+    public static Vector3f transformComponentSetTranslation(long entityId, Vector3f translation) {
         Scene scene = ScriptEngine.getSceneContext();
         Entity entity = scene.getEntityByUUID((new UUID(entityId)));
         entity.getComponent(TransformComponent.class).translation = translation;
+        return entity.getComponent(TransformComponent.class).translation;
     }
     public static void rigidbody2DComponentApplyLinearImpulse(long entityId, Vector2f impulse, Vector2f point, boolean wake) {
         Scene scene = ScriptEngine.getSceneContext();

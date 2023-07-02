@@ -1,29 +1,34 @@
 const Entity = require('./engine/scene/Entity');
 
 module.exports = class Camera extends Entity {
-    constructor() {
-        super();
+    constructor(id) {
+        super(id);
+    }
+    onCreate() {
+        console.log(`Camera.onCreate() - ${this.id}`);
     }
     onUpdate(ts) {
         let speed = 1.0;
         let velocity = Vector3.zero();
 
-        if (Input.isKeyDown(KeyCode.Up))
+        if (Input.isKeyDown(KeyCode.Up)) {
             velocity.y = 1.0;
-        else if (Input.isKeyDown(KeyCode.Down))
+        }
+        else if (Input.isKeyDown(KeyCode.Down)) {
             velocity.y = -1.0;
+        }
 
-        if (Input.isKeyDown(KeyCode.Left))
+        if (Input.isKeyDown(KeyCode.Left)) {
             velocity.x = -1.0;
-        else if (Input.isKeyDown(KeyCode.Right))
+        }
+        else if (Input.isKeyDown(KeyCode.Right)) {
             velocity.x = 1.0;
+        }
 
-        velocity.x *= speed;
-        velocity.y *= speed;
-        velocity.z *= speed;
+        velocity = velocity.multiply(speed);
 
-        let translation = Translation;
-        translation += velocity * ts;
-        Translation = translation;
+        let translation = super.translation;
+        translation = translation.add(velocity.multiply(ts));
+        super.translation = translation;
     }
 }

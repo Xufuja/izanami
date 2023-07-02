@@ -7,6 +7,13 @@ module.exports = class Vector2 {
         this.#x = x;
         this.#y = y;
     }
+    multiply(scalar) {
+        return new Vector2(this.#x * scalar, this.#y * scalar);
+    }
+    add(other) {
+        return new Vector2(this.#x + other.x, this.#y = other.y);
+    }
+
     get x() {
         return new this.#float(this.#x);
     }

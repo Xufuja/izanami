@@ -25,22 +25,28 @@ module.exports = class Player extends Entity {
         let speed = 0.01;
         let velocity = Vector3.zero();
 
-        if (Input.isKeyDown(KeyCode.W))
+        if (Input.isKeyDown(KeyCode.W)) {
             velocity.y = 1.0;
-        else if (Input.isKeyDown(KeyCode.S))
+        }
+        else if (Input.isKeyDown(KeyCode.S)) {
             velocity.y = -1.0;
+        }
 
-        if (Input.isKeyDown(KeyCode.A))
+        if (Input.isKeyDown(KeyCode.A)) {
             velocity.x = -1.0;
-        else if (Input.isKeyDown(KeyCode.D))
+        }
+        else if (Input.isKeyDown(KeyCode.D)) {
             velocity.x = 1.0;
+        }
 
-        velocity.x *= speed;
-        velocity.y *= speed;
-        velocity.z *= speed;
+        velocity = velocity.multiply(speed);
 
         //Center version does not exist so testing like this
         this.#rigidbody.applyLinearImpulse(velocity, velocity, true);
+
+        //let translation = this.#transform.translation;
+        //translation = translation.add(velocity.multiply(ts));
+        //this.#transform.translation = translation;
 
     }
     printMessage() {

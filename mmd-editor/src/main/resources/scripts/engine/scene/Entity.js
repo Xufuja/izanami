@@ -1,6 +1,6 @@
 module.exports = class Entity {
     #id;
-    translation;
+    #translation;
 
     constructor(id = 0) {
         if (this.constructor == Entity) {
@@ -13,18 +13,17 @@ module.exports = class Entity {
     }
     getComponent(componentType) {
         if (this.hasComponent(componentType)) {
-            switch (componentType) {
-                case TransformComponent:
-                    return new TransformComponent(this);
-
-                case Rigidbody2DComponent:
-                    return new Rigidbody2DComponent(this);
-                default:
-                    console.log("Invalid component type!");
-            }
+            return new componentType(this);
         } else {
             return null;
         }
+    }
+    get translation() {
+        this.#translation = InternalCalls.transformComponentGetTranslation(this.#id);
+        return this.#translation;
+    }
+    set translation(value) {
+        this.#translation = InternalCalls.transformComponentSetTranslation(this.#id, value);
     }
     get id() {
         return this.#id;

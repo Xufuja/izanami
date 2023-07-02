@@ -1,3 +1,5 @@
+const Vector3 = require("./Vector3");
+
 module.exports = class InternalCalls {
     static vector2f = Java.type("org.joml.Vector2f");
     static vector3f = Java.type("org.joml.Vector3f");
@@ -15,24 +17,15 @@ module.exports = class InternalCalls {
         return Java.type('dev.xfj.engine.scripting.ScriptGlue').entityHasComponent(entityId, InternalCalls.getComponentType(componentType));
     }
     static getComponentType(componentType) {
-        let type;
-        switch (componentType) {
-            case TransformComponent:
-                type = Java.type("dev.xfj.engine.scene.components.TransformComponent");
-                break;
-            case Rigidbody2DComponent:
-                type = Java.type("dev.xfj.engine.scene.components.Rigidbody2DComponent");
-                break;
-        }
-        return type;
+        return Java.type(`dev.xfj.engine.scene.components.${componentType.name}`);
     }
     static transformComponentGetTranslation(entityId) {
-        //TODO: ScriptGlue
-        return true;
+        let vec3 = Java.type('dev.xfj.engine.scripting.ScriptGlue').transformComponentGetTranslation(entityId);
+        return new Vector3(vec3.x, vec3.y, vec3.z);
     }
     static transformComponentSetTranslation(entityId, translation) {
-        //TODO: ScriptGlue
-        return true;
+        let vec3 = Java.type('dev.xfj.engine.scripting.ScriptGlue').transformComponentSetTranslation(entityId, new InternalCalls.vector3f(translation.x, translation.y, translation.z));
+        return new Vector3(vec3.x, vec3.y, vec3.z);
     }
     static rigidbody2DComponentApplyLinearImpulse(entityId, impulse, point, wake) {
         Java.type('dev.xfj.engine.scripting.ScriptGlue').rigidbody2DComponentApplyLinearImpulse(entityId, new InternalCalls.vector2f(impulse.x, impulse.y), new InternalCalls.vector2f(point.x, point.y), wake);
