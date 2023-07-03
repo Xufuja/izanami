@@ -11,7 +11,7 @@ module.exports = class Vector2 {
         return new Vector2(this.#x * scalar, this.#y * scalar);
     }
     add(other) {
-        return new Vector2(this.#x + other.x, this.#y = other.y);
+        return new Vector2(this.#x + other.x, this.#y + other.y);
     }
 
     get x() {

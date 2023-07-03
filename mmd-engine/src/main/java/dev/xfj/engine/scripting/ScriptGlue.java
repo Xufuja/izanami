@@ -3,7 +3,6 @@ package dev.xfj.engine.scripting;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import dev.xfj.engine.core.Input;
-import dev.xfj.engine.core.KeyCodes;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.Entity;
