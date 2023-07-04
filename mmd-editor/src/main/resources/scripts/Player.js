@@ -35,11 +35,14 @@ module.exports = class Player extends Entity {
         velocity = velocity.multiply(speed);
 
         //Center version does not exist so testing like this
-        this.#rigidbody.applyLinearImpulse(velocity, velocity, true);
+        if (this.#rigidbody) {
+            this.#rigidbody.applyLinearImpulse(velocity, velocity, true);
+        }
 
-        //let translation = this.#transform.translation;
-        //translation = translation.add(velocity.multiply(ts));
-        //this.#transform.translation = translation;
+        let translation = this.#transform.translation;
+        translation = translation.add(velocity.multiply(ts));
+        console.log(`X: ${translation.x}\r\nY: ${translation.y}\r\nZ: ${translation.z}`);
+        this.#transform.translation = translation;
 
     }
 }
