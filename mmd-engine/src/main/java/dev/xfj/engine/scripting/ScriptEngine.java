@@ -13,6 +13,7 @@ import org.graalvm.polyglot.Value;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,19 @@ public class ScriptEngine {
     public static ScriptEngineData data = null;
     private static final ClassLoader classLoader = ScriptEngine.class.getClassLoader();
 
-    private static String loadJavaScriptAssembly(String filePath) {
+    private static String loadJavaScriptAssembly(String filePath, boolean core) {
         String result;
-        try (InputStream inputStream = Files.newInputStream(Paths.get(classLoader.getResource(filePath).toURI()))) {
+        Path path = null;
+        if (core) {
+            try {
+                path = Path.of(classLoader.getResource(filePath).toURI());
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        } else {
+            path = Paths.get(filePath);
+        }
+        try (InputStream inputStream = Files.newInputStream(path)) {
             byte[] bytes = inputStream.readAllBytes();
             result = new String(bytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
@@ -37,6 +48,8 @@ public class ScriptEngine {
         data = new ScriptEngineData();
         initPolyglot();
         loadAssembly("scripts/MMD-ScriptCore.js");
+        
+        //loadAppAssembly("sandboxproject/assets/scripts/Sandbox.js");
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");
@@ -94,8 +107,13 @@ public class ScriptEngine {
     }
 
     public static void loadAssembly(String filePath) {
-        data.coreAssembly = loadJavaScriptAssembly(filePath);
+        data.coreAssembly = loadJavaScriptAssembly(filePath, true);
         data.rootDomain.eval("js", data.coreAssembly);
+    }
+
+    public static void loadAppAssembly(String filePath) {
+        data.appAssembly = loadJavaScriptAssembly(filePath, false);
+        data.rootDomain.eval("js", data.coreAssembly + data.appAssembly);
     }
 
     public static void onRunTimeStart(Scene scene) {
