@@ -15,7 +15,8 @@ public class ScriptClass {
     }
 
     public String getMethod(String name, int parameterCount) {
-        Value clazz = ScriptEngine.data.rootDomain.getBindings("js").getMember(className);
+        Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.coreAssembly);
+        Value clazz = exports.getMember(className);
         int arity = 0;
 
         if (clazz.getMember("prototype").hasMember(name)) {

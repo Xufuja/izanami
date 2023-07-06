@@ -8,6 +8,7 @@ import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.components.ScriptComponent;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ScriptEngine {
     public static ScriptEngineData data = null;
@@ -47,8 +49,8 @@ public class ScriptEngine {
     public static void init() {
         data = new ScriptEngineData();
         initPolyglot();
-        loadAssembly("scripts/MMD-ScriptCore.js");
-        
+        loadAssembly("scripts/MMD-ScriptCore.mjs");
+
         //loadAppAssembly("sandboxproject/assets/scripts/Sandbox.js");
         loadAssemblyClasses();
 
@@ -90,8 +92,7 @@ public class ScriptEngine {
                     .allowExperimentalOptions(true)
                     .allowIO(true)
                     .option("engine.WarnInterpreterOnly", "false")
-                    .option("js.commonjs-require", "true")
-                    .option("js.commonjs-require-cwd", Paths.get(classLoader.getResource("scripts").toURI()).toString())
+                    .option("js.esm-eval-returns-exports", "true")
                     .allowHostAccess(HostAccess.ALL)
                     .allowHostClassLookup(className -> true).build();
             data.rootDomain = rootDomain;
@@ -107,8 +108,13 @@ public class ScriptEngine {
     }
 
     public static void loadAssembly(String filePath) {
-        data.coreAssembly = loadJavaScriptAssembly(filePath, true);
-        data.rootDomain.eval("js", data.coreAssembly);
+        try {
+            data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "test.mjs")
+                    .mimeType("application/javascript+module")
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public static void loadAppAssembly(String filePath) {
@@ -158,7 +164,8 @@ public class ScriptEngine {
 
     public static void loadAssemblyClasses() {
         //As far as I can see, there is no way to get all JS classes so just maintaining a Map inside the JS script
-        Value classes = ScriptEngine.data.rootDomain.eval("js", "classes");
+        Value exports = data.rootDomain.eval(data.coreAssembly);
+        Value classes = exports.getMember("classes");
         Map<String, List<String>> map = classes.as(Map.class);
         for (String clazz : map.get("entity")) {
             data.entityClasses.put(clazz, new ScriptClass(clazz));
@@ -166,7 +173,8 @@ public class ScriptEngine {
     }
 
     public static Value instantiateClass(String javaScriptClass, Object... params) {
-        Value classConstructor = ScriptEngine.data.rootDomain.eval("js", javaScriptClass);
+        Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.coreAssembly);
+        Value classConstructor = exports.getMember(javaScriptClass);
         //Object[] arguments = new Object[params.length + 1];
         //System.arraycopy(params, 0, arguments, 1, params.length);
         //arguments[0] = "classInstance";
