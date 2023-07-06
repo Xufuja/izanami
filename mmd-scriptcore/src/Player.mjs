@@ -44,10 +44,10 @@ export default class Player extends Entity {
             this.#rigidbody.applyLinearImpulse(velocity, velocity, true);
         }
 
-        let translation = this.#transform.translation;
-        translation = translation.add(velocity.multiply(ts));
-        console.log(`X: ${translation.x}\r\nY: ${translation.y}\r\nZ: ${translation.z}`);
-        this.#transform.translation = translation;
+        //let translation = this.#transform.translation;
+        //translation = translation.add(velocity.multiply(ts));
+        //console.log(`X: ${translation.x}\r\nY: ${translation.y}\r\nZ: ${translation.z}`);
+        //this.#transform.translation = translation;
 
     }
 }
