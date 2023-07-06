@@ -20,6 +20,7 @@ MRs performed by other contributors will be handled before the next video, if an
 * `git clone --recursive https://github.com/Xufuja/mmd-tools.git`
     * If not recursively cloned, perform `git submodule update --init --recursive`
 * Run `protoc --proto_path=protobuf --java_out=src/generated protobuf/*.proto` from the mmd-engine directory
+* To update `MMD-ScriptCore.mjs`, run `npm run build` from the mmd-scriptcore directory
 
 ## Libraries
 
@@ -27,6 +28,10 @@ MRs performed by other contributors will be handled before the next video, if an
 * JOML replaces GLM
 * Dominion replaces EnTT
 * protobuf replaces yaml-cpp
+
+## Scripting
+
+There is no Mono available for Java so replaced it with GraalVM JS as the scripting engine. To make the workflow as similar as possible, the MMD-ScriptCore project is set-up to create `MMD-ScriptCore.mjs` instead of the DLL.
 
 ## Skipped
 
