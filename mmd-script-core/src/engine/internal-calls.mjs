@@ -1,4 +1,4 @@
-import Vector3 from './Vector3';
+import Vector3 from './vector3';
 
 export default class InternalCalls {
     static vector2f = Java.type("org.joml.Vector2f");

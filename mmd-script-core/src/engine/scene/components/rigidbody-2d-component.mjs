@@ -1,5 +1,5 @@
-import Component from './Component';
-import InternalCalls from '../../InternalCalls';
+import Component from './component';
+import InternalCalls from '../../internal-calls';
 
 export default class Rigidbody2DComponent extends Component {
     constructor(entity) {

@@ -49,8 +49,8 @@ public class ScriptEngine {
     public static void init() {
         data = new ScriptEngineData();
         initPolyglot();
-        loadAssembly("scripts/MMD-ScriptCore.mjs");
-        loadAppAssembly("sandboxproject/assets/scripts/dist/Sandbox.mjs");
+        loadAssembly("scripts/mmd-script-core.mjs");
+        loadAppAssembly("sandbox-project/assets/scripts/dist/sandbox.mjs");
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");
@@ -108,7 +108,7 @@ public class ScriptEngine {
 
     public static void loadAssembly(String filePath) {
         try {
-            data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "MMD-ScriptCore.mjs")
+            data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "mmd-script-core.mjs")
                     .mimeType("application/javascript+module")
                     .build();
         } catch (Exception e) {
@@ -118,7 +118,7 @@ public class ScriptEngine {
 
     public static void loadAppAssembly(String filePath) {
         try {
-            data.appAssembly = Source.newBuilder("js", data.coreAssembly.getCharacters() + loadJavaScriptAssembly(filePath, false), "Sandbox.mjs")
+            data.appAssembly = Source.newBuilder("js", data.coreAssembly.getCharacters() + loadJavaScriptAssembly(filePath, false), "sandbox.mjs")
                     .mimeType("application/javascript+module")
                     .build();
         } catch (Exception e) {

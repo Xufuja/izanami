@@ -1,4 +1,4 @@
-import InternalCalls from '../InternalCalls';
+import InternalCalls from '../internal-calls';
 
 export default class Entity {
     #id;

@@ -2,9 +2,9 @@ import pkg from './package.json' assert { type: "json" };;
 
 export default [
 	{
-		input: 'src/Main.mjs',
+		input: 'src/main.mjs',
 		output: {
-			name: 'MMD-ScriptCore',
+			name: 'sandbox',
 			file: pkg.module,
 			format: 'esm'
 		}
