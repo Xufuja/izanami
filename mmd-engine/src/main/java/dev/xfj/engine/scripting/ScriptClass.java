@@ -15,7 +15,7 @@ public class ScriptClass {
     }
 
     public String getMethod(String name, int parameterCount) {
-        Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.coreAssembly);
+        Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.appAssembly);
         Value clazz = exports.getMember(className);
         int arity = 0;
 

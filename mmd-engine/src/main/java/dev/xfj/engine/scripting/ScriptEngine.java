@@ -50,8 +50,7 @@ public class ScriptEngine {
         data = new ScriptEngineData();
         initPolyglot();
         loadAssembly("scripts/MMD-ScriptCore.mjs");
-
-        //loadAppAssembly("sandboxproject/assets/scripts/Sandbox.js");
+        loadAppAssembly("sandboxproject/assets/scripts/dist/Sandbox.mjs");
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");
@@ -109,7 +108,7 @@ public class ScriptEngine {
 
     public static void loadAssembly(String filePath) {
         try {
-            data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "test.mjs")
+            data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "MMD-ScriptCore.mjs")
                     .mimeType("application/javascript+module")
                     .build();
         } catch (Exception e) {
@@ -118,8 +117,13 @@ public class ScriptEngine {
     }
 
     public static void loadAppAssembly(String filePath) {
-        data.appAssembly = loadJavaScriptAssembly(filePath, false);
-        data.rootDomain.eval("js", data.coreAssembly + data.appAssembly);
+        try {
+            data.appAssembly = Source.newBuilder("js", data.coreAssembly.getCharacters() + loadJavaScriptAssembly(filePath, false), "Sandbox.mjs")
+                    .mimeType("application/javascript+module")
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public static void onRunTimeStart(Scene scene) {
@@ -164,7 +168,7 @@ public class ScriptEngine {
 
     public static void loadAssemblyClasses() {
         //As far as I can see, there is no way to get all JS classes so just maintaining a Map inside the JS script
-        Value exports = data.rootDomain.eval(data.coreAssembly);
+        Value exports = data.rootDomain.eval(data.appAssembly);
         Value classes = exports.getMember("classes");
         Map<String, List<String>> map = classes.as(Map.class);
         for (String clazz : map.get("entity")) {
@@ -173,7 +177,7 @@ public class ScriptEngine {
     }
 
     public static Value instantiateClass(String javaScriptClass, Object... params) {
-        Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.coreAssembly);
+        Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.appAssembly);
         Value classConstructor = exports.getMember(javaScriptClass);
         //Object[] arguments = new Object[params.length + 1];
         //System.arraycopy(params, 0, arguments, 1, params.length);

@@ -11,7 +11,7 @@ import java.util.Map;
 public class ScriptEngineData {
     public Context rootDomain = null;
     public Source coreAssembly = null;
-    public String appAssembly = null;
+    public Source appAssembly = null;
     public ScriptClass entityClass = null;
     public Map<String, ScriptClass> entityClasses = new HashMap<>();
     public Map<UUID, ScriptInstance> entityInstances =  new HashMap<>();

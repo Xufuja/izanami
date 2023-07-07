@@ -21,6 +21,7 @@ MRs performed by other contributors will be handled before the next video, if an
     * If not recursively cloned, perform `git submodule update --init --recursive`
 * Run `protoc --proto_path=protobuf --java_out=src/generated protobuf/*.proto` from the mmd-engine directory
 * To update `MMD-ScriptCore.mjs`, run `npm run build` from the mmd-scriptcore directory
+To update `Sandbox.mjs`, run `npm run build` from the mmd-editor\sandboxproject\assets\scripts directory
 
 ## Libraries
 
@@ -31,7 +32,7 @@ MRs performed by other contributors will be handled before the next video, if an
 
 ## Scripting
 
-There is no Mono available for Java so replaced it with GraalVM JS as the scripting engine. To make the workflow as similar as possible, the MMD-ScriptCore project is set-up to create `MMD-ScriptCore.mjs` instead of the DLL.
+There is no Mono available for Java so replaced it with GraalVM JS as the scripting engine. To make the workflow as similar as possible, the MMD-ScriptCore project is set-up to create `MMD-ScriptCore.mjs` instead of the DLL, same for `Sandbox.mjs`
 
 ## Skipped
 

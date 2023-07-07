@@ -69,38 +69,6 @@ class InternalCalls {
     }
 }
 
-class Entity {
-    #id;
-    #translation;
-
-    constructor(id = 0) {
-        if (this.constructor == Entity) {
-            throw new Error("Entity cannot be directly instantiated");
-        }
-        this.#id = id;
-    }
-    hasComponent(componentType) {
-        return InternalCalls.entityHasComponent(this.#id, componentType);
-    }
-    getComponent(componentType) {
-        if (this.hasComponent(componentType)) {
-            return new componentType(this);
-        } else {
-            return null;
-        }
-    }
-    get translation() {
-        this.#translation = InternalCalls.transformComponentGetTranslation(this.#id);
-        return this.#translation;
-    }
-    set translation(value) {
-        this.#translation = InternalCalls.transformComponentSetTranslation(this.#id, value);
-    }
-    get id() {
-        return this.#id;
-    }
-}
-
 class Input {
     static isKeyDown(keyCode) {
         return InternalCalls.inputIsKeyDown(keyCode);
@@ -241,36 +209,35 @@ const KeyCode = {
     Menu: 348
 };
 
-class Camera extends Entity {
-    constructor(id) {
-        super(id);
+class Vector2 {
+    #float = Java.type('java.lang.Float');
+    #x;
+    #y;
+
+    constructor(x, y) {
+        this.#x = x;
+        this.#y = y;
     }
-    onCreate() {
-        console.log(`Camera.onCreate() - ${this.id}`);
+    multiply(scalar) {
+        return new Vector2(this.#x * scalar, this.#y * scalar);
     }
-    onUpdate(ts) {
-        let speed = 1.0;
-        let velocity = Vector3.zero();
+    add(other) {
+        return new Vector2(this.#x + other.x, this.#y + other.y);
+    }
 
-        if (Input.isKeyDown(KeyCode.Up)) {
-            velocity.y = 1.0;
-        }
-        else if (Input.isKeyDown(KeyCode.Down)) {
-            velocity.y = -1.0;
-        }
-
-        if (Input.isKeyDown(KeyCode.Left)) {
-            velocity.x = -1.0;
-        }
-        else if (Input.isKeyDown(KeyCode.Right)) {
-            velocity.x = 1.0;
-        }
-
-        velocity = velocity.multiply(speed);
-
-        let translation = super.translation;
-        translation = translation.add(velocity.multiply(ts));
-        super.translation = translation;
+    get x() {
+        return new this.#float(this.#x);
+    }
+    set x(x) {
+        this.#x = x;
+    }
+    get y() {
+        return new this.#float(this.#y);
+    }
+    set y(y) {
+        this.#y = y;
+    }
+    static zero() {
     }
 }
 
@@ -314,86 +281,36 @@ class Rigidbody2DComponent extends Component {
     }
 }
 
-class Player extends Entity {
-    #transform;
-    #rigidbody;
+class Entity {
+    #id;
+    #translation;
 
-    constructor(id) {
-        super(id);
+    constructor(id = 0) {
+        if (this.constructor == Entity) {
+            throw new Error("Entity cannot be directly instantiated");
+        }
+        this.#id = id;
     }
-    onCreate() {
-        console.log(`Player.onCreate() - ${this.id}`);
-        this.#transform = super.getComponent(TransformComponent);
-        this.#rigidbody = super.getComponent(Rigidbody2DComponent);
+    hasComponent(componentType) {
+        return InternalCalls.entityHasComponent(this.#id, componentType);
     }
-    onUpdate(ts) {
-        //console.log(`Player.onUpdate(): ${ts}`);
-
-        let speed = 0.01;
-        let velocity = Vector3.zero();
-
-        if (Input.isKeyDown(KeyCode.W)) {
-            velocity.y = 1.0;
+    getComponent(componentType) {
+        if (this.hasComponent(componentType)) {
+            return new componentType(this);
+        } else {
+            return null;
         }
-        else if (Input.isKeyDown(KeyCode.S)) {
-            velocity.y = -1.0;
-        }
-
-        if (Input.isKeyDown(KeyCode.A)) {
-            velocity.x = -1.0;
-        }
-        else if (Input.isKeyDown(KeyCode.D)) {
-            velocity.x = 1.0;
-        }
-
-        velocity = velocity.multiply(speed);
-
-        //Center version does not exist so testing like this
-        if (this.#rigidbody) {
-            this.#rigidbody.applyLinearImpulse(velocity, velocity, true);
-        }
-
-        let translation = this.#transform.translation;
-        translation = translation.add(velocity.multiply(ts));
-        console.log(`X: ${translation.x}\r\nY: ${translation.y}\r\nZ: ${translation.z}`);
-        this.#transform.translation = translation;
-
+    }
+    get translation() {
+        this.#translation = InternalCalls.transformComponentGetTranslation(this.#id);
+        return this.#translation;
+    }
+    set translation(value) {
+        this.#translation = InternalCalls.transformComponentSetTranslation(this.#id, value);
+    }
+    get id() {
+        return this.#id;
     }
 }
 
-class Vector2 {
-    #float = Java.type('java.lang.Float');
-    #x;
-    #y;
-
-    constructor(x, y) {
-        this.#x = x;
-        this.#y = y;
-    }
-    multiply(scalar) {
-        return new Vector2(this.#x * scalar, this.#y * scalar);
-    }
-    add(other) {
-        return new Vector2(this.#x + other.x, this.#y + other.y);
-    }
-
-    get x() {
-        return new this.#float(this.#x);
-    }
-    set x(x) {
-        this.#x = x;
-    }
-    get y() {
-        return new this.#float(this.#y);
-    }
-    set y(y) {
-        this.#y = y;
-    }
-    static zero() {
-    }
-}
-
-const classes = new Map();
-classes.set('entity', ["Player", "Camera"]);
-
-export { Camera, Component, Entity, Input, InternalCalls, KeyCode, Player, Rigidbody2DComponent, TransformComponent, Vector2, Vector3, classes };
+export { Component, Entity, Input, InternalCalls, KeyCode, Rigidbody2DComponent, TransformComponent, Vector2, Vector3 };
