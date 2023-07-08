@@ -157,6 +157,14 @@ public class ScriptEngine {
         return data.sceneContext;
     }
 
+    public static ScriptInstance getEntityScriptInstance(UUID uuid) {
+        ScriptInstance scriptInstance = null;
+        if (data.entityInstances.containsKey(uuid)) {
+            scriptInstance = data.entityInstances.get(uuid);
+        }
+        return scriptInstance;
+    }
+
     public static void onRuntimeStop() {
         data.sceneContext = null;
         data.entityInstances.clear();
