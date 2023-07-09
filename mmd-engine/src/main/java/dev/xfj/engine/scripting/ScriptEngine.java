@@ -5,7 +5,9 @@ import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
+import dev.xfj.engine.scene.components.CameraComponent;
 import dev.xfj.engine.scene.components.ScriptComponent;
+import dev.xfj.engine.scene.components.TransformComponent;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Source;
@@ -175,12 +177,40 @@ public class ScriptEngine {
     }
 
     public static void loadAssemblyClasses() {
-        //As far as I can see, there is no way to get all JS classes so just maintaining a Map inside the JS script
         Value exports = data.rootDomain.eval(data.appAssembly);
-        Value classes = exports.getMember("classes");
-        Map<String, List<String>> map = classes.as(Map.class);
-        for (String clazz : map.get("entity")) {
-            data.entityClasses.put(clazz, new ScriptClass(clazz));
+
+        for (var clazz : exports.getMemberKeys()) {
+            Value current = exports.getMember(clazz);
+            boolean isEntity = isSubClassOf(current, clazz, "Entity");
+
+            if (!isEntity) {
+                continue;
+            }
+
+            ScriptClass scriptClass = new ScriptClass(clazz);
+            data.entityClasses.put(clazz, scriptClass);
+
+            boolean test = current.getMember("prototype").hasMember("time");
+            if (test)
+                System.out.println(current.getMember("prototype").getMember("time"));
+        }
+
+    }
+
+    //I guess it works
+    private static boolean isSubClassOf(Value clazz, String name, String parent) {
+        String input = String.valueOf(clazz);
+
+        if (input.startsWith("class")) {
+            String signature = input.substring(input.indexOf(" ") + 1, input.indexOf("{") - 1);
+
+            if (!signature.contains("extends")) {
+                return false;
+            } else {
+                return signature.equals(String.format("%1$s extends %2$s", name, parent));
+            }
+        } else {
+            return false;
         }
     }
 

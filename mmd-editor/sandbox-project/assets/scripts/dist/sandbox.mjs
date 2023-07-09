@@ -35,6 +35,9 @@ class Player extends Entity {
     #transform;
     #rigidbody;
 
+    speed = 0.01;
+    time = 0.0;
+
     constructor(id) {
         super(id);
     }
@@ -44,9 +47,10 @@ class Player extends Entity {
         this.#rigidbody = super.getComponent(Rigidbody2DComponent);
     }
     onUpdate(ts) {
-        //console.log(`Player.onUpdate(): ${ts}`);
+        this.time += ts;
+        //console.log(`Player.onUpdate(): ${this.#time}`);
 
-        let speed = 0.01;
+        let speed = this.speed;
         let velocity = Vector3.zero();
 
         if (Input.isKeyDown(KeyCode.W)) {
@@ -76,9 +80,7 @@ class Player extends Entity {
         //this.#transform.translation = translation;
 
     }
+  
 }
 
-const classes = new Map();
-classes.set('entity', ["Player", "Camera"]);
-
-export { Camera, Player, classes };
+export { Camera, Player };
