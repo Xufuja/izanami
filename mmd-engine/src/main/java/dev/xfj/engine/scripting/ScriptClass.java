@@ -3,11 +3,16 @@ package dev.xfj.engine.scripting;
 import dev.xfj.engine.core.Log;
 import org.graalvm.polyglot.Value;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ScriptClass {
     private final String className;
+    private final Map<String, ScriptField> fields;
 
     public ScriptClass(String className) {
         this.className = className;
+        this.fields = new HashMap<>();
     }
 
     public Value instantiate(Object... params) {
@@ -49,4 +54,7 @@ public class ScriptClass {
         instance.invokeMember(method, params);
     }
 
+    public Map<String, ScriptField> getFields() {
+        return fields;
+    }
 }

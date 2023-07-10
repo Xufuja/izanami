@@ -31,4 +31,8 @@ public class ScriptInstance {
             scriptClass.invokeMethod(instance, onUpdateMethod, ts);
         }
     }
+
+    public ScriptClass getScriptClass() {
+        return scriptClass;
+    }
 }

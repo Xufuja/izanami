@@ -9,6 +9,8 @@ import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.*;
 import dev.xfj.engine.scripting.ScriptEngine;
+import dev.xfj.engine.scripting.ScriptField;
+import dev.xfj.engine.scripting.ScriptInstance;
 import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -22,6 +24,7 @@ import org.joml.Vector4f;
 import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class SceneHierarchyPanel {
@@ -347,6 +350,18 @@ public class SceneHierarchyPanel {
 
             if (ImGui.inputText("Class", buffer)) {
                 component.className = buffer.toString();
+            }
+
+            ScriptInstance scriptInstance = ScriptEngine.getEntityScriptInstance(entity.getUUID());
+
+            if (scriptInstance != null) {
+                Map<String, ScriptField> fields = scriptInstance.getScriptClass().getFields();
+
+                for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+                    if (ImGui.dragFloat(entry.getKey(), new float[] {0.0f})) {
+                        //Quick test to see if it renders at all
+                    }
+                }
             }
 
             if (!scriptClassExists) {

@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -190,9 +191,8 @@ public class ScriptEngine {
             ScriptClass scriptClass = new ScriptClass(clazz);
             data.entityClasses.put(clazz, scriptClass);
 
-            boolean test = current.getMember("prototype").hasMember("time");
-            if (test)
-                System.out.println(current.getMember("prototype").getMember("time"));
+            List<String> fields = getPublicClassFields(current);
+            fields.forEach(field -> scriptClass.getFields().put(field, new ScriptField(field)));
         }
 
     }
@@ -214,12 +214,40 @@ public class ScriptEngine {
         }
     }
 
+    //Even worse than the isSubClassOf() method, surely there must be a better way than this
+    private static List<String> getPublicClassFields(Value clazz) {
+        String input = String.valueOf(clazz);
+        List<String> result = new ArrayList<>();
+
+        if (input.startsWith("class")) {
+            String fieldBlock = input.substring(input.indexOf("{") + 1, input.indexOf("constructor") - 1);
+
+            String[] fields = fieldBlock.split("\r\n");
+
+            for (String field : fields) {
+                field = field.trim();
+
+                //# indicates a private field
+                if (field.isBlank() || field.isEmpty() || field.startsWith("#")) {
+                    continue;
+                }
+
+                String[] temp = field.replace(";", "").split(" ");
+
+                if (temp.length > 1) {
+                    result.add(temp[0]);
+                } else {
+                    result.add(field);
+                }
+            }
+        }
+        return result;
+    }
+
     public static Value instantiateClass(String javaScriptClass, Object... params) {
         Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.appAssembly);
         Value classConstructor = exports.getMember(javaScriptClass);
-        //Object[] arguments = new Object[params.length + 1];
-        //System.arraycopy(params, 0, arguments, 1, params.length);
-        //arguments[0] = "classInstance";
+
         return classConstructor.newInstance(params);
     }
 }
