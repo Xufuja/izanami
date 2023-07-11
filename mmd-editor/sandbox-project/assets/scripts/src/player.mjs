@@ -2,8 +2,8 @@ export default class Player extends Entity {
     #transform;
     #rigidbody;
 
-    speed = 0.01;
-    time = 0.0;
+    fSpeed = 0.01;
+    fTime = 0.0;
 
     constructor(id) {
         super(id);
@@ -14,10 +14,10 @@ export default class Player extends Entity {
         this.#rigidbody = super.getComponent(Rigidbody2DComponent);
     }
     onUpdate(ts) {
-        this.time += ts;
+        this.fTime += ts;
         //console.log(`Player.onUpdate(): ${this.#time}`);
 
-        let speed = this.speed;
+        let speed = this.fSpeed;
         let velocity = Vector3.zero();
 
         if (Input.isKeyDown(KeyCode.W)) {
