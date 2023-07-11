@@ -358,8 +358,11 @@ public class SceneHierarchyPanel {
                 Map<String, ScriptField> fields = scriptInstance.getScriptClass().getFields();
 
                 for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
-                    if (ImGui.dragFloat(entry.getKey(), new float[] {0.0f})) {
-                        //Quick test to see if it renders at all
+                    if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
+                        float[] data = new float[] {scriptInstance.getFieldValue(Float.class, entry.getKey())};
+                        if (ImGui.dragFloat(entry.getValue().name, data)) {
+                            //Quick test to see if it renders at all
+                        }
                     }
                 }
             }

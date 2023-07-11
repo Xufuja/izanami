@@ -5,9 +5,7 @@ import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
-import dev.xfj.engine.scene.components.CameraComponent;
 import dev.xfj.engine.scene.components.ScriptComponent;
-import dev.xfj.engine.scene.components.TransformComponent;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Source;
@@ -21,11 +19,54 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ScriptEngine {
     public static ScriptEngineData data = null;
     private static final ClassLoader classLoader = ScriptEngine.class.getClassLoader();
+
+    public enum ScriptFieldType {
+        None,
+        Float, Double,
+        Bool, Char, Byte, Short, Int, Long,
+        Vector2, Vector3, Vector4,
+        Entity
+    }
+
+    private static int getFirstUpperCaseIndex(String value) {
+        for (int i = 0; i < value.length(); i++) {
+            if (Character.isUpperCase(value.charAt(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static ScriptFieldType toScriptFieldType(String name) {
+        int variableNameStart = getFirstUpperCaseIndex(name);
+
+        if (variableNameStart != -1) {
+            String type = name.substring(0, variableNameStart);
+
+            return switch (type) {
+                case "f" -> ScriptFieldType.Float;
+                case "d" -> ScriptFieldType.Double;
+                case "b" -> ScriptFieldType.Bool;
+                case "c" -> ScriptFieldType.Char;
+                case "i16" -> ScriptFieldType.Short;
+                case "i32" -> ScriptFieldType.Int;
+                case "i64" -> ScriptFieldType.Long;
+                case "v2" -> ScriptFieldType.Vector2;
+                case "v3" -> ScriptFieldType.Vector3;
+                case "v4" -> ScriptFieldType.Vector4;
+                case "e" -> ScriptFieldType.Entity;
+                default -> {
+                    Log.error("Unknown type: " + type);
+                    yield null;
+                }
+            };
+        }
+        throw new RuntimeException("No type found for variable: " + name);
+    }
 
     private static String loadJavaScriptAssembly(String filePath, boolean core) {
         String result;
@@ -192,9 +233,11 @@ public class ScriptEngine {
             data.entityClasses.put(clazz, scriptClass);
 
             List<String> fields = getPublicClassFields(current);
-            fields.forEach(field -> scriptClass.getFields().put(field, new ScriptField(field)));
+            fields.forEach(field -> {
+                String name = field.substring(getFirstUpperCaseIndex(field));
+                scriptClass.getFields().put(field, new ScriptField(toScriptFieldType(field), name));
+            });
         }
-
     }
 
     //I guess it works
