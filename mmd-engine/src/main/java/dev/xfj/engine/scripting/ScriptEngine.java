@@ -32,6 +32,20 @@ public class ScriptEngine {
         Entity
     }
 
+    public final static Map<String, ScriptFieldType> scriptFieldTypeMap = Map.ofEntries(
+            Map.entry("f", ScriptFieldType.Float),
+            Map.entry("d", ScriptFieldType.Double),
+            Map.entry("b", ScriptFieldType.Bool),
+            Map.entry("c", ScriptFieldType.Char),
+            Map.entry("i16", ScriptFieldType.Short),
+            Map.entry("i32", ScriptFieldType.Int),
+            Map.entry("i64", ScriptFieldType.Long),
+            Map.entry("v2", ScriptFieldType.Vector2),
+            Map.entry("v3", ScriptFieldType.Vector3),
+            Map.entry("v4", ScriptFieldType.Vector4),
+            Map.entry("e", ScriptFieldType.Entity)
+    );
+
     private static int getFirstUpperCaseIndex(String value) {
         for (int i = 0; i < value.length(); i++) {
             if (Character.isUpperCase(value.charAt(i))) {
@@ -47,23 +61,12 @@ public class ScriptEngine {
         if (variableNameStart != -1) {
             String type = name.substring(0, variableNameStart);
 
-            return switch (type) {
-                case "f" -> ScriptFieldType.Float;
-                case "d" -> ScriptFieldType.Double;
-                case "b" -> ScriptFieldType.Bool;
-                case "c" -> ScriptFieldType.Char;
-                case "i16" -> ScriptFieldType.Short;
-                case "i32" -> ScriptFieldType.Int;
-                case "i64" -> ScriptFieldType.Long;
-                case "v2" -> ScriptFieldType.Vector2;
-                case "v3" -> ScriptFieldType.Vector3;
-                case "v4" -> ScriptFieldType.Vector4;
-                case "e" -> ScriptFieldType.Entity;
-                default -> {
-                    Log.error("Unknown type: " + type);
-                    yield null;
-                }
-            };
+            if (!scriptFieldTypeMap.containsKey(type)) {
+                Log.error("Unknown type: " + type);
+                return null;
+            }
+
+            return scriptFieldTypeMap.get(type);
         }
         throw new RuntimeException("No type found for variable: " + name);
     }

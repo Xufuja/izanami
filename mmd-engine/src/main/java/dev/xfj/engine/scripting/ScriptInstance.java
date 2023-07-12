@@ -3,8 +3,12 @@ package dev.xfj.engine.scripting;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.scene.Entity;
 import org.graalvm.polyglot.Value;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class ScriptInstance {
     private final ScriptClass scriptClass;
@@ -36,17 +40,36 @@ public class ScriptInstance {
     }
 
     public <T> T getFieldValue(Class<T> type, String name) {
-        boolean success = getFieldValueInternal("name");
+        boolean success = getFieldValueInternal(name);
 
         if (success) {
             if (type == Float.class) {
-                //So apparently you cannot directly cast double to float and everything with a decimal is always considered a double if it comes from JS
-                //The Double class has the .floatValue() method so casting from the primitive to that
-                //If I do not cast to T it complains about the class not being T
-                return type.cast(((Double) fieldValueBuffer.asDouble()).floatValue());
+                return type.cast(Float.parseFloat(fieldValueBuffer.toString()));
+            } else if (type == Double.class) {
+                return type.cast(fieldValueBuffer.asDouble());
+            } else if (type == Boolean.class) {
+                return type.cast(fieldValueBuffer.asBoolean());
+            } else if (type == Character.class) {
+                return type.cast(fieldValueBuffer.as(Character.class));
+            } else if (type == Short.class) {
+                return type.cast(fieldValueBuffer.asShort());
+            } else if (type == Integer.class) {
+                return type.cast(fieldValueBuffer.asInt());
+            } else if (type == Long.class) {
+                return type.cast(fieldValueBuffer.asLong());
+            } else if (type == Vector2f.class) {
+                return type.cast(fieldValueBuffer.as(Vector2f.class));
+            } else if (type == Vector3f.class) {
+                return type.cast(fieldValueBuffer.as(Vector3f.class));
+            } else if (type == Vector4f.class) {
+                return type.cast(fieldValueBuffer.as(Vector4f.class));
             }
         }
         return null;
+    }
+
+    public void setFieldValue(String name, Object value) {
+        setFieldValueInternal(name, value);
     }
 
     private boolean getFieldValueInternal(String name) {
@@ -55,6 +78,19 @@ public class ScriptInstance {
         for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
             if (entry.getKey().equals(name)) {
                 fieldValueBuffer = instance.getMember(name);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean setFieldValueInternal(String name, Object value) {
+        Map<String, ScriptField> fields = scriptClass.getFields();
+
+        for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+            if (entry.getKey().equals(name)) {
+                instance.putMember(name, value);
                 return true;
             }
         }
