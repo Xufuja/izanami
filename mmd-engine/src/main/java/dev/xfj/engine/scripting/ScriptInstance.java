@@ -7,8 +7,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Objects;
 
 public class ScriptInstance {
     private final ScriptClass scriptClass;
@@ -51,6 +52,8 @@ public class ScriptInstance {
                 return type.cast(fieldValueBuffer.asBoolean());
             } else if (type == Character.class) {
                 return type.cast(fieldValueBuffer.as(Character.class));
+            } else if (type == Byte.class) {
+                return type.cast(fieldValueBuffer.asByte());
             } else if (type == Short.class) {
                 return type.cast(fieldValueBuffer.asShort());
             } else if (type == Integer.class) {
@@ -64,8 +67,22 @@ public class ScriptInstance {
             } else if (type == Vector4f.class) {
                 return type.cast(fieldValueBuffer.as(Vector4f.class));
             }
+
         }
-        return null;
+
+        try {
+            if (Number.class.isAssignableFrom(type)) {
+                Method method = type.getDeclaredMethod("valueOf", String.class);
+                method.setAccessible(true);
+                return type.cast(method.invoke(null, "0"));
+            } else {
+                Constructor<T> constructor = type.getConstructor(type);
+                constructor.setAccessible(true);
+                return constructor.newInstance(0);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public void setFieldValue(String name, Object value) {

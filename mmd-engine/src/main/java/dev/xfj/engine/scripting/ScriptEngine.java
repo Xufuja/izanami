@@ -37,6 +37,7 @@ public class ScriptEngine {
             Map.entry("d", ScriptFieldType.Double),
             Map.entry("b", ScriptFieldType.Bool),
             Map.entry("c", ScriptFieldType.Char),
+            Map.entry("i18", ScriptFieldType.Byte),
             Map.entry("i16", ScriptFieldType.Short),
             Map.entry("i32", ScriptFieldType.Int),
             Map.entry("i64", ScriptFieldType.Long),
@@ -69,6 +70,24 @@ public class ScriptEngine {
             return scriptFieldTypeMap.get(type);
         }
         throw new RuntimeException("No type found for variable: " + name);
+    }
+
+    public static String scriptFieldTypeToString(ScriptFieldType type) {
+        return switch (type) {
+            case Float -> "Float";
+            case Double -> "Double";
+            case Bool -> "Bool";
+            case Char -> "Char";
+            case Byte -> "Byte";
+            case Short -> "Short";
+            case Int -> "Int";
+            case Long -> "Long";
+            case Vector2 -> "Vector2";
+            case Vector3 -> "Vector3";
+            case Vector4 -> "Vector4";
+            case Entity -> "Entity";
+            case None -> "Invalid";
+        };
     }
 
     private static String loadJavaScriptAssembly(String filePath, boolean core) {
@@ -224,21 +243,26 @@ public class ScriptEngine {
     public static void loadAssemblyClasses() {
         Value exports = data.rootDomain.eval(data.appAssembly);
 
-        for (var clazz : exports.getMemberKeys()) {
-            Value current = exports.getMember(clazz);
-            boolean isEntity = isSubClassOf(current, clazz, "Entity");
+        for (var className : exports.getMemberKeys()) {
+            Value current = exports.getMember(className);
+            boolean isEntity = isSubClassOf(current, className, "Entity");
 
             if (!isEntity) {
                 continue;
             }
 
-            ScriptClass scriptClass = new ScriptClass(clazz);
-            data.entityClasses.put(clazz, scriptClass);
+            ScriptClass scriptClass = new ScriptClass(className);
+            data.entityClasses.put(className, scriptClass);
 
             List<String> fields = getPublicClassFields(current);
+
+            Log.warn(String.format("%1$s has %2$s fields:", className, fields.size()));
+
             fields.forEach(field -> {
                 String name = field.substring(getFirstUpperCaseIndex(field));
-                scriptClass.getFields().put(field, new ScriptField(toScriptFieldType(field), name));
+                ScriptFieldType fieldType = toScriptFieldType(field);
+                Log.warn(String.format("  %1$s (%2$s)", field, scriptFieldTypeToString(fieldType)));
+                scriptClass.getFields().put(field, new ScriptField(fieldType, name));
             });
         }
     }
