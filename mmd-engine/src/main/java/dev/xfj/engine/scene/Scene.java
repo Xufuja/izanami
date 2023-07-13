@@ -26,6 +26,7 @@ public class Scene {
     private final Map<UUID, dev.dominion.ecs.api.Entity> entityMap;
     private int viewportWidth;
     private int viewportHeight;
+    private boolean isRunning;
     private World physicsWorld;
 
     public static BodyDef.BodyType rigidbody2DTypeToBox2DBody(Rigidbody2DComponent.BodyType bodyType) {
@@ -48,6 +49,7 @@ public class Scene {
         this.entityMap = new HashMap<>();
         this.viewportWidth = 0;
         this.viewportHeight = 0;
+        this.isRunning = false;
     }
 
     public static void copyComponent(Class<?> componentType, Dominion src, Map<UUID, dev.dominion.ecs.api.Entity> entityMap) {
@@ -129,6 +131,8 @@ public class Scene {
     }
 
     public void onRuntimeStart() {
+        isRunning = true;
+
         onPhysics2DStart();
 
         ScriptEngine.onRunTimeStart(this);
@@ -141,7 +145,10 @@ public class Scene {
     }
 
     public void onRuntimeStop() {
+        isRunning = false;
+
         onPhysics2DStop();
+
         ScriptEngine.onRuntimeStop();
     }
 
@@ -421,5 +428,9 @@ public class Scene {
             }
             default -> Log.error("Invalid component type");
         }
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 }

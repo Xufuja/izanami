@@ -204,8 +204,18 @@ public class ScriptEngine {
         ScriptComponent sc = entity.getComponent(ScriptComponent.class);
 
         if (entityClassExist(sc.className)) {
+            UUID entityId = entity.getUUID();
             ScriptInstance instance = new ScriptInstance(data.entityClasses.get(sc.className), entity);
-            data.entityInstances.put(entity.getUUID(), instance);
+            data.entityInstances.put(entityId, instance);
+
+            if (data.entityScriptFields.containsKey(entityId)) {
+                Map<String, ScriptFieldInstance> fieldMap = data.entityScriptFields.get(entityId);
+
+                for (Map.Entry<String, ScriptFieldInstance> entry : fieldMap.entrySet()) {
+                    instance.setFieldValueInternal(entry.getKey(), entry.getValue().buffer);
+                }
+            }
+
             instance.invokeOnCreate();
         }
     }
@@ -231,6 +241,13 @@ public class ScriptEngine {
         return scriptInstance;
     }
 
+    public static ScriptClass getEntityClass(String name) {
+        if(!data.entityClasses.containsKey(name)) {
+            return null;
+        }
+        return data.entityClasses.get(name);
+    }
+
     public static void onRuntimeStop() {
         data.sceneContext = null;
         data.entityInstances.clear();
@@ -238,6 +255,16 @@ public class ScriptEngine {
 
     public static Map<String, ScriptClass> getEntityClasses() {
         return data.entityClasses;
+    }
+
+    public static Map<String, ScriptFieldInstance> getScriptFieldMap(Entity entity) {
+        //Some sort of exception
+        if (entity == null) {
+            throw new RuntimeException();
+        }
+
+        UUID entityId = entity.getUUID();
+        return data.entityScriptFields.get(entityId);
     }
 
     public static void loadAssemblyClasses() {
@@ -262,7 +289,7 @@ public class ScriptEngine {
                 String name = field.substring(getFirstUpperCaseIndex(field));
                 ScriptFieldType fieldType = toScriptFieldType(field);
                 Log.warn(String.format("  %1$s (%2$s)", field, scriptFieldTypeToString(fieldType)));
-                scriptClass.getFields().put(field, new ScriptField(fieldType, name));
+                scriptClass.fields.put(field, new ScriptField(fieldType, name));
             });
         }
     }
@@ -279,12 +306,14 @@ public class ScriptEngine {
             } else {
                 return signature.equals(String.format("%1$s extends %2$s", name, parent));
             }
+
         } else {
             return false;
         }
     }
 
     //Even worse than the isSubClassOf() method, surely there must be a better way than this
+    //But getMemberKeys() does not get fields for some reason
     private static List<String> getPublicClassFields(Value clazz) {
         String input = String.valueOf(clazz);
         List<String> result = new ArrayList<>();

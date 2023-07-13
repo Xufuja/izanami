@@ -35,7 +35,7 @@ class Player extends Entity {
     #transform;
     #rigidbody;
 
-    fSpeed = 0.01;
+    fSpeed = 0.0;
     fTime = 0.0;
 
     constructor(id) {
@@ -67,7 +67,7 @@ class Player extends Entity {
             velocity.x = 1.0;
         }
 
-        velocity = velocity.multiply(speed);
+        velocity = velocity.multiply(speed * ts);
 
         //Center version does not exist so testing like this
         if (this.#rigidbody) {

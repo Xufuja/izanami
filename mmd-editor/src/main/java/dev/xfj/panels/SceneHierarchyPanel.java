@@ -8,9 +8,7 @@ import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.*;
-import dev.xfj.engine.scripting.ScriptEngine;
-import dev.xfj.engine.scripting.ScriptField;
-import dev.xfj.engine.scripting.ScriptInstance;
+import dev.xfj.engine.scripting.*;
 import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -352,24 +350,60 @@ public class SceneHierarchyPanel {
                 component.className = buffer.toString();
             }
 
-            ScriptInstance scriptInstance = ScriptEngine.getEntityScriptInstance(entity.getUUID());
+            boolean sceneRunning = context.isRunning();
 
-            if (scriptInstance != null) {
-                Map<String, ScriptField> fields = scriptInstance.getScriptClass().getFields();
+            if (sceneRunning) {
+                ScriptInstance scriptInstance = ScriptEngine.getEntityScriptInstance(entity.getUUID());
 
-                for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
-                    if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
-                        float[] newData = new float[] {scriptInstance.getFieldValue(Float.class, entry.getKey())};
+                if (scriptInstance != null) {
+                    Map<String, ScriptField> fields = scriptInstance.getScriptClass().getFields();
 
-                        if (ImGui.dragFloat(entry.getValue().name, newData)) {
-                            scriptInstance.setFieldValue(entry.getKey(), newData[0]);
+                    for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+                        if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
+                            float[] newData = new float[]{scriptInstance.getFieldValue(Float.class, entry.getKey())};
+
+                            if (ImGui.dragFloat(entry.getValue().name, newData)) {
+                                scriptInstance.setFieldValue(entry.getKey(), newData[0]);
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (scriptClassExists) {
+                    ScriptClass entityClass = ScriptEngine.getEntityClass(component.className);
+                    Map<String, ScriptField> fields = entityClass.getFields();
+
+                    Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(entity);
+
+                    for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+                        if (entityFields.containsKey(entry.getKey())) {
+                            ScriptFieldInstance scriptField = entityFields.get(entry.getKey());
+
+                            if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
+                                float[] newData = new float[] {scriptField.getValue(Float.class)};
+
+                                if (ImGui.dragFloat(entry.getValue().name, newData)) {
+                                    scriptField.setValue(newData[0]);
+                                }
+                            }
+                        } else {
+                            if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
+                                float[] newData = new float[] {0.0f};
+
+                                if (ImGui.dragFloat(entry.getValue().name, newData)) {
+                                    ScriptFieldInstance fieldInstance = entityFields.get(entry.getKey());
+                                    fieldInstance.field = entry.getValue();
+                                    fieldInstance.setValue(newData);
+                                }
+                            }
                         }
                     }
                 }
             }
 
             if (!scriptClassExists) {
-                ImGui.popStyleColor();;
+                ImGui.popStyleColor();
+                ;
             }
         });
 

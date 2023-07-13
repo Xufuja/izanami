@@ -102,7 +102,7 @@ public class ScriptInstance {
         return false;
     }
 
-    private boolean setFieldValueInternal(String name, Object value) {
+    protected boolean setFieldValueInternal(String name, Object value) {
         Map<String, ScriptField> fields = scriptClass.getFields();
 
         for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {

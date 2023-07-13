@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ScriptClass {
     private final String className;
-    private final Map<String, ScriptField> fields;
+    protected final Map<String, ScriptField> fields;
 
     public ScriptClass(String className) {
         this.className = className;

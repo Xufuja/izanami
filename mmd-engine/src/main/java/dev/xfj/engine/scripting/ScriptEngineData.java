@@ -15,5 +15,7 @@ public class ScriptEngineData {
     public ScriptClass entityClass = null;
     public Map<String, ScriptClass> entityClasses = new HashMap<>();
     public Map<UUID, ScriptInstance> entityInstances =  new HashMap<>();
+    public Map<UUID, Map<String, ScriptFieldInstance>> entityScriptFields = new HashMap<>();
     public Scene sceneContext = null;
+
 }
