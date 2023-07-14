@@ -373,6 +373,11 @@ public class SceneHierarchyPanel {
                     ScriptClass entityClass = ScriptEngine.getEntityClass(component.className);
                     Map<String, ScriptField> fields = entityClass.getFields();
 
+                    //Somehow, the C++ version has entries in the map without ever adding anything
+                    if (ScriptEngine.getScriptFieldMap(entity) == null) {
+                        ScriptEngine.addToScriptFieldMap(entity);
+                    }
+
                     Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(entity);
 
                     for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
@@ -380,7 +385,7 @@ public class SceneHierarchyPanel {
                             ScriptFieldInstance scriptField = entityFields.get(entry.getKey());
 
                             if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
-                                float[] newData = new float[] {scriptField.getValue(Float.class)};
+                                float[] newData = new float[]{scriptField.getValue(Float.class)};
 
                                 if (ImGui.dragFloat(entry.getValue().name, newData)) {
                                     scriptField.setValue(newData[0]);
@@ -388,12 +393,20 @@ public class SceneHierarchyPanel {
                             }
                         } else {
                             if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
-                                float[] newData = new float[] {0.0f};
+                                float[] newData = new float[]{0.0f};
 
                                 if (ImGui.dragFloat(entry.getValue().name, newData)) {
-                                    ScriptFieldInstance fieldInstance = entityFields.get(entry.getKey());
-                                    fieldInstance.field = entry.getValue();
-                                    fieldInstance.setValue(newData);
+                                    //Just like earlier, this somehow just "exists" in the C++ version
+                                    if (entityFields.get(entry.getKey()) == null) {
+                                        ScriptFieldInstance fieldInstance = new ScriptFieldInstance();
+                                        fieldInstance.field = entry.getValue();
+                                        fieldInstance.setValue(newData[0]);
+                                        entityFields.put(entry.getKey(), fieldInstance);
+                                    } else {
+                                        ScriptFieldInstance fieldInstance = entityFields.get(entry.getKey());
+                                        fieldInstance.field = entry.getValue();
+                                        fieldInstance.setValue(newData[0]);
+                                    }
                                 }
                             }
                         }
@@ -403,7 +416,6 @@ public class SceneHierarchyPanel {
 
             if (!scriptClassExists) {
                 ImGui.popStyleColor();
-                ;
             }
         });
 

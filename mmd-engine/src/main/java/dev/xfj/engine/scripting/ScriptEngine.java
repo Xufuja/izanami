@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -265,6 +266,11 @@ public class ScriptEngine {
 
         UUID entityId = entity.getUUID();
         return data.entityScriptFields.get(entityId);
+    }
+
+    public static void addToScriptFieldMap(Entity entity) {
+        UUID entityId = entity.getUUID();
+        data.entityScriptFields.put(entityId, new HashMap<>());
     }
 
     public static void loadAssemblyClasses() {
