@@ -5,6 +5,9 @@ import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.renderer.Texture2D;
 import dev.xfj.engine.scene.components.*;
+import dev.xfj.engine.scripting.ScriptClass;
+import dev.xfj.engine.scripting.ScriptEngine;
+import dev.xfj.engine.scripting.ScriptField;
 import dev.xfj.protobuf.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -17,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Map;
 
 public class SceneSerializer {
     private final dev.xfj.engine.scene.Scene scene;
@@ -59,8 +63,16 @@ public class SceneSerializer {
         }
 
         if (entity.hasComponent(ScriptComponent.class)) {
+            ScriptComponent scriptComponent = entity.getComponent(ScriptComponent.class);
+            ScriptClass entityClass = ScriptEngine.getEntityClass(scriptComponent.className);
+            Map<String, ScriptField> fields = entityClass.getFields();
+
+            if (fields.size() > 0) {
+
+            }
+            
             entityBuilder.setScript(ScriptFile.newBuilder()
-                            .setClassName(entity.getComponent(ScriptComponent.class).className))
+                            .setClassName(scriptComponent.className))
                     .build();
         }
 
@@ -206,6 +218,7 @@ public class SceneSerializer {
                 if (entity.hasScript()) {
                     ScriptFile scriptFile = entity.getScript();
                     deserializedEntity.addComponent(new ScriptComponent(scriptFile.getClassName()));
+
                 }
 
                 if (entity.hasSpriteRenderer()) {
