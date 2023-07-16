@@ -1,6 +1,7 @@
 package dev.xfj.engine.scene;
 
 
+import com.google.protobuf.util.JsonFormat;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.renderer.Texture2D;
@@ -23,6 +24,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class SceneSerializer {
+    private static final boolean SCENES_AS_JSON = true;
+
     private final dev.xfj.engine.scene.Scene scene;
 
     public SceneSerializer(dev.xfj.engine.scene.Scene scene) {
@@ -70,7 +73,7 @@ public class SceneSerializer {
             if (fields.size() > 0) {
 
             }
-            
+
             entityBuilder.setScript(ScriptFile.newBuilder()
                             .setClassName(scriptComponent.className))
                     .build();
@@ -139,12 +142,21 @@ public class SceneSerializer {
             sceneBuilder.addEntities(entityBuilder.build());
         }
 
-        byte[] bytes = sceneBuilder.build().toByteArray();
-        try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.CREATE)) {
-            outputStream.write(bytes);
-        } catch (IOException e) {
-            Log.error("Could not open file: " + filePath);
-            throw new RuntimeException(e);
+        if (SCENES_AS_JSON) {
+            try {
+                Files.writeString(filePath, JsonFormat.printer().print(sceneBuilder), StandardOpenOption.CREATE);
+            } catch (IOException e) {
+                Log.error("Could not open file: " + filePath);
+                throw new RuntimeException(e);
+            }
+        } else {
+            byte[] bytes = sceneBuilder.build().toByteArray();
+            try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.CREATE)) {
+                outputStream.write(bytes);
+            } catch (IOException e) {
+                Log.error("Could not open file: " + filePath);
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -164,12 +176,21 @@ public class SceneSerializer {
     public boolean deserialize(Path filePath) {
         SceneFile.Builder sceneBuilder = SceneFile.newBuilder();
 
-        try (InputStream inputStream = Files.newInputStream(filePath)) {
-            byte[] bytes = inputStream.readAllBytes();
-            sceneBuilder.mergeFrom(bytes);
-        } catch (IOException e) {
-            Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
-            throw new RuntimeException(e);
+        if (SCENES_AS_JSON) {
+            try {
+                JsonFormat.parser().merge(Files.readString(filePath), sceneBuilder);
+            }  catch (IOException e) {
+                Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
+                throw new RuntimeException(e);
+            }
+        } else {
+            try (InputStream inputStream = Files.newInputStream(filePath)) {
+                byte[] bytes = inputStream.readAllBytes();
+                sceneBuilder.mergeFrom(bytes);
+            } catch (IOException e) {
+                Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
+                throw new RuntimeException(e);
+            }
         }
 
         SceneFile sceneFile = sceneBuilder.build();
