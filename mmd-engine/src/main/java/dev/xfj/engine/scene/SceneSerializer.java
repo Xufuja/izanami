@@ -9,6 +9,7 @@ import dev.xfj.engine.scene.components.*;
 import dev.xfj.engine.scripting.ScriptClass;
 import dev.xfj.engine.scripting.ScriptEngine;
 import dev.xfj.engine.scripting.ScriptField;
+import dev.xfj.engine.scripting.ScriptFieldInstance;
 import dev.xfj.protobuf.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -20,8 +21,12 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
+import static dev.xfj.engine.scripting.ScriptEngine.scriptFieldTypeToString;
 
 public class SceneSerializer {
     private static final boolean SCENES_AS_JSON = true;
@@ -67,16 +72,49 @@ public class SceneSerializer {
 
         if (entity.hasComponent(ScriptComponent.class)) {
             ScriptComponent scriptComponent = entity.getComponent(ScriptComponent.class);
+
+            ScriptFile.Builder builder = ScriptFile.newBuilder()
+                    .setClassName(scriptComponent.className);
+
             ScriptClass entityClass = ScriptEngine.getEntityClass(scriptComponent.className);
             Map<String, ScriptField> fields = entityClass.getFields();
 
             if (fields.size() > 0) {
+                Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(entity);
+                for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
 
+                    if (!entityFields.containsKey(entry.getKey())) {
+                        continue;
+                    }
+
+                    ScriptFieldInstance scriptField = entityFields.get(entry.getKey());
+
+                    String data;
+
+                    switch (entry.getValue().type) {
+                        case Float -> data = String.valueOf(scriptField.getValue(Float.class));
+                        case Double -> data = String.valueOf(scriptField.getValue(Double.class));
+                        case Bool -> data = String.valueOf(scriptField.getValue(Boolean.class));
+                        case Char -> data = String.valueOf(scriptField.getValue(Character.class));
+                        case Byte -> data = String.valueOf(scriptField.getValue(Byte.class));
+                        case Short -> data = String.valueOf(scriptField.getValue(Short.class));
+                        case Int -> data = String.valueOf(scriptField.getValue(Integer.class));
+                        case Long -> data = String.valueOf(scriptField.getValue(Long.class));
+                        case Vector2 -> data = String.valueOf(scriptField.getValue(Vector2f.class));
+                        case Vector3 -> data = String.valueOf(scriptField.getValue(Vector3f.class));
+                        case Vector4 -> data = String.valueOf(scriptField.getValue(Vector4f.class));
+                        case Entity -> data = String.valueOf(scriptField.getValue(UUID.class));
+                        default -> throw new RuntimeException("Invalid script type!");
+                    }
+
+                    builder.addScriptFields(dev.xfj.protobuf.ScriptField.newBuilder()
+                            .setName(entry.getKey())
+                            .setType(scriptFieldTypeToString(entry.getValue().type))
+                            .setData(data));
+                }
             }
 
-            entityBuilder.setScript(ScriptFile.newBuilder()
-                            .setClassName(scriptComponent.className))
-                    .build();
+            builder.build();
         }
 
         if (entity.hasComponent(SpriteRendererComponent.class)) {
@@ -179,7 +217,7 @@ public class SceneSerializer {
         if (SCENES_AS_JSON) {
             try {
                 JsonFormat.parser().merge(Files.readString(filePath), sceneBuilder);
-            }  catch (IOException e) {
+            } catch (IOException e) {
                 Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
                 throw new RuntimeException(e);
             }
