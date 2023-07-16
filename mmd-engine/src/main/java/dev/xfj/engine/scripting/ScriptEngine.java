@@ -73,24 +73,6 @@ public class ScriptEngine {
         throw new RuntimeException("No type found for variable: " + name);
     }
 
-    public static String scriptFieldTypeToString(ScriptFieldType type) {
-        return switch (type) {
-            case Float -> "Float";
-            case Double -> "Double";
-            case Bool -> "Bool";
-            case Char -> "Char";
-            case Byte -> "Byte";
-            case Short -> "Short";
-            case Int -> "Int";
-            case Long -> "Long";
-            case Vector2 -> "Vector2";
-            case Vector3 -> "Vector3";
-            case Vector4 -> "Vector4";
-            case Entity -> "Entity";
-            case None -> "Invalid";
-        };
-    }
-
     private static String loadJavaScriptAssembly(String filePath, boolean core) {
         String result;
         Path path = null;
@@ -243,7 +225,7 @@ public class ScriptEngine {
     }
 
     public static ScriptClass getEntityClass(String name) {
-        if(!data.entityClasses.containsKey(name)) {
+        if (!data.entityClasses.containsKey(name)) {
             return null;
         }
         return data.entityClasses.get(name);
@@ -354,5 +336,41 @@ public class ScriptEngine {
         Value classConstructor = exports.getMember(javaScriptClass);
 
         return classConstructor.newInstance(params);
+    }
+
+    public static String scriptFieldTypeToString(ScriptFieldType type) {
+        return switch (type) {
+            case Float -> "Float";
+            case Double -> "Double";
+            case Bool -> "Bool";
+            case Char -> "Char";
+            case Byte -> "Byte";
+            case Short -> "Short";
+            case Int -> "Int";
+            case Long -> "Long";
+            case Vector2 -> "Vector2";
+            case Vector3 -> "Vector3";
+            case Vector4 -> "Vector4";
+            case Entity -> "Entity";
+            default -> "None";
+        };
+    }
+
+    public static ScriptFieldType scriptFieldTypeFromString(String fieldType) {
+        return switch (fieldType) {
+            case "Float" -> ScriptFieldType.Float;
+            case "Double" -> ScriptFieldType.Double;
+            case "Bool" -> ScriptFieldType.Bool;
+            case "Char" -> ScriptFieldType.Char;
+            case "Byte" -> ScriptFieldType.Byte;
+            case "Short" -> ScriptFieldType.Short;
+            case "Int" -> ScriptFieldType.Int;
+            case "Long" -> ScriptFieldType.Long;
+            case "Vector2" -> ScriptFieldType.Vector2;
+            case "Vector3" -> ScriptFieldType.Vector3;
+            case "Vector4" -> ScriptFieldType.Vector4;
+            case "Entity" -> ScriptFieldType.Entity;
+            default -> ScriptFieldType.None;
+        };
     }
 }
