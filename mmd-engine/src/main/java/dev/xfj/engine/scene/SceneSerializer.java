@@ -88,7 +88,6 @@ public class SceneSerializer {
                     }
 
                     ScriptFieldInstance scriptField = entityFields.get(entry.getKey());
-
                     String data;
 
                     switch (entry.getValue().type) {
@@ -110,11 +109,11 @@ public class SceneSerializer {
                     builder.addScriptFields(dev.xfj.protobuf.ScriptField.newBuilder()
                             .setName(entry.getKey())
                             .setType(scriptFieldTypeToString(entry.getValue().type))
-                            .setData(data));
+                            .setData(data)).build();
                 }
             }
 
-            builder.build();
+            entityBuilder.setScript(builder).build();
         }
 
         if (entity.hasComponent(SpriteRendererComponent.class)) {
@@ -182,14 +181,15 @@ public class SceneSerializer {
 
         if (SCENES_AS_JSON) {
             try {
-                Files.writeString(filePath, JsonFormat.printer().print(sceneBuilder), StandardOpenOption.CREATE);
+
+                Files.writeString(filePath, JsonFormat.printer().print(sceneBuilder), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             } catch (IOException e) {
                 Log.error("Could not open file: " + filePath);
                 throw new RuntimeException(e);
             }
         } else {
             byte[] bytes = sceneBuilder.build().toByteArray();
-            try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.CREATE)) {
+            try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 outputStream.write(bytes);
             } catch (IOException e) {
                 Log.error("Could not open file: " + filePath);

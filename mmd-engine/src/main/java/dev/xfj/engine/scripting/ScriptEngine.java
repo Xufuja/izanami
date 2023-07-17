@@ -255,6 +255,11 @@ public class ScriptEngine {
         data.entityScriptFields.put(entityId, new HashMap<>());
     }
 
+    public static void removeFromScriptFieldMap(Entity entity) {
+        UUID entityId = entity.getUUID();
+        data.entityScriptFields.remove(entityId);
+    }
+
     public static void loadAssemblyClasses() {
         Value exports = data.rootDomain.eval(data.appAssembly);
 

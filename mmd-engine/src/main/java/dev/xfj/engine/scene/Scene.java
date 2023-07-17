@@ -126,6 +126,10 @@ public class Scene {
     }
 
     public void destroyEntity(Entity entity) {
+        if (entity.hasComponent(ScriptComponent.class)) {
+            ScriptEngine.removeFromScriptFieldMap(entity);
+        }
+
         entityMap.remove(entity.getUUID());
         registry.deleteEntity(entity.getEntity());
     }
@@ -409,6 +413,8 @@ public class Scene {
             case CameraComponent cc ->
                     ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
             case ScriptComponent sc -> {
+                //Somehow, the C++ version has entries in the map without ever adding anything so doing it on creation
+                ScriptEngine.addToScriptFieldMap(entity);
             }
             case SpriteRendererComponent src -> {
             }

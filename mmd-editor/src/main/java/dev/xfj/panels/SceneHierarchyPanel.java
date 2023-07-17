@@ -373,14 +373,10 @@ public class SceneHierarchyPanel {
                     ScriptClass entityClass = ScriptEngine.getEntityClass(component.className);
                     Map<String, ScriptField> fields = entityClass.getFields();
 
-                    //Somehow, the C++ version has entries in the map without ever adding anything
-                    if (ScriptEngine.getScriptFieldMap(entity) == null) {
-                        ScriptEngine.addToScriptFieldMap(entity);
-                    }
-
                     Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(entity);
 
                     for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+                        //Check if set from editor
                         if (entityFields.containsKey(entry.getKey())) {
                             ScriptFieldInstance scriptField = entityFields.get(entry.getKey());
 
