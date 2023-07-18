@@ -21,11 +21,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static dev.xfj.engine.scripting.ScriptEngine.scriptFieldTypeFromString;
 import static dev.xfj.engine.scripting.ScriptEngine.scriptFieldTypeToString;
 
 public class SceneSerializer {
@@ -109,7 +107,7 @@ public class SceneSerializer {
                     builder.addScriptFields(dev.xfj.protobuf.ScriptField.newBuilder()
                             .setName(entry.getKey())
                             .setType(scriptFieldTypeToString(entry.getValue().type))
-                            .setData(data)).build();
+                            .setData(data));
                 }
             }
 
@@ -276,7 +274,50 @@ public class SceneSerializer {
 
                 if (entity.hasScript()) {
                     ScriptFile scriptFile = entity.getScript();
-                    deserializedEntity.addComponent(new ScriptComponent(scriptFile.getClassName()));
+                    deserializedEntity.addComponent(new ScriptComponent());
+
+                    ScriptComponent sc = deserializedEntity.getComponent(ScriptComponent.class);
+                    sc.className = scriptFile.getClassName();
+
+                    List<dev.xfj.protobuf.ScriptField> scriptFields = scriptFile.getScriptFieldsList();
+                    if (scriptFields.size() > 0) {
+                        ScriptClass entityClass = ScriptEngine.getEntityClass(sc.className);
+                        Map<String, ScriptField> fields = entityClass.getFields();
+                        Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(deserializedEntity);
+
+                        for (var scriptField : scriptFields) {
+                            String fieldName = scriptField.getName();
+                            String typeString = scriptField.getType();
+                            ScriptEngine.ScriptFieldType type = scriptFieldTypeFromString(typeString);
+
+                            //Again, the C++ version just has it without ever initializing ScriptFieldInstance...
+                            ScriptFieldInstance fieldInstance = new ScriptFieldInstance();
+                            entityFields.put(fieldName, fieldInstance);
+
+                            if (!fields.containsKey(fieldName)) {
+                                continue;
+                            }
+
+                            fieldInstance.field = fields.get(fieldName);
+
+                            switch (type) {
+                                case Float -> fieldInstance.setValue(Float.valueOf(scriptField.getData()));
+
+                                case Double -> fieldInstance.setValue(Double.valueOf(scriptField.getData()));
+                                case Bool ->    fieldInstance.setValue(Boolean.valueOf(scriptField.getData()));
+                                case Char ->    fieldInstance.setValue(scriptField.getData().charAt(0));
+                                case Byte ->    fieldInstance.setValue(Byte.valueOf(scriptField.getData()));
+                                case Short ->   fieldInstance.setValue(Short.valueOf(scriptField.getData()));
+                                case Int ->     fieldInstance.setValue(Integer.valueOf(scriptField.getData()));
+                                case Long ->    fieldInstance.setValue(Long.valueOf(scriptField.getData()));
+                                //case Vector2 -> fieldInstance.setValue(Vector2f.valueOf(scriptField.getData()));
+                                //case Vector3 -> fieldInstance.setValue(Vector3f.valueOf(scriptField.getData()));
+                                //case Vector4 -> fieldInstance.setValue(Vector4f.valueOf(scriptField.getData()));
+                                //case Entity ->  fieldInstance.setValue(Entity.valueOf(scriptField.getData()));
+                                default -> throw new RuntimeException("Invalid script type!");
+                            }
+                        }
+                    }
 
                 }
 
