@@ -295,6 +295,7 @@ public class SceneSerializer {
                             entityFields.put(fieldName, fieldInstance);
 
                             if (!fields.containsKey(fieldName)) {
+                                Log.warn(String.format("Field %1$s is not part of class %2$s", fieldName, sc.className));
                                 continue;
                             }
 
