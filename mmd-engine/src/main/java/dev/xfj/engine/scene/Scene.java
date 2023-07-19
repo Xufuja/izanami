@@ -126,10 +126,6 @@ public class Scene {
     }
 
     public void destroyEntity(Entity entity) {
-        if (entity.hasComponent(ScriptComponent.class)) {
-            ScriptEngine.removeFromScriptFieldMap(entity);
-        }
-
         entityMap.remove(entity.getUUID());
         registry.deleteEntity(entity.getEntity());
     }

@@ -228,9 +228,11 @@ public class SceneHierarchyPanel {
             }
 
             if (removeComponent) {
+                if (componentType == ScriptComponent.class) {
+                    ScriptEngine.removeFromScriptFieldMap(entity);
+                }
                 entity.removeComponent(componentType);
             }
-
         }
     }
 
