@@ -47,5 +47,7 @@ There are a few parts that I have not been able to implement for various reasons
 * Destructors
 * Reference counting
 * Instrumentation
+* Asserts
+  * All of these in the C++ code base have become `RuntimeException` in Java
 * Refactored Input since you cannot have abstract static methods in Java
 ---
