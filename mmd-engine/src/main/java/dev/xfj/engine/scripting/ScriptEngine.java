@@ -274,7 +274,8 @@ public class ScriptEngine {
             ScriptClass scriptClass = new ScriptClass(className);
             data.entityClasses.put(className, scriptClass);
 
-            List<String> fields = getPublicClassFields(current);
+            //Needed to get the public fields for both the super class and the subclass
+            List<String> fields = getPublicClassFields(current, getPublicClassFields(exports.getMember("Entity"), new ArrayList<>()));
 
             Log.warn(String.format("%1$s has %2$s fields:", className, fields.size()));
 
@@ -307,9 +308,8 @@ public class ScriptEngine {
 
     //Even worse than the isSubClassOf() method, surely there must be a better way than this
     //But getMemberKeys() does not get fields for some reason
-    private static List<String> getPublicClassFields(Value clazz) {
+    private static List<String> getPublicClassFields(Value clazz, List<String> result) {
         String input = String.valueOf(clazz);
-        List<String> result = new ArrayList<>();
 
         if (input.startsWith("class")) {
             String fieldBlock = input.substring(input.indexOf("{") + 1, input.indexOf("constructor") - 1);
