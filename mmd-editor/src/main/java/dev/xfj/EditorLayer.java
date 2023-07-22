@@ -126,8 +126,7 @@ public class EditorLayer extends Layer {
 
         if (commandLineArgs.count > 1) {
             String sceneFilePath = commandLineArgs.get(0);
-            SceneSerializer serializer = new SceneSerializer(activeScene);
-            serializer.deserialize(Path.of(sceneFilePath));
+            openScene(Path.of(sceneFilePath));
         }
 
         editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
@@ -301,7 +300,7 @@ public class EditorLayer extends Layer {
         viewportFocused = ImGui.isWindowFocused();
         viewportHovered = ImGui.isWindowHovered();
 
-        Application.getApplication().getImGuiLayer().blockEvents(!viewportFocused && !viewportHovered);
+        Application.getApplication().getImGuiLayer().blockEvents(!viewportHovered);
 
         ImVec2 viewportPanelSize = ImGui.getContentRegionAvail();
 

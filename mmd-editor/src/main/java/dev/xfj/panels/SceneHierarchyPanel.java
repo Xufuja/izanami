@@ -8,6 +8,7 @@ import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.*;
+import dev.xfj.engine.scripting.*;
 import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -21,6 +22,7 @@ import org.joml.Vector4f;
 import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class SceneHierarchyPanel {
@@ -103,7 +105,7 @@ public class SceneHierarchyPanel {
             ImGui.treePop();
         }
         if (entityDeleted) {
-            context.destroyEntity(entity.getEntity());
+            context.destroyEntity(entity);
             //I suppose in the C++ version the selectionContext is empty rather than null so there this is not needed
             if (selectionContext != null && selectionContext.equals(entity)) {
                 selectionContext = null;
@@ -226,9 +228,11 @@ public class SceneHierarchyPanel {
             }
 
             if (removeComponent) {
+                if (componentType == ScriptComponent.class) {
+                    ScriptEngine.removeFromScriptFieldMap(entity);
+                }
                 entity.removeComponent(componentType);
             }
-
         }
     }
 
@@ -250,6 +254,7 @@ public class SceneHierarchyPanel {
 
         if (ImGui.beginPopup("AddComponent")) {
             displayAddComponentEntry(CameraComponent.class, "Camera");
+            displayAddComponentEntry(ScriptComponent.class, "Script");
             displayAddComponentEntry(SpriteRendererComponent.class, "Sprite Renderer");
             displayAddComponentEntry(CircleRendererComponent.class, "Circle Renderer");
             displayAddComponentEntry(Rigidbody2DComponent.class, "Rigidbody 2D");
@@ -331,6 +336,84 @@ public class SceneHierarchyPanel {
                 if (ImGui.checkbox("Fixed Aspect Ratio", component.fixedAspectRatio)) {
                     component.fixedAspectRatio = !component.fixedAspectRatio;
                 }
+            }
+        });
+
+        drawComponent(ScriptComponent.class, "Script", entity, component -> {
+            boolean scriptClassExists = ScriptEngine.entityClassExist(component.className);
+
+            ImString buffer = new ImString(component.className, 64);
+
+            if (!scriptClassExists) {
+                ImGui.pushStyleColor(ImGuiCol.Text, 0.9f, 0.2f, 0.3f, 1.0f);
+            }
+
+            if (ImGui.inputText("Class", buffer)) {
+                component.className = buffer.toString();
+            }
+
+            boolean sceneRunning = context.isRunning();
+
+            if (sceneRunning) {
+                ScriptInstance scriptInstance = ScriptEngine.getEntityScriptInstance(entity.getUUID());
+
+                if (scriptInstance != null) {
+                    Map<String, ScriptField> fields = scriptInstance.getScriptClass().getFields();
+
+                    for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+                        if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
+                            float[] newData = new float[]{scriptInstance.getFieldValue(Float.class, entry.getKey())};
+
+                            if (ImGui.dragFloat(entry.getValue().name, newData)) {
+                                scriptInstance.setFieldValue(entry.getKey(), newData[0]);
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (scriptClassExists) {
+                    ScriptClass entityClass = ScriptEngine.getEntityClass(component.className);
+                    Map<String, ScriptField> fields = entityClass.getFields();
+
+                    Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(entity);
+
+                    for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+                        //Check if set from editor
+                        if (entityFields.containsKey(entry.getKey())) {
+                            ScriptFieldInstance scriptField = entityFields.get(entry.getKey());
+
+                            if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
+                                float[] newData = new float[]{scriptField.getValue(Float.class)};
+
+                                if (ImGui.dragFloat(entry.getValue().name, newData)) {
+                                    scriptField.setValue(newData[0]);
+                                }
+                            }
+                        } else {
+                            if (entry.getValue().type == ScriptEngine.ScriptFieldType.Float) {
+                                float[] newData = new float[]{0.0f};
+
+                                if (ImGui.dragFloat(entry.getValue().name, newData)) {
+                                    //Just like earlier, this somehow just "exists" in the C++ version
+                                    if (entityFields.get(entry.getKey()) == null) {
+                                        ScriptFieldInstance fieldInstance = new ScriptFieldInstance();
+                                        fieldInstance.field = entry.getValue();
+                                        fieldInstance.setValue(newData[0]);
+                                        entityFields.put(entry.getKey(), fieldInstance);
+                                    } else {
+                                        ScriptFieldInstance fieldInstance = entityFields.get(entry.getKey());
+                                        fieldInstance.field = entry.getValue();
+                                        fieldInstance.setValue(newData[0]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!scriptClassExists) {
+                ImGui.popStyleColor();
             }
         });
 

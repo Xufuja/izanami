@@ -1,10 +1,15 @@
 package dev.xfj.engine.scene;
 
 
+import com.google.protobuf.util.JsonFormat;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.renderer.Texture2D;
 import dev.xfj.engine.scene.components.*;
+import dev.xfj.engine.scripting.ScriptClass;
+import dev.xfj.engine.scripting.ScriptEngine;
+import dev.xfj.engine.scripting.ScriptField;
+import dev.xfj.engine.scripting.ScriptFieldInstance;
 import dev.xfj.protobuf.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -16,9 +21,14 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
+import java.util.*;
+
+import static dev.xfj.engine.scripting.ScriptEngine.scriptFieldTypeFromString;
+import static dev.xfj.engine.scripting.ScriptEngine.scriptFieldTypeToString;
 
 public class SceneSerializer {
+    private static final boolean SCENES_AS_JSON = true;
+
     private final dev.xfj.engine.scene.Scene scene;
 
     public SceneSerializer(dev.xfj.engine.scene.Scene scene) {
@@ -26,7 +36,7 @@ public class SceneSerializer {
     }
 
     public void serializeEntity(dev.xfj.protobuf.EntityFile.Builder entityBuilder, Entity entity) {
-        entityBuilder.setEntity(entity.getUUID());
+        entityBuilder.setEntity(entity.getUUID().getUUID());
 
         if (entity.hasComponent(TagComponent.class)) {
             entityBuilder.setTag(TagFile.newBuilder()
@@ -56,6 +66,52 @@ public class SceneSerializer {
                             .setPrimary(cameraComponent.primary)
                             .setFixedAspectRatio(cameraComponent.fixedAspectRatio))
                     .build();
+        }
+
+        if (entity.hasComponent(ScriptComponent.class)) {
+            ScriptComponent scriptComponent = entity.getComponent(ScriptComponent.class);
+
+            ScriptFile.Builder builder = ScriptFile.newBuilder()
+                    .setClassName(scriptComponent.className);
+
+            ScriptClass entityClass = ScriptEngine.getEntityClass(scriptComponent.className);
+            Map<String, ScriptField> fields = entityClass.getFields();
+
+            if (fields.size() > 0) {
+                Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(entity);
+                for (Map.Entry<String, ScriptField> entry : fields.entrySet()) {
+
+                    if (!entityFields.containsKey(entry.getKey())) {
+                        continue;
+                    }
+
+                    ScriptFieldInstance scriptField = entityFields.get(entry.getKey());
+                    String data;
+
+                    switch (entry.getValue().type) {
+                        case Float -> data = String.valueOf(scriptField.getValue(Float.class));
+                        case Double -> data = String.valueOf(scriptField.getValue(Double.class));
+                        case Bool -> data = String.valueOf(scriptField.getValue(Boolean.class));
+                        case Char -> data = String.valueOf(scriptField.getValue(Character.class));
+                        case Byte -> data = String.valueOf(scriptField.getValue(Byte.class));
+                        case Short -> data = String.valueOf(scriptField.getValue(Short.class));
+                        case Int -> data = String.valueOf(scriptField.getValue(Integer.class));
+                        case Long -> data = String.valueOf(scriptField.getValue(Long.class));
+                        case Vector2 -> data = String.valueOf(scriptField.getValue(Vector2f.class));
+                        case Vector3 -> data = String.valueOf(scriptField.getValue(Vector3f.class));
+                        case Vector4 -> data = String.valueOf(scriptField.getValue(Vector4f.class));
+                        case Entity -> data = String.valueOf(scriptField.getValue(UUID.class));
+                        default -> throw new RuntimeException("Invalid script type!");
+                    }
+
+                    builder.addScriptFields(dev.xfj.protobuf.ScriptField.newBuilder()
+                            .setName(entry.getKey())
+                            .setType(scriptFieldTypeToString(entry.getValue().type))
+                            .setData(data));
+                }
+            }
+
+            entityBuilder.setScript(builder).build();
         }
 
         if (entity.hasComponent(SpriteRendererComponent.class)) {
@@ -121,12 +177,22 @@ public class SceneSerializer {
             sceneBuilder.addEntities(entityBuilder.build());
         }
 
-        byte[] bytes = sceneBuilder.build().toByteArray();
-        try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.CREATE)) {
-            outputStream.write(bytes);
-        } catch (IOException e) {
-            Log.error("Could not open file: " + filePath);
-            throw new RuntimeException(e);
+        if (SCENES_AS_JSON) {
+            try {
+
+                Files.writeString(filePath, JsonFormat.printer().print(sceneBuilder), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            } catch (IOException e) {
+                Log.error("Could not open file: " + filePath);
+                throw new RuntimeException(e);
+            }
+        } else {
+            byte[] bytes = sceneBuilder.build().toByteArray();
+            try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+                outputStream.write(bytes);
+            } catch (IOException e) {
+                Log.error("Could not open file: " + filePath);
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -146,12 +212,21 @@ public class SceneSerializer {
     public boolean deserialize(Path filePath) {
         SceneFile.Builder sceneBuilder = SceneFile.newBuilder();
 
-        try (InputStream inputStream = Files.newInputStream(filePath)) {
-            byte[] bytes = inputStream.readAllBytes();
-            sceneBuilder.mergeFrom(bytes);
-        } catch (IOException e) {
-            Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
-            throw new RuntimeException(e);
+        if (SCENES_AS_JSON) {
+            try {
+                JsonFormat.parser().merge(Files.readString(filePath), sceneBuilder);
+            } catch (IOException e) {
+                Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
+                throw new RuntimeException(e);
+            }
+        } else {
+            try (InputStream inputStream = Files.newInputStream(filePath)) {
+                byte[] bytes = inputStream.readAllBytes();
+                sceneBuilder.mergeFrom(bytes);
+            } catch (IOException e) {
+                Log.error(String.format("Failed to load .scene file '%1$s'\n     {%2$s}", filePath, e.getMessage()));
+                throw new RuntimeException(e);
+            }
         }
 
         SceneFile sceneFile = sceneBuilder.build();
@@ -197,6 +272,56 @@ public class SceneSerializer {
                     cameraComponent.fixedAspectRatio = cameraFile.getFixedAspectRatio();
                 }
 
+                if (entity.hasScript()) {
+                    ScriptFile scriptFile = entity.getScript();
+                    deserializedEntity.addComponent(new ScriptComponent());
+
+                    ScriptComponent sc = deserializedEntity.getComponent(ScriptComponent.class);
+                    sc.className = scriptFile.getClassName();
+
+                    List<dev.xfj.protobuf.ScriptField> scriptFields = scriptFile.getScriptFieldsList();
+                    if (scriptFields.size() > 0) {
+                        ScriptClass entityClass = ScriptEngine.getEntityClass(sc.className);
+                        Map<String, ScriptField> fields = entityClass.getFields();
+                        Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(deserializedEntity);
+
+                        for (var scriptField : scriptFields) {
+                            String fieldName = scriptField.getName();
+                            String typeString = scriptField.getType();
+                            ScriptEngine.ScriptFieldType type = scriptFieldTypeFromString(typeString);
+
+                            //Again, the C++ version just has it without ever initializing ScriptFieldInstance...
+                            ScriptFieldInstance fieldInstance = new ScriptFieldInstance();
+                            entityFields.put(fieldName, fieldInstance);
+
+                            if (!fields.containsKey(fieldName)) {
+                                Log.warn(String.format("Field %1$s is not part of class %2$s", fieldName, sc.className));
+                                continue;
+                            }
+
+                            fieldInstance.field = fields.get(fieldName);
+
+                            switch (type) {
+                                case Float -> fieldInstance.setValue(Float.valueOf(scriptField.getData()));
+
+                                case Double -> fieldInstance.setValue(Double.valueOf(scriptField.getData()));
+                                case Bool ->    fieldInstance.setValue(Boolean.valueOf(scriptField.getData()));
+                                case Char ->    fieldInstance.setValue(scriptField.getData().charAt(0));
+                                case Byte ->    fieldInstance.setValue(Byte.valueOf(scriptField.getData()));
+                                case Short ->   fieldInstance.setValue(Short.valueOf(scriptField.getData()));
+                                case Int ->     fieldInstance.setValue(Integer.valueOf(scriptField.getData()));
+                                case Long ->    fieldInstance.setValue(Long.valueOf(scriptField.getData()));
+                                //case Vector2 -> fieldInstance.setValue(Vector2f.valueOf(scriptField.getData()));
+                                //case Vector3 -> fieldInstance.setValue(Vector3f.valueOf(scriptField.getData()));
+                                //case Vector4 -> fieldInstance.setValue(Vector4f.valueOf(scriptField.getData()));
+                                //case Entity ->  fieldInstance.setValue(Entity.valueOf(scriptField.getData()));
+                                default -> throw new RuntimeException("Invalid script type!");
+                            }
+                        }
+                    }
+
+                }
+
                 if (entity.hasSpriteRenderer()) {
                     SpriteRendererFile spriteRendererFile = entity.getSpriteRenderer();
                     String texturePath = spriteRendererFile.getTexturePath();
@@ -204,7 +329,6 @@ public class SceneSerializer {
                         deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), Texture2D.create(Path.of(spriteRendererFile.getTexturePath())), spriteRendererFile.getTilingFactor()));
                     } else {
                         deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), spriteRendererFile.getTilingFactor()));
-
                     }
                 }
 

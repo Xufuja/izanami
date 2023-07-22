@@ -4,7 +4,7 @@ public class TagComponent implements Component {
     public String tag;
 
     public TagComponent() {
-        this.tag = "";
+        this("");
     }
 
     public TagComponent(String tag) {

@@ -9,6 +9,7 @@ import dev.xfj.engine.events.application.WindowCloseEvent;
 import dev.xfj.engine.events.application.WindowResizeEvent;
 import dev.xfj.engine.imgui.ImGuiLayer;
 import dev.xfj.engine.renderer.Renderer;
+import dev.xfj.engine.scripting.ScriptEngine;
 import dev.xfj.engine.utils.PlatformUtils;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
 
@@ -55,6 +56,7 @@ public class Application {
         this.window.setEventCallback(this::onEvent);
 
         Renderer.init();
+        ScriptEngine.init();
 
         this.imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
@@ -79,6 +81,7 @@ public class Application {
             window.onUpdate();
         }
         window.shutdown();
+        ScriptEngine.shutdown();
         Renderer.shutdown();
     }
 

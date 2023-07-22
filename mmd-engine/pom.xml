@@ -15,6 +15,7 @@
         <lwjgl.version>3.3.1</lwjgl.version>
         <joml.version>1.10.5</joml.version>
         <imgui-java.version>1.86.9</imgui-java.version>
+        <graalvm.version>22.2.0</graalvm.version>
     </properties>
 
     <profiles>
@@ -167,11 +168,16 @@
         <dependency>
             <groupId>dev.dominion.ecs</groupId>
             <artifactId>dominion-ecs-engine</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
+            <version>0.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
+            <version>3.22.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
             <version>3.22.3</version>
         </dependency>
         <dependency>
@@ -183,6 +189,17 @@
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-box2d</artifactId>
             <version>1.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>${graalvm.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>${graalvm.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
