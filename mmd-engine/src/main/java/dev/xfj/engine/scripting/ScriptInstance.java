@@ -115,6 +115,10 @@ public class ScriptInstance {
         return false;
     }
 
+    protected Value getManagedObject() {
+        return instance;
+    }
+
     public ScriptClass getScriptClass() {
         return scriptClass;
     }

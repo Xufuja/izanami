@@ -141,12 +141,13 @@ public class EditorLayer extends Layer {
 
     @Override
     public void onUpdate(TimeStep ts) {
+        activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
+        
         FramebufferSpecification spec = framebuffer.getSpecification();
         if (viewportSize.x > 0.0f && viewportSize.y > 0.0f && (spec.width != viewportSize.x || spec.height != viewportSize.y)) {
             framebuffer.resize((int) viewportSize.x, (int) viewportSize.y);
             cameraController.onResize(viewportSize.x, viewportSize.y);
             editorCamera.setViewportSize(viewportSize.x, viewportSize.y);
-            activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
         }
 
         editorCamera.onUpdate(ts);
@@ -553,7 +554,6 @@ public class EditorLayer extends Layer {
 
     private void newScene() {
         activeScene = new Scene();
-        activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
         sceneHierarchyPanel.setContext(activeScene);
     }
 
@@ -577,7 +577,6 @@ public class EditorLayer extends Layer {
 
         if (serializer.deserialize(filePath)) {
             editorScene = newScene;
-            editorScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
             sceneHierarchyPanel.setContext(editorScene);
 
             activeScene = editorScene;

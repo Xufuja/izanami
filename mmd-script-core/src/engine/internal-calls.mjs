@@ -10,6 +10,9 @@ export default class InternalCalls {
     static entityFindEntityByName(name) {
         return Java.type('dev.xfj.engine.scripting.ScriptGlue').entityFindEntityByName(name);
     }
+    static getScriptInstance(entityId) {
+        return Java.type('dev.xfj.engine.scripting.ScriptGlue').getScriptInstance(entityId);
+    }
     static getComponentType(componentType) {
         return Java.type(`dev.xfj.engine.scene.components.${componentType.name}`);
     }

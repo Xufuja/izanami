@@ -76,6 +76,22 @@ class Player extends Entity {
             velocity.x = 1.0;
         }
 
+        let cameraEntity = super.findEntityByName("Camera");
+
+        if (cameraEntity) {
+            let camera = cameraEntity.asEntity();
+
+            if (Input.isKeyDown(KeyCode.Q)) {
+                camera.fDistanceFromPlayer += speed * 2.0 * ts;
+                console.log(`Player.Q() - ${camera.fDistanceFromPlayer}`);
+            }
+            else if (Input.isKeyDown(KeyCode.E)) {
+                camera.fDistanceFromPlayer -= speed * 2.0 * ts;
+                console.log(`Player.E() - ${camera.fDistanceFromPlayer}`);
+            }
+    
+        }
+
         velocity = velocity.multiply(speed * ts);
 
         //Center version does not exist so testing like this

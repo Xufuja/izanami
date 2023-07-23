@@ -50,6 +50,9 @@ class InternalCalls {
     static entityFindEntityByName(name) {
         return Java.type('dev.xfj.engine.scripting.ScriptGlue').entityFindEntityByName(name);
     }
+    static getScriptInstance(entityId) {
+        return Java.type('dev.xfj.engine.scripting.ScriptGlue').getScriptInstance(entityId);
+    }
     static getComponentType(componentType) {
         return Java.type(`dev.xfj.engine.scene.components.${componentType.name}`);
     }
@@ -309,6 +312,10 @@ class Entity {
         }
 
         return new Entity(entityId);
+    }
+    //No need to cast in JavaScript so instead of specifying the Entity subclass to cast to, just calling it asEntity()
+    asEntity() {
+        return InternalCalls.getScriptInstance(this.#id);
     }
     get translation() {
         this.#translation = InternalCalls.transformComponentGetTranslation(this.#id);

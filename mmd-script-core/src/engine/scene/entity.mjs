@@ -26,6 +26,10 @@ export default class Entity {
 
         return new Entity(entityId);
     }
+    //No need to cast in JavaScript so instead of specifying the Entity subclass to cast to, just calling it asEntity()
+    asEntity() {
+        return InternalCalls.getScriptInstance(this.#id);
+    }
     get translation() {
         this.#translation = InternalCalls.transformComponentGetTranslation(this.#id);
         return this.#translation;

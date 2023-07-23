@@ -1,3 +1,5 @@
+import Camera from "./camera.mjs";
+
 export default class Player extends Entity {
     #transform;
     #rigidbody;
@@ -34,6 +36,20 @@ export default class Player extends Entity {
             velocity.x = 1.0;
         }
 
+        let cameraEntity = super.findEntityByName("Camera");
+
+        if (cameraEntity) {
+            let camera = cameraEntity.asEntity();
+
+            if (Input.isKeyDown(KeyCode.Q)) {
+                camera.fDistanceFromPlayer += speed * 2.0 * ts;
+            }
+            else if (Input.isKeyDown(KeyCode.E)) {
+                camera.fDistanceFromPlayer -= speed * 2.0 * ts;
+            }
+
+        }
+
         velocity = velocity.multiply(speed * ts);
 
         //Center version does not exist so testing like this
@@ -47,5 +63,5 @@ export default class Player extends Entity {
         //this.#transform.translation = translation;
 
     }
-  
+
 }

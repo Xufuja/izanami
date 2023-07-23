@@ -336,7 +336,9 @@ public class ScriptEngine {
         return result;
     }
 
-
+    public static Value getManagedInstance(UUID uuid) {
+        return data.entityInstances.get(uuid).getManagedObject();
+    }
 
     public static Value instantiateClass(String javaScriptClass, Object... params) {
         Value exports = ScriptEngine.data.rootDomain.eval(ScriptEngine.data.appAssembly);

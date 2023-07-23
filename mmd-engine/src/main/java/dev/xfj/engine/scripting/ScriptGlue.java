@@ -9,6 +9,7 @@ import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.components.Rigidbody2DComponent;
 import dev.xfj.engine.scene.components.TransformComponent;
+import org.graalvm.polyglot.Value;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -46,6 +47,10 @@ public class ScriptGlue {
         }
 
         return entity.getUUID().getUUID();
+    }
+
+    public static Value getScriptInstance(long entityId) {
+        return ScriptEngine.getManagedInstance(new UUID(entityId));
     }
 
     public static Vector3f transformComponentGetTranslation(long entityId) {
