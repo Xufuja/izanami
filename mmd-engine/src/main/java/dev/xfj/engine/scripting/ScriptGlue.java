@@ -36,6 +36,18 @@ public class ScriptGlue {
         return entity.hasComponent(componentType);
     }
 
+    public static long entityFindEntityByName(String name) {
+        Scene scene = ScriptEngine.getSceneContext();
+        //Some sort of exception if scene is null
+        Entity entity = scene.findEntityByName(name);
+
+        if (entity == null) {
+            return 0;
+        }
+
+        return entity.getUUID().getUUID();
+    }
+
     public static Vector3f transformComponentGetTranslation(long entityId) {
         Scene scene = ScriptEngine.getSceneContext();
         Entity entity = scene.getEntityByUUID(new UUID(entityId));

@@ -260,6 +260,10 @@ public class Scene {
     }
 
     public void onViewportResize(int width, int height) {
+        if (viewportWidth == width && viewportHeight == height) {
+            return;
+        }
+
         viewportWidth = width;
         viewportHeight = height;
 
@@ -319,6 +323,21 @@ public class Scene {
             }
         }
         return -1;
+    }
+
+    public Entity findEntityByName(String name) {
+        Entity result = null;
+
+        for (var it = registry.findEntitiesWith(TagComponent.class).iterator(); it.hasNext(); ) {
+            var entity = it.next();
+            TagComponent tc = entity.comp();
+            if (tc.tag.equals(name)) {
+                result = new Entity(entity.entity(), this);
+                break;
+            }
+        }
+
+        return result;
     }
 
     public Entity getEntityByUUID(UUID uuid) {

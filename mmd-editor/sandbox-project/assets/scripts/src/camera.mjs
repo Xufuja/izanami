@@ -1,9 +1,14 @@
 export default class Camera extends Entity {
+    #player;
+
+    eOtherEntity = null;
+    fDistanceFromPlayer  = 5.0;
+
     constructor(id) {
         super(id);
     }
     onCreate() {
-        console.log(`Camera.onCreate() - ${this.id}`);
+        this.#player = super.findEntityByName("Player");
     }
     onUpdate(ts) {
         let speed = 1.0;

@@ -47,6 +47,9 @@ class InternalCalls {
     static entityHasComponent(entityId, componentType) {
         return Java.type('dev.xfj.engine.scripting.ScriptGlue').entityHasComponent(entityId, InternalCalls.getComponentType(componentType));
     }
+    static entityFindEntityByName(name) {
+        return Java.type('dev.xfj.engine.scripting.ScriptGlue').entityFindEntityByName(name);
+    }
     static getComponentType(componentType) {
         return Java.type(`dev.xfj.engine.scene.components.${componentType.name}`);
     }
@@ -286,9 +289,6 @@ class Entity {
     #translation;
 
     constructor(id = 0) {
-        if (this.constructor == Entity) {
-            throw new Error("Entity cannot be directly instantiated");
-        }
         this.#id = id;
     }
     hasComponent(componentType) {
@@ -300,6 +300,15 @@ class Entity {
         } else {
             return null;
         }
+    }
+    findEntityByName(name) {
+        let entityId = InternalCalls.entityFindEntityByName(name);
+        
+        if (entityId == 0) {
+            return null;
+        }
+
+        return new Entity(entityId);
     }
     get translation() {
         this.#translation = InternalCalls.transformComponentGetTranslation(this.#id);

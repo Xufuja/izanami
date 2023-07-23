@@ -7,6 +7,9 @@ export default class InternalCalls {
     static entityHasComponent(entityId, componentType) {
         return Java.type('dev.xfj.engine.scripting.ScriptGlue').entityHasComponent(entityId, InternalCalls.getComponentType(componentType));
     }
+    static entityFindEntityByName(name) {
+        return Java.type('dev.xfj.engine.scripting.ScriptGlue').entityFindEntityByName(name);
+    }
     static getComponentType(componentType) {
         return Java.type(`dev.xfj.engine.scene.components.${componentType.name}`);
     }
