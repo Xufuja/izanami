@@ -11,6 +11,10 @@ class Camera extends Entity {
         this.#player = super.findEntityByName("Player");
     }
     onUpdate(ts) {
+        if (this.#player) {
+            super.translation = new Vector3(this.#player.translation.x, this.#player.translation.y, this.fDistanceFromPlayer);
+        }
+
         let speed = 1.0;
         let velocity = Vector3.zero();
 
