@@ -73,17 +73,17 @@ public class ScriptEngine {
         throw new RuntimeException("No type found for variable: " + name);
     }
 
-    private static String loadJavaScriptAssembly(String filePath, boolean core) {
+    private static String loadJavaScriptAssembly(Path filePath, boolean core) {
         String result;
         Path path = null;
         if (core) {
             try {
-                path = Path.of(classLoader.getResource(filePath).toURI());
+                path = Path.of(classLoader.getResource(filePath.toString()).toURI());
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
         } else {
-            path = Paths.get(filePath);
+            path = filePath;
         }
         try (InputStream inputStream = Files.newInputStream(path)) {
             byte[] bytes = inputStream.readAllBytes();
@@ -98,8 +98,8 @@ public class ScriptEngine {
     public static void init() {
         data = new ScriptEngineData();
         initPolyglot();
-        loadAssembly("scripts/mmd-script-core.mjs");
-        loadAppAssembly("sandbox-project/assets/scripts/dist/sandbox.mjs");
+        loadAssembly(Path.of("scripts/mmd-script-core.mjs"));
+        loadAppAssembly(Path.of("sandbox-project/assets/scripts/dist/sandbox.mjs"));
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");
@@ -155,8 +155,9 @@ public class ScriptEngine {
         data.rootDomain = null;
     }
 
-    public static void loadAssembly(String filePath) {
+    public static void loadAssembly(Path filePath) {
         try {
+            data.coreAssemblyFilepath = filePath;
             data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "mmd-script-core.mjs")
                     .mimeType("application/javascript+module")
                     .build();
@@ -165,14 +166,24 @@ public class ScriptEngine {
         }
     }
 
-    public static void loadAppAssembly(String filePath) {
+    public static void loadAppAssembly(Path filePath) {
         try {
+            data.appAssemblyFilepath = filePath;
             data.appAssembly = Source.newBuilder("js", data.coreAssembly.getCharacters() + loadJavaScriptAssembly(filePath, false), "sandbox.mjs")
                     .mimeType("application/javascript+module")
                     .build();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public static void reloadAssembly() {
+        initPolyglot();
+        loadAssembly(data.coreAssemblyFilepath);
+        loadAppAssembly(data.appAssemblyFilepath);
+        loadAssemblyClasses();
+
+        data.entityClass = new ScriptClass("Entity");
     }
 
     public static void onRunTimeStart(Scene scene) {

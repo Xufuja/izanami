@@ -69,17 +69,22 @@ public class Application {
             lastFrameTime = time;
 
             if (!minimized) {
+
                 for (Layer layer : layerStack.getLayers()) {
                     layer.onUpdate(timeStep);
                 }
+
                 imGuiLayer.begin();
+
                 for (Layer layer : layerStack.getLayers()) {
                     layer.onImGuiRender();
                 }
+                
                 imGuiLayer.end();
             }
             window.onUpdate();
         }
+
         window.shutdown();
         ScriptEngine.shutdown();
         Renderer.shutdown();

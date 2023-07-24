@@ -19,6 +19,7 @@ import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneSerializer;
 import dev.xfj.engine.scene.components.*;
+import dev.xfj.engine.scripting.ScriptEngine;
 import dev.xfj.panels.ContentBrowserPanel;
 import dev.xfj.panels.SceneHierarchyPanel;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
@@ -142,7 +143,7 @@ public class EditorLayer extends Layer {
     @Override
     public void onUpdate(TimeStep ts) {
         activeScene.onViewportResize((int) viewportSize.x, (int) viewportSize.y);
-        
+
         FramebufferSpecification spec = framebuffer.getSpecification();
         if (viewportSize.x > 0.0f && viewportSize.y > 0.0f && (spec.width != viewportSize.x || spec.height != viewportSize.y)) {
             framebuffer.resize((int) viewportSize.x, (int) viewportSize.y);
@@ -259,6 +260,14 @@ public class EditorLayer extends Layer {
 
                 ImGui.endMenu();
             }
+
+            if (ImGui.beginMenu("Script")) {
+                if (ImGui.menuItem("Reload Assembly", "Ctrl+R")) {
+                    ScriptEngine.reloadAssembly();
+                }
+                ImGui.endMenu();
+            }
+
             ImGui.endMenuBar();
         }
 
@@ -484,8 +493,12 @@ public class EditorLayer extends Layer {
                 }
             }
             case KeyCodes.R -> {
-                if (!ImGuizmo.isUsing()) {
-                    gizmoType = Operation.SCALE;
+                if (control) {
+                    ScriptEngine.reloadAssembly();
+                } else {
+                    if (!ImGuizmo.isUsing()) {
+                        gizmoType = Operation.SCALE;
+                    }
                 }
             }
         }

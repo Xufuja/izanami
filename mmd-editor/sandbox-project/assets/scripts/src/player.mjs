@@ -1,5 +1,3 @@
-import Camera from "./camera.mjs";
-
 export default class Player extends Entity {
     #transform;
     #rigidbody;

@@ -83,13 +83,11 @@ class Player extends Entity {
 
             if (Input.isKeyDown(KeyCode.Q)) {
                 camera.fDistanceFromPlayer += speed * 2.0 * ts;
-                console.log(`Player.Q() - ${camera.fDistanceFromPlayer}`);
             }
             else if (Input.isKeyDown(KeyCode.E)) {
                 camera.fDistanceFromPlayer -= speed * 2.0 * ts;
-                console.log(`Player.E() - ${camera.fDistanceFromPlayer}`);
             }
-    
+
         }
 
         velocity = velocity.multiply(speed * ts);
@@ -105,7 +103,7 @@ class Player extends Entity {
         //this.#transform.translation = translation;
 
     }
-  
+
 }
 
 export { Camera, Player };
