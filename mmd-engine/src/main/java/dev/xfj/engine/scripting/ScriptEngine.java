@@ -3,19 +3,24 @@ package dev.xfj.engine.scripting;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.core.UUID;
+import dev.xfj.engine.core.application.Application;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.components.ScriptComponent;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -172,6 +177,25 @@ public class ScriptEngine {
             data.appAssembly = Source.newBuilder("js", data.coreAssembly.getCharacters() + loadJavaScriptAssembly(filePath, false), "sandbox.mjs")
                     .mimeType("application/javascript+module")
                     .build();
+
+            data.appAssemblyFileWatcher = new FileAlterationMonitor(5000);
+            FileAlterationObserver observer = new FileAlterationObserver(filePath.getParent().toFile(), FileFilterUtils.suffixFileFilter(".mjs"));
+
+            observer.addListener(new FileAlterationListenerAdaptor() {
+                @Override
+                public void onFileChange(File file) {
+                    System.out.println(file.toString());
+                    if (!data.assemblyReloadPending) {
+                        data.assemblyReloadPending = true;
+                        Application.getApplication().submitToMainThread(ScriptEngine::reloadAssembly);
+                    }
+                }
+            });
+
+            data.appAssemblyFileWatcher.addObserver(observer);
+            data.appAssemblyFileWatcher.start();
+            data.assemblyReloadPending = false;
+
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

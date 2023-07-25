@@ -14,6 +14,7 @@ import dev.xfj.engine.utils.PlatformUtils;
 import dev.xfj.platform.windows.WindowsPlatformUtils;
 
 import java.util.ListIterator;
+import java.util.concurrent.*;
 
 public class Application {
     private static Application instance;
@@ -24,6 +25,8 @@ public class Application {
     private boolean minimized;
     private final LayerStack layerStack;
     private float lastFrameTime;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final BlockingQueue<Runnable> mainThreadQueue = new LinkedBlockingQueue<>();
 
     static {
         //Not entirely sure how the Singleton is initialized in the C++ version so just sticking it here for now
@@ -68,6 +71,8 @@ public class Application {
             TimeStep timeStep = new TimeStep(time - lastFrameTime);
             lastFrameTime = time;
 
+            executeMainThreadQueue();
+
             if (!minimized) {
 
                 for (Layer layer : layerStack.getLayers()) {
@@ -79,7 +84,7 @@ public class Application {
                 for (Layer layer : layerStack.getLayers()) {
                     layer.onImGuiRender();
                 }
-                
+
                 imGuiLayer.end();
             }
             window.onUpdate();
@@ -87,6 +92,7 @@ public class Application {
 
         window.shutdown();
         ScriptEngine.shutdown();
+        executor.shutdown();
         Renderer.shutdown();
     }
 
@@ -96,6 +102,10 @@ public class Application {
 
     public ImGuiLayer getImGuiLayer() {
         return imGuiLayer;
+    }
+
+    public void submitToMainThread(Runnable runnable) {
+        mainThreadQueue.add(runnable);
     }
 
     public void onEvent(Event event) {
@@ -147,5 +157,12 @@ public class Application {
 
     public ApplicationSpecification getSpecification() {
         return specification;
+    }
+
+    private void executeMainThreadQueue() {
+        Runnable runnable = mainThreadQueue.poll();
+        if (runnable != null) {
+            executor.execute(runnable);
+        }
     }
 }

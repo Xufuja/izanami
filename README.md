@@ -29,6 +29,7 @@ To update `sandbox.mjs`, run `npm run build` from the mmd-editor\sandbox-project
 * JOML replaces GLM
 * Dominion replaces EnTT
 * protobuf replaces yaml-cpp
+* The monitor package of Apache Commons IO replaces Filewatch
 
 ## Scripting
 
