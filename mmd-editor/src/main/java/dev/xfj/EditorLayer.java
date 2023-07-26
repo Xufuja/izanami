@@ -55,6 +55,8 @@ public class EditorLayer extends Layer {
     private EditorCamera editorCamera;
     private Texture2D checkerBoardTexture;
     private Texture2D iconPlay;
+    private Texture2D iconPause;
+    private Texture2D iconStep;
     private Texture2D iconStop;
     private Texture2D iconSimulate;
     private boolean viewportFocused;
@@ -104,6 +106,8 @@ public class EditorLayer extends Layer {
         ClassLoader classLoader = EditorLayer.class.getClassLoader();
         try {
             iconPlay = Texture2D.create(Paths.get(classLoader.getResource("icons/PlayButton.png").toURI()));
+            iconPause = Texture2D.create(Paths.get(classLoader.getResource("icons/PauseButton.png").toURI()));
+            iconStep = Texture2D.create(Paths.get(classLoader.getResource("icons/StepButton.png").toURI()));
             iconStop = Texture2D.create(Paths.get(classLoader.getResource("icons/StopButton.png").toURI()));
             iconSimulate = Texture2D.create(Paths.get(classLoader.getResource("icons/SimulateButton.png").toURI()));
         } catch (Exception e) {
@@ -400,25 +404,56 @@ public class EditorLayer extends Layer {
         }
 
         float size = ImGui.getWindowHeight() - 4.0f;
-        Texture2D editSimulateIcon = (sceneState == SceneState.Edit || sceneState == SceneState.Simulate) ? iconPlay : iconStop;
         ImGui.setCursorPosX((ImGui.getWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 
-        if (ImGui.imageButton(editSimulateIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
-            if (sceneState == SceneState.Edit || sceneState == SceneState.Simulate) {
-                onScenePlay();
-            } else if (sceneState == SceneState.Play) {
-                onSceneStop();
+        boolean hasPlayButton = sceneState == SceneState.Edit || sceneState == SceneState.Play;
+        boolean hasSimulateButton = sceneState == SceneState.Edit || sceneState == SceneState.Simulate;
+        boolean hasPauseButton = sceneState != SceneState.Edit;
+
+        if (hasPlayButton) {
+            Texture2D editSimulateIcon = (sceneState == SceneState.Edit || sceneState == SceneState.Simulate) ? iconPlay : iconStop;
+
+            if (ImGui.imageButton(editSimulateIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
+                if (sceneState == SceneState.Edit || sceneState == SceneState.Simulate) {
+                    onScenePlay();
+                } else if (sceneState == SceneState.Play) {
+                    onSceneStop();
+                }
+            }
+
+        }
+
+        if (hasSimulateButton) {
+            if (hasPlayButton) {
+                ImGui.sameLine();
+
+                Texture2D editPlayIcon = (sceneState == SceneState.Edit || sceneState == SceneState.Play) ? iconSimulate : iconStop;
+                if (ImGui.imageButton(editPlayIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
+                    if (sceneState == SceneState.Edit || sceneState == SceneState.Play) {
+                        onSimulatePlay();
+                    } else if (sceneState == SceneState.Simulate) {
+                        onSceneStop();
+                    }
+                }
             }
         }
 
-        ImGui.sameLine();
+        if (hasPauseButton) {
+            boolean isPaused = activeScene.isPaused();
+            ImGui.sameLine();
 
-        Texture2D editPlayIcon = (sceneState == SceneState.Edit || sceneState == SceneState.Play) ? iconSimulate : iconStop;
-        if (ImGui.imageButton(editPlayIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
-            if (sceneState == SceneState.Edit || sceneState == SceneState.Play) {
-                onSimulatePlay();
-            } else if (sceneState == SceneState.Simulate) {
-                onSceneStop();
+            Texture2D pauseIcon = iconPause;
+            if (ImGui.imageButton(pauseIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
+                activeScene.setPaused(!isPaused);
+            }
+
+            if (isPaused) {
+                ImGui.sameLine();
+
+                Texture2D stepIcon = iconStep;
+                if (ImGui.imageButton(stepIcon.getRendererId(), size, size, 0, 0, 1, 1, 0, 0.0f, 0.0f, 0.0f, 0.0f, tintColor.x, tintColor.y, tintColor.z, tintColor.w) && toolbarEnabled) {
+                    activeScene.step();
+                }
             }
         }
 
@@ -656,11 +691,21 @@ public class EditorLayer extends Layer {
         sceneHierarchyPanel.setContext(activeScene);
     }
 
+    private void onScenePause() {
+        if (sceneState == SceneState.Edit) {
+            return;
+        }
+
+        activeScene.setPaused(true);
+    }
+
     private void onDuplicateEntity() {
         if (sceneState != SceneState.Edit) {
             return;
         }
+
         Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
+
         if (selectedEntity != null) {
             editorScene.duplicateEntity(selectedEntity);
         }

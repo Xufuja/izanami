@@ -184,7 +184,6 @@ public class ScriptEngine {
             observer.addListener(new FileAlterationListenerAdaptor() {
                 @Override
                 public void onFileChange(File file) {
-                    System.out.println(file.toString());
                     if (!data.assemblyReloadPending) {
                         data.assemblyReloadPending = true;
                         Application.getApplication().submitToMainThread(ScriptEngine::reloadAssembly);

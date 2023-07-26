@@ -27,6 +27,8 @@ public class Scene {
     private int viewportWidth;
     private int viewportHeight;
     private boolean isRunning;
+    private boolean isPaused;
+    private int stepFrames;
     private World physicsWorld;
 
     public static BodyDef.BodyType rigidbody2DTypeToBox2DBody(Rigidbody2DComponent.BodyType bodyType) {
@@ -34,7 +36,7 @@ public class Scene {
             case Static -> BodyDef.BodyType.StaticBody;
             case Dynamic -> BodyDef.BodyType.DynamicBody;
             case Kinematic -> BodyDef.BodyType.KinematicBody;
-            case default -> {
+            default -> {
                 //Some sort of exception
                 Log.error("Unknown body type");
                 yield BodyDef.BodyType.StaticBody;
@@ -50,6 +52,7 @@ public class Scene {
         this.viewportWidth = 0;
         this.viewportHeight = 0;
         this.isRunning = false;
+        this.stepFrames = 0;
     }
 
     public static void copyComponent(Class<?> componentType, Dominion src, Map<UUID, dev.dominion.ecs.api.Entity> entityMap) {
@@ -162,40 +165,42 @@ public class Scene {
 
     @SuppressWarnings("unchecked")
     public void onUpdateRuntime(TimeStep ts) {
-        registry.findEntitiesWith(ScriptComponent.class)
-                .stream().forEach(component -> {
-                    Entity entity = new Entity(component.entity(), this);
-                    ScriptEngine.onUpdateEntity(entity, ts);
-                });
+        if(!isPaused || stepFrames-- > 0) {
+            registry.findEntitiesWith(ScriptComponent.class)
+                    .stream().forEach(component -> {
+                        Entity entity = new Entity(component.entity(), this);
+                        ScriptEngine.onUpdateEntity(entity, ts);
+                    });
 
-        registry.findEntitiesWith(NativeScriptComponent.class)
-                .stream().forEach(entity -> {
-                    NativeScriptComponent<ScriptableEntity> nsc = entity.comp();
-                    if (nsc.instance == null) {
-                        nsc.instance = nsc.instantiateScript.get();
-                        nsc.instance.entity = new Entity(entity.entity(), this);
-                        nsc.instance.onCreate();
-                    }
-                    nsc.instance.onUpdate(ts);
-                });
+            registry.findEntitiesWith(NativeScriptComponent.class)
+                    .stream().forEach(entity -> {
+                        NativeScriptComponent<ScriptableEntity> nsc = entity.comp();
+                        if (nsc.instance == null) {
+                            nsc.instance = nsc.instantiateScript.get();
+                            nsc.instance.entity = new Entity(entity.entity(), this);
+                            nsc.instance.onCreate();
+                        }
+                        nsc.instance.onUpdate(ts);
+                    });
 
-        int velocityIterations = 6;
-        int positionIterations = 2;
+            int velocityIterations = 6;
+            int positionIterations = 2;
 
-        physicsWorld.step(ts.getTime(), velocityIterations, positionIterations);
+            physicsWorld.step(ts.getTime(), velocityIterations, positionIterations);
 
-        registry.findEntitiesWith(Rigidbody2DComponent.class)
-                .stream().forEach(component -> {
-                    Entity entity = new Entity(component.entity(), this);
-                    TransformComponent transform = entity.getComponent(TransformComponent.class);
-                    Rigidbody2DComponent rb2dc = entity.getComponent(Rigidbody2DComponent.class);
+            registry.findEntitiesWith(Rigidbody2DComponent.class)
+                    .stream().forEach(component -> {
+                        Entity entity = new Entity(component.entity(), this);
+                        TransformComponent transform = entity.getComponent(TransformComponent.class);
+                        Rigidbody2DComponent rb2dc = entity.getComponent(Rigidbody2DComponent.class);
 
-                    Body body = rb2dc.runtimeBody;
-                    Vector2 position = body.getPosition();
-                    transform.translation.x = position.x;
-                    transform.translation.y = position.y;
-                    transform.rotation.z = body.getAngle();
-                });
+                        Body body = rb2dc.runtimeBody;
+                        Vector2 position = body.getPosition();
+                        transform.translation.x = position.x;
+                        transform.translation.y = position.y;
+                        transform.rotation.z = body.getAngle();
+                    });
+        }
 
         Camera mainCamera = null;
         Matrix4f cameraTransform = null;
@@ -453,5 +458,17 @@ public class Scene {
 
     public boolean isRunning() {
         return isRunning;
+    }
+    public boolean isPaused() {
+        return isPaused;
+    }
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+    public void step() {
+        step(1);
+    }
+    public void step(int frames) {
+        stepFrames = frames;
     }
 }
