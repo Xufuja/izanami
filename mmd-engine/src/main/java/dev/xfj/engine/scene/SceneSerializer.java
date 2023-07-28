@@ -280,46 +280,49 @@ public class SceneSerializer {
                     sc.className = scriptFile.getClassName();
 
                     List<dev.xfj.protobuf.ScriptField> scriptFields = scriptFile.getScriptFieldsList();
-                    if (scriptFields.size() > 0) {
+
+                    if (!scriptFields.isEmpty()) {
                         ScriptClass entityClass = ScriptEngine.getEntityClass(sc.className);
-                        Map<String, ScriptField> fields = entityClass.getFields();
-                        Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(deserializedEntity);
+                        
+                        if (entityClass != null) {
+                            Map<String, ScriptField> fields = entityClass.getFields();
+                            Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(deserializedEntity);
 
-                        for (var scriptField : scriptFields) {
-                            String fieldName = scriptField.getName();
-                            String typeString = scriptField.getType();
-                            ScriptEngine.ScriptFieldType type = scriptFieldTypeFromString(typeString);
+                            for (var scriptField : scriptFields) {
+                                String fieldName = scriptField.getName();
+                                String typeString = scriptField.getType();
+                                ScriptEngine.ScriptFieldType type = scriptFieldTypeFromString(typeString);
 
-                            //Again, the C++ version just has it without ever initializing ScriptFieldInstance...
-                            ScriptFieldInstance fieldInstance = new ScriptFieldInstance();
-                            entityFields.put(fieldName, fieldInstance);
+                                //Again, the C++ version just has it without ever initializing ScriptFieldInstance...
+                                ScriptFieldInstance fieldInstance = new ScriptFieldInstance();
+                                entityFields.put(fieldName, fieldInstance);
 
-                            if (!fields.containsKey(fieldName)) {
-                                Log.warn(String.format("Field %1$s is not part of class %2$s", fieldName, sc.className));
-                                continue;
-                            }
+                                if (!fields.containsKey(fieldName)) {
+                                    Log.warn(String.format("Field %1$s is not part of class %2$s", fieldName, sc.className));
+                                    continue;
+                                }
 
-                            fieldInstance.field = fields.get(fieldName);
+                                fieldInstance.field = fields.get(fieldName);
 
-                            switch (type) {
-                                case Float -> fieldInstance.setValue(Float.valueOf(scriptField.getData()));
+                                switch (type) {
+                                    case Float -> fieldInstance.setValue(Float.valueOf(scriptField.getData()));
 
-                                case Double -> fieldInstance.setValue(Double.valueOf(scriptField.getData()));
-                                case Bool ->    fieldInstance.setValue(Boolean.valueOf(scriptField.getData()));
-                                case Char ->    fieldInstance.setValue(scriptField.getData().charAt(0));
-                                case Byte ->    fieldInstance.setValue(Byte.valueOf(scriptField.getData()));
-                                case Short ->   fieldInstance.setValue(Short.valueOf(scriptField.getData()));
-                                case Int ->     fieldInstance.setValue(Integer.valueOf(scriptField.getData()));
-                                case Long ->    fieldInstance.setValue(Long.valueOf(scriptField.getData()));
-                                //case Vector2 -> fieldInstance.setValue(Vector2f.valueOf(scriptField.getData()));
-                                //case Vector3 -> fieldInstance.setValue(Vector3f.valueOf(scriptField.getData()));
-                                //case Vector4 -> fieldInstance.setValue(Vector4f.valueOf(scriptField.getData()));
-                                //case Entity ->  fieldInstance.setValue(Entity.valueOf(scriptField.getData()));
-                                default -> throw new RuntimeException("Invalid script type!");
+                                    case Double -> fieldInstance.setValue(Double.valueOf(scriptField.getData()));
+                                    case Bool -> fieldInstance.setValue(Boolean.valueOf(scriptField.getData()));
+                                    case Char -> fieldInstance.setValue(scriptField.getData().charAt(0));
+                                    case Byte -> fieldInstance.setValue(Byte.valueOf(scriptField.getData()));
+                                    case Short -> fieldInstance.setValue(Short.valueOf(scriptField.getData()));
+                                    case Int -> fieldInstance.setValue(Integer.valueOf(scriptField.getData()));
+                                    case Long -> fieldInstance.setValue(Long.valueOf(scriptField.getData()));
+                                    //case Vector2 -> fieldInstance.setValue(Vector2f.valueOf(scriptField.getData()));
+                                    //case Vector3 -> fieldInstance.setValue(Vector3f.valueOf(scriptField.getData()));
+                                    //case Vector4 -> fieldInstance.setValue(Vector4f.valueOf(scriptField.getData()));
+                                    //case Entity ->  fieldInstance.setValue(Entity.valueOf(scriptField.getData()));
+                                    default -> throw new RuntimeException("Invalid script type!");
+                                }
                             }
                         }
                     }
-
                 }
 
                 if (entity.hasSpriteRenderer()) {

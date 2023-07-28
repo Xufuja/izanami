@@ -100,6 +100,21 @@ public class ScriptEngine {
         return result;
     }
 
+    private static FileAlterationObserver onAppAssemblyFileSystemEvent(Path filePath) {
+        FileAlterationObserver observer = new FileAlterationObserver(filePath.getParent().toFile(), FileFilterUtils.suffixFileFilter(".mjs"));
+
+        observer.addListener(new FileAlterationListenerAdaptor() {
+            @Override
+            public void onFileChange(File file) {
+                if (!data.assemblyReloadPending) {
+                    data.assemblyReloadPending = true;
+                    Application.getApplication().submitToMainThread(ScriptEngine::reloadAssembly);
+                }
+            }
+        });
+        return observer;
+    }
+
     public static void init() {
         data = new ScriptEngineData();
         initPolyglot();
@@ -108,30 +123,6 @@ public class ScriptEngine {
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");
-        /*data.entityClass = getEntityClasses().get("Player");
-
-        Value instance = data.entityClass.instantiate();
-
-        String printMessageFunc = data.entityClass.getMethod("printMessage", 0);
-        data.entityClass.invokeMethod(instance, printMessageFunc);
-
-        String printIntFunc = data.entityClass.getMethod("printInt", 1);
-
-        int value = 5;
-
-        data.entityClass.invokeMethod(instance, printIntFunc, value);
-
-        String printIntsFunc = data.entityClass.getMethod("printInts", 2);
-
-        int value2 = 508;
-
-        data.entityClass.invokeMethod(instance, printIntsFunc, value, value2);
-
-        String printCustomMessageFunc = data.entityClass.getMethod("printCustomMessage", 1);
-
-        String string = "Hello World from Java!";
-
-        data.entityClass.invokeMethod(instance, printCustomMessageFunc, string);*/
     }
 
     public static void shutdown() {
@@ -160,18 +151,19 @@ public class ScriptEngine {
         data.rootDomain = null;
     }
 
-    public static void loadAssembly(Path filePath) {
+    public static boolean loadAssembly(Path filePath) {
         try {
             data.coreAssemblyFilepath = filePath;
             data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "mmd-script-core.mjs")
                     .mimeType("application/javascript+module")
                     .build();
+            return true;
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return false;
         }
     }
 
-    public static void loadAppAssembly(Path filePath) {
+    public static boolean loadAppAssembly(Path filePath) {
         try {
             data.appAssemblyFilepath = filePath;
             data.appAssembly = Source.newBuilder("js", data.coreAssembly.getCharacters() + loadJavaScriptAssembly(filePath, false), "sandbox.mjs")
@@ -179,31 +171,30 @@ public class ScriptEngine {
                     .build();
 
             data.appAssemblyFileWatcher = new FileAlterationMonitor(5000);
-            FileAlterationObserver observer = new FileAlterationObserver(filePath.getParent().toFile(), FileFilterUtils.suffixFileFilter(".mjs"));
-
-            observer.addListener(new FileAlterationListenerAdaptor() {
-                @Override
-                public void onFileChange(File file) {
-                    if (!data.assemblyReloadPending) {
-                        data.assemblyReloadPending = true;
-                        Application.getApplication().submitToMainThread(ScriptEngine::reloadAssembly);
-                    }
-                }
-            });
+            FileAlterationObserver observer = onAppAssemblyFileSystemEvent(filePath);
 
             data.appAssemblyFileWatcher.addObserver(observer);
             data.appAssemblyFileWatcher.start();
             data.assemblyReloadPending = false;
+            return true;
 
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return false;
         }
     }
 
     public static void reloadAssembly() {
         initPolyglot();
-        loadAssembly(data.coreAssemblyFilepath);
-        loadAppAssembly(data.appAssemblyFilepath);
+        boolean status = loadAssembly(data.coreAssemblyFilepath);
+        if (!status) {
+            Log.error("[ScriptEngine] Could not load ScriptCore assembly.");
+            return;
+        }
+        status = loadAppAssembly(data.appAssemblyFilepath);
+        if (!status) {
+            Log.error("[ScriptEngine] Could not load app assembly.");
+            return;
+        }
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");
