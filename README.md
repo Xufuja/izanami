@@ -52,4 +52,5 @@ There are a few parts that I have not been able to implement for various reasons
   * All of these in the C++ code base have become `RuntimeException` in Java
 * Refactored Input since you cannot have abstract static methods in Java
 * JavaScript debugging, the C++ version has tooling for C# debugging but there does not appear to be anything available for JavaScript
+* ScopedBuffer since it is binary file reading related and using `InputStream` for that
 ---
