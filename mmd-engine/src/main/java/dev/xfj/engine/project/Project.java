@@ -8,18 +8,37 @@ public class Project {
     private static Project activProject;
 
     public static Path getProjectDirectory() {
-        //Some sort of exception if activProject is null
+        //Some sort of exception if activeProject is null
         return activProject.projectDirectory;
     }
 
     public static Path getAssetDirectory() {
         //Some sort of exception if activProject is null
-        return getProjectDirectory(); //Fix path with  / s_ActiveProject->m_Config.AssetDirectory;
+        return getProjectDirectory().resolve(activProject.config.assetDirectory);
     }
 
     public static Path getAssetFileSystemPath(Path path) {
         //Some sort of exception if activProject is null
-        return getAssetDirectory(); //Fix path with / path;
+        return getAssetDirectory().resolve(path);
     }
 
+    public ProjectConfig getConfig() {
+        return config;
+    }
+
+    public static Project getActive() {
+        return activProject;
+    }
+
+    public static Project newProject() {
+        return activProject;
+    }
+
+    public static Project loadProject() {
+        return activProject;
+    }
+
+    public static boolean saveActive() {
+        return false;
+    }
 }
