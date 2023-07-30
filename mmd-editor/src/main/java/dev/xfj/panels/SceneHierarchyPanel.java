@@ -428,7 +428,7 @@ public class SceneHierarchyPanel {
             if (ImGui.beginDragDropTarget()) {
                 ImGuiPayload<?> payload = ImGui.acceptDragDropPayload("CONTENT_BROWSER_ITEM");
                 if (payload != null) {
-                    Path texturePath = ContentBrowserPanel.assetPath.resolve(String.valueOf(payload.getData()));
+                    Path texturePath = Path.of(String.valueOf(payload.getData()));
                     Texture2D texture = Texture2D.create(texturePath);
 
                     if (texture.isLoaded()) {

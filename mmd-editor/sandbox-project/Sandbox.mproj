@@ -1,0 +1,8 @@
+{
+  "projectNode": {
+    "name": "Sandbox",
+    "startScene": "scenes\\Physics2D.scene",
+    "assetDirectory": "assets",
+    "scriptModulePath": "scripts\\dist\\sandbox.mjs"
+  }
+}

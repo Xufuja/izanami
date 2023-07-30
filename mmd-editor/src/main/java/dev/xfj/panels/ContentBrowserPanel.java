@@ -2,6 +2,8 @@ package dev.xfj.panels;
 
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.imgui.ImGuiStringPayload;
+import dev.xfj.engine.project.Project;
+import dev.xfj.engine.project.ProjectConfig;
 import dev.xfj.engine.renderer.Texture2D;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -13,8 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ContentBrowserPanel {
-    //Change later when this needs to be variable
-    public static final Path assetPath = Path.of("assets");
+    private Path baseDirectory;
     private Path currentDirectory;
     private final Texture2D directoryIcon;
     private final Texture2D fileIcon;
@@ -22,7 +23,8 @@ public class ContentBrowserPanel {
     private float thumbnailSize;
 
     public ContentBrowserPanel() {
-        currentDirectory = assetPath;
+        baseDirectory = Project.getAssetDirectory();
+        currentDirectory = baseDirectory;
         ClassLoader classLoader = ContentBrowserPanel.class.getClassLoader();
         try {
             directoryIcon = Texture2D.create(Paths.get(classLoader.getResource("icons/contentbrowser/DirectoryIcon.png").toURI()));
@@ -37,7 +39,7 @@ public class ContentBrowserPanel {
     public void onImGuiRender() {
         ImGui.begin("Content Browser");
 
-        if (!currentDirectory.equals(assetPath)) {
+        if (!currentDirectory.equals(baseDirectory)) {
             if (ImGui.button("<-")) {
                 currentDirectory = currentDirectory.getParent();
             }
@@ -65,7 +67,7 @@ public class ContentBrowserPanel {
                 ImGui.imageButton(icon.getRendererId(), thumbnailSize, thumbnailSize, 0, 1, 1, 0);
 
                 if (ImGui.beginDragDropSource()) {
-                    Path relativePath = assetPath.relativize(directoryEntry);
+                    Path relativePath = directoryEntry;
                     ImGui.setDragDropPayload("CONTENT_BROWSER_ITEM", new ImGuiStringPayload(relativePath.toString()));
                     ImGui.endDragDropSource();
                 }

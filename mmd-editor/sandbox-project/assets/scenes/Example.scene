@@ -12,7 +12,7 @@
     },
     "spriteRenderer": {
       "color": [1.0, 1.0, 1.0, 1.0],
-      "texturePath": "assets\\textures\\Logo.png",
+      "texturePath": "textures\\Logo.png",
       "tilingFactor": 1.0
     }
   }, {
@@ -27,7 +27,7 @@
     },
     "spriteRenderer": {
       "color": [1.0, 1.0, 1.0, 1.0],
-      "texturePath": "assets\\textures\\Checkerboard.png",
+      "texturePath": "textures\\Checkerboard.png",
       "tilingFactor": 10.0
     }
   }, {

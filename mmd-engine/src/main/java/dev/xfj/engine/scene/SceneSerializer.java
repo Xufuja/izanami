@@ -4,6 +4,7 @@ package dev.xfj.engine.scene;
 import com.google.protobuf.util.JsonFormat;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
+import dev.xfj.engine.project.Project;
 import dev.xfj.engine.renderer.Texture2D;
 import dev.xfj.engine.scene.components.*;
 import dev.xfj.engine.scripting.ScriptClass;
@@ -283,7 +284,7 @@ public class SceneSerializer {
 
                     if (!scriptFields.isEmpty()) {
                         ScriptClass entityClass = ScriptEngine.getEntityClass(sc.className);
-                        
+
                         if (entityClass != null) {
                             Map<String, ScriptField> fields = entityClass.getFields();
                             Map<String, ScriptFieldInstance> entityFields = ScriptEngine.getScriptFieldMap(deserializedEntity);
@@ -328,8 +329,10 @@ public class SceneSerializer {
                 if (entity.hasSpriteRenderer()) {
                     SpriteRendererFile spriteRendererFile = entity.getSpriteRenderer();
                     String texturePath = spriteRendererFile.getTexturePath();
+
                     if (!texturePath.isEmpty() && !texturePath.isBlank()) {
-                        deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), Texture2D.create(Path.of(spriteRendererFile.getTexturePath())), spriteRendererFile.getTilingFactor()));
+                        Path path = Project.getAssetFileSystemPath(Path.of(texturePath));
+                        deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), Texture2D.create(path), spriteRendererFile.getTilingFactor()));
                     } else {
                         deserializedEntity.addComponent(new SpriteRendererComponent(new Vector4f(spriteRendererFile.getColor(0), spriteRendererFile.getColor(1), spriteRendererFile.getColor(2), spriteRendererFile.getColor(3)), spriteRendererFile.getTilingFactor()));
                     }

@@ -8,6 +8,7 @@ import dev.xfj.engine.events.EventDispatcher;
 import dev.xfj.engine.events.key.KeyPressedEvent;
 import dev.xfj.engine.events.mouse.MouseButtonPressedEvent;
 import dev.xfj.engine.imgui.ImGuiPayload;
+import dev.xfj.engine.project.Project;
 import dev.xfj.engine.renderer.*;
 import dev.xfj.engine.renderer.framebuffer.Framebuffer;
 import dev.xfj.engine.renderer.framebuffer.FramebufferSpecification;
@@ -69,7 +70,7 @@ public class EditorLayer extends Layer {
     private SceneState sceneState;
 
     private final SceneHierarchyPanel sceneHierarchyPanel;
-    private final ContentBrowserPanel contentBrowserPanel;
+    private ContentBrowserPanel contentBrowserPanel;
 
     static {
         System.setProperty("dominion.show-banner", "false");
@@ -93,7 +94,6 @@ public class EditorLayer extends Layer {
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
         this.primaryCamera = true;
         this.sceneHierarchyPanel = new SceneHierarchyPanel();
-        this.contentBrowserPanel = new ContentBrowserPanel();
         this.gizmoType = -1;
         this.showPhysicsColliders = false;
         this.sceneState = SceneState.Edit;
@@ -129,9 +129,11 @@ public class EditorLayer extends Layer {
 
         ApplicationCommandLineArgs commandLineArgs = Application.getApplication().getSpecification().commandLineArgs;
 
-        if (commandLineArgs.count > 1) {
-            String sceneFilePath = commandLineArgs.get(0);
-            openScene(Path.of(sceneFilePath));
+        if (commandLineArgs.count > 0) {
+            String projectFilePath = commandLineArgs.get(0);
+            openProject(Path.of(projectFilePath));
+        } else {
+            newProject();
         }
 
         editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
@@ -327,7 +329,7 @@ public class EditorLayer extends Layer {
         if (ImGui.beginDragDropTarget()) {
             ImGuiPayload<?> payload = ImGui.acceptDragDropPayload("CONTENT_BROWSER_ITEM");
             if (payload != null) {
-                openScene(ContentBrowserPanel.assetPath.resolve(String.valueOf(payload.getData())));
+                openScene(Path.of(String.valueOf(payload.getData())));
             }
             ImGui.endDragDropTarget();
         }
@@ -598,6 +600,24 @@ public class EditorLayer extends Layer {
         }
 
         Renderer2D.endScene();
+    }
+
+    private void newProject() {
+        Project.newProject();
+    }
+
+    private void openProject(Path path) {
+        Project project = Project.loadProject(path);
+
+        if (project != null) {
+            Path startScenePath = Project.getAssetFileSystemPath(Project.getActive().getConfig().startScene);
+            openScene(startScenePath);
+            contentBrowserPanel = new ContentBrowserPanel();
+        }
+    }
+
+    private void saveProject() {
+        //Project.saveActive();
     }
 
     private void newScene() {

@@ -20,7 +20,7 @@ public class ProjectSerializer {
         this.project = project;
     }
 
-    public void serialize(Path filePath) {
+    public boolean serialize(Path filePath) {
         ProjectConfig config = project.getConfig();
 
         ProjectFile.Builder projectBuilder = ProjectFile.newBuilder();
@@ -34,19 +34,20 @@ public class ProjectSerializer {
 
         if (PROJECTS_AS_JSON) {
             try {
-
                 Files.writeString(filePath, JsonFormat.printer().print(projectBuilder), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                return true;
             } catch (IOException e) {
                 Log.error("Could not open file: " + filePath);
-                throw new RuntimeException(e);
+                return false;
             }
         } else {
             byte[] bytes = projectBuilder.build().toByteArray();
             try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 outputStream.write(bytes);
+                return true;
             } catch (IOException e) {
                 Log.error("Could not open file: " + filePath);
-                throw new RuntimeException(e);
+               return false;
             }
         }
     }
