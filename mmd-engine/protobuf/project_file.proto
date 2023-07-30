@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.xfj.protobuf;
+
+option java_multiple_files = true;
+option java_package = "dev.xfj.protobuf";
+option java_outer_classname = "Project";
+
+message ProjectFile {
+  ProjectNodeFile project_node = 1;
+}
+
+message ProjectNodeFile {
+  string name = 1;
+  string start_scene = 2;
+  string asset_directory = 3;
+  string script_module_path = 4;
+}

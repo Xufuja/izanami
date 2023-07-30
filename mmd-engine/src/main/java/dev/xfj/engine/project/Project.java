@@ -31,10 +31,13 @@ public class Project {
     }
 
     public static Project newProject() {
+        activProject = new Project();
         return activProject;
     }
 
     public static Project loadProject() {
+        Project project = new Project();
+        ProjectSerializer serializer = new ProjectSerializer(project);
         return activProject;
     }
 
