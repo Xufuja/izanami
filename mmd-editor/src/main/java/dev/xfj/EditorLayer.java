@@ -133,7 +133,10 @@ public class EditorLayer extends Layer {
             String projectFilePath = commandLineArgs.get(0);
             openProject(Path.of(projectFilePath));
         } else {
-            newProject();
+            //newProject();
+            if (!openProject()) {
+                Application.getApplication().close();
+            }
         }
 
         editorCamera = new EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
@@ -244,12 +247,14 @@ public class EditorLayer extends Layer {
 
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
-                if (ImGui.menuItem("New", "Ctrl+N")) {
-                    newScene();
+                if (ImGui.menuItem("Open Project...", "Ctrl+O")) {
+                    openProject();
                 }
 
-                if (ImGui.menuItem("Open...", "Ctrl+O")) {
-                    openScene();
+                ImGui.separator();
+
+                if (ImGui.menuItem("New", "Ctrl+N")) {
+                    newScene();
                 }
 
                 if (ImGui.menuItem("Save", "Ctrl+S")) {
@@ -259,6 +264,8 @@ public class EditorLayer extends Layer {
                 if (ImGui.menuItem("Save As...", "Ctrl+Shift+S")) {
                     saveSceneAs();
                 }
+
+                ImGui.separator();
 
                 if (ImGui.menuItem("Exit")) {
                     Application.getApplication().close();
@@ -494,7 +501,7 @@ public class EditorLayer extends Layer {
             }
             case KeyCodes.O -> {
                 if (control) {
-                    openScene();
+                    openProject();
                     return true;
                 }
             }
@@ -614,6 +621,12 @@ public class EditorLayer extends Layer {
             openScene(startScenePath);
             contentBrowserPanel = new ContentBrowserPanel();
         }
+    }
+
+    private boolean openProject() {
+        Optional<String> filePath = WindowsPlatformUtils.openFile("Scene (*.mproj)\0*.mproj\0");
+        filePath.ifPresent(path -> openProject(Path.of(path)));
+        return true;
     }
 
     private void saveProject() {
