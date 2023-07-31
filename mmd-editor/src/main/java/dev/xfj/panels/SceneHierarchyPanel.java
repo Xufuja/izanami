@@ -9,6 +9,7 @@ import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneCamera;
 import dev.xfj.engine.scene.components.*;
 import dev.xfj.engine.scripting.*;
+import dev.xfj.engine.ui.ScopedStyleColor;
 import imgui.*;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -344,9 +345,7 @@ public class SceneHierarchyPanel {
 
             ImString buffer = new ImString(component.className, 64);
 
-            if (!scriptClassExists) {
-                ImGui.pushStyleColor(ImGuiCol.Text, 0.9f, 0.2f, 0.3f, 1.0f);
-            }
+            ScopedStyleColor textColor = new ScopedStyleColor(ImGuiCol.Text, new ImVec4(0.9f, 0.2f, 0.3f, 1.0f), !scriptClassExists);
 
             if (ImGui.inputText("Class", buffer)) {
                 component.className = buffer.toString();
@@ -411,10 +410,7 @@ public class SceneHierarchyPanel {
                     }
                 }
             }
-
-            if (!scriptClassExists) {
-                ImGui.popStyleColor();
-            }
+            textColor.popStyleColor();
         });
 
         drawComponent(SpriteRendererComponent.class, "Sprite Renderer", entity, component -> {
