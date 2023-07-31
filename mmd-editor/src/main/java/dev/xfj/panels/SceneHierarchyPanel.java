@@ -349,6 +349,8 @@ public class SceneHierarchyPanel {
 
             if (ImGui.inputText("Class", buffer)) {
                 component.className = buffer.toString();
+                textColor.popStyleColor();
+                return;
             }
 
             boolean sceneRunning = context.isRunning();
