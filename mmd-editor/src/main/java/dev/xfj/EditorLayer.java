@@ -545,6 +545,9 @@ public class EditorLayer extends Layer {
                     }
                 }
             }
+            case KeyCodes.DELETE -> {
+                
+            }
         }
         return false;
     }

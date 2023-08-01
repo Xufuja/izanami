@@ -6,6 +6,7 @@ import dev.dominion.ecs.api.Dominion;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.core.UUID;
+import dev.xfj.engine.physics.Physics2D;
 import dev.xfj.engine.renderer.Camera;
 import dev.xfj.engine.renderer.EditorCamera;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
@@ -30,19 +31,6 @@ public class Scene {
     private boolean isPaused;
     private int stepFrames;
     private World physicsWorld;
-
-    public static BodyDef.BodyType rigidbody2DTypeToBox2DBody(Rigidbody2DComponent.BodyType bodyType) {
-        return switch (bodyType) {
-            case Static -> BodyDef.BodyType.StaticBody;
-            case Dynamic -> BodyDef.BodyType.DynamicBody;
-            case Kinematic -> BodyDef.BodyType.KinematicBody;
-            default -> {
-                //Some sort of exception
-                Log.error("Unknown body type");
-                yield BodyDef.BodyType.StaticBody;
-            }
-        };
-    }
 
     public Scene() {
         this.registry = Dominion.create();
@@ -363,7 +351,7 @@ public class Scene {
                     Rigidbody2DComponent rb2dc = entity.getComponent(Rigidbody2DComponent.class);
 
                     BodyDef bodyDef = new BodyDef();
-                    bodyDef.type = rigidbody2DTypeToBox2DBody(rb2dc.type);
+                    bodyDef.type = Physics2D.rigidbody2DTypeToBox2DBody(rb2dc.type);
                     bodyDef.position.set(transform.translation.x, transform.translation.y);
                     bodyDef.angle = transform.rotation.z;
 
