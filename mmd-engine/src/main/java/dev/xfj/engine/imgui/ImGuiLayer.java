@@ -154,6 +154,9 @@ public class ImGuiLayer extends Layer {
 
         style.setColors(colors);
     }
-
+    public int getActiveWidgetId() {
+        //No access to GImGui->ActiveId due to missing from the Java bindings, hope we never need the actual ID
+        return ImGui.isAnyItemActive() ? 1 : 0;
+    }
 }
 

@@ -546,7 +546,15 @@ public class EditorLayer extends Layer {
                 }
             }
             case KeyCodes.DELETE -> {
-                
+                if (Application.getApplication().getImGuiLayer().getActiveWidgetId() == 0) {
+                    Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
+
+                    if (selectedEntity != null) {
+                        sceneHierarchyPanel.setSelectedEntity(selectedEntity);
+                        activeScene.destroyEntity(selectedEntity);
+                        sceneHierarchyPanel.setSelectedEntity(null);
+                    }
+                }
             }
         }
         return false;
