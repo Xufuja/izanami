@@ -4,6 +4,7 @@ import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.TimeStep;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.core.application.Application;
+import dev.xfj.engine.project.Project;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.components.ScriptComponent;
@@ -117,9 +118,25 @@ public class ScriptEngine {
 
     public static void init() {
         data = new ScriptEngineData();
+
         initPolyglot();
-        loadAssembly(Path.of("scripts/mmd-script-core.mjs"));
-        loadAppAssembly(Path.of("sandbox-project/assets/scripts/dist/sandbox.mjs"));
+
+        boolean status = loadAssembly(Path.of("scripts/mmd-script-core.mjs"));
+
+        if (!status) {
+            Log.error("[ScriptEngine] Could not load ScriptCore assembly.");
+            return;
+        }
+
+        Path scriptModulePath = Project.getAssetDirectory().resolve(Project.getActive().getConfig().scriptModulePath);
+
+        status = loadAppAssembly(scriptModulePath);
+
+        if (!status) {
+            Log.error("[ScriptEngine] Could not load app assembly.");
+            return;
+        }
+
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");
@@ -185,16 +202,8 @@ public class ScriptEngine {
 
     public static void reloadAssembly() {
         initPolyglot();
-        boolean status = loadAssembly(data.coreAssemblyFilepath);
-        if (!status) {
-            Log.error("[ScriptEngine] Could not load ScriptCore assembly.");
-            return;
-        }
-        status = loadAppAssembly(data.appAssemblyFilepath);
-        if (!status) {
-            Log.error("[ScriptEngine] Could not load app assembly.");
-            return;
-        }
+        loadAssembly(data.coreAssemblyFilepath);
+        loadAppAssembly(data.appAssemblyFilepath);
         loadAssemblyClasses();
 
         data.entityClass = new ScriptClass("Entity");

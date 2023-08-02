@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import dev.xfj.engine.core.Input;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
+import dev.xfj.engine.physics.Physics2D;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.components.Rigidbody2DComponent;
@@ -78,6 +79,31 @@ public class ScriptGlue {
         Body body = rb2d.runtimeBody;
         //The applyLinearImpulseToCenter method does not exist in this version of Box2D
         //body.applyLinearImpulseToCenter(new Vector2(impulse.x, impulse.y),  wake);
+    }
+    public static Vector2f rigidbody2DComponentGetLinearVelocity(long entityId, Vector2f outLinearVelocity) {
+        Scene scene = ScriptEngine.getSceneContext();
+        Entity entity = scene.getEntityByUUID((new UUID(entityId)));
+        Rigidbody2DComponent rb2d = entity.getComponent(Rigidbody2DComponent.class);
+        Body body = rb2d.runtimeBody;
+        Vector2 linearVelocity  = body.getLinearVelocity();
+        outLinearVelocity = new Vector2f(linearVelocity.x, linearVelocity.y);
+
+        return outLinearVelocity;
+    }
+    public static Rigidbody2DComponent.BodyType rigidbody2DComponentGetType(long entityId) {
+        Scene scene = ScriptEngine.getSceneContext();
+        Entity entity = scene.getEntityByUUID((new UUID(entityId)));
+        Rigidbody2DComponent rb2d = entity.getComponent(Rigidbody2DComponent.class);
+        Body body = rb2d.runtimeBody;
+
+        return Physics2D.rigidbody2DTypeFromBox2DBody(body.getType());
+    }
+    public static void rigidbody2DComponentSetType(long entityId, Rigidbody2DComponent.BodyType bodyType) {
+        Scene scene = ScriptEngine.getSceneContext();
+        Entity entity = scene.getEntityByUUID((new UUID(entityId)));
+        Rigidbody2DComponent rb2d = entity.getComponent(Rigidbody2DComponent.class);
+        Body body = rb2d.runtimeBody;
+        body.setType(Physics2D.rigidbody2DTypeToBox2DBody(bodyType));
     }
     public static boolean inputIsKeyDown(int keyCode) {
         return Input.isKeyPressed(keyCode);

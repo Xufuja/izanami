@@ -628,6 +628,7 @@ public class EditorLayer extends Layer {
         Project project = Project.loadProject(path);
 
         if (project != null) {
+            ScriptEngine.init();
             Path startScenePath = Project.getAssetFileSystemPath(Project.getActive().getConfig().startScene);
             openScene(startScenePath);
             contentBrowserPanel = new ContentBrowserPanel();
@@ -751,7 +752,8 @@ public class EditorLayer extends Layer {
         Entity selectedEntity = sceneHierarchyPanel.getSelectedEntity();
 
         if (selectedEntity != null) {
-            editorScene.duplicateEntity(selectedEntity);
+            Entity newEntity = editorScene.duplicateEntity(selectedEntity);
+            sceneHierarchyPanel.setSelectedEntity(newEntity);
         }
     }
 }

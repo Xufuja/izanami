@@ -153,7 +153,7 @@ public class Scene {
 
     @SuppressWarnings("unchecked")
     public void onUpdateRuntime(TimeStep ts) {
-        if(!isPaused || stepFrames-- > 0) {
+        if (!isPaused || stepFrames-- > 0) {
             registry.findEntitiesWith(ScriptComponent.class)
                     .stream().forEach(component -> {
                         Entity entity = new Entity(component.entity(), this);
@@ -269,9 +269,11 @@ public class Scene {
                 });
     }
 
-    public void duplicateEntity(Entity entity) {
-        Entity newEntity = createEntity(entity.getName());
+    public Entity duplicateEntity(Entity entity) {
+        String name = entity.getName();
+        Entity newEntity = createEntity(name);
         Component.allComponents.forEach(component -> copyComponentIfExists(component, newEntity, entity));
+        return newEntity;
     }
 
     public Entity getPrimaryCameraEntity() {
@@ -453,15 +455,19 @@ public class Scene {
     public boolean isRunning() {
         return isRunning;
     }
+
     public boolean isPaused() {
         return isPaused;
     }
+
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
+
     public void step() {
         step(1);
     }
+
     public void step(int frames) {
         stepFrames = frames;
     }

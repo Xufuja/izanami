@@ -59,7 +59,6 @@ public class Application {
         this.window.setEventCallback(this::onEvent);
 
         Renderer.init();
-        ScriptEngine.init();
 
         this.imGuiLayer = new ImGuiLayer();
         pushOverlay(imGuiLayer);
