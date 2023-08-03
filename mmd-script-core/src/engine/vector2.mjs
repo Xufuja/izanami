@@ -13,7 +13,12 @@ export default class Vector2 {
     add(other) {
         return new Vector2(this.#x + other.x, this.#y + other.y);
     }
-
+    lengthSquared() {
+        return this.#x * this.#x + this.#y * this.#y;
+    }
+    length() {
+        return Math.sqrt(lengthSquared());
+    }
     get x() {
         return new this.#float(this.#x);
     }

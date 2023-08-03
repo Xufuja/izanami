@@ -1,4 +1,5 @@
 import Vector3 from './vector3';
+import BodyType from './scene/components/body-type';
 
 export default class InternalCalls {
     static packageName = "dev.xfj.engine";
@@ -27,6 +28,18 @@ export default class InternalCalls {
     }
     static rigidbody2DComponentApplyLinearImpulse(entityId, impulse, point, wake) {
         Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentApplyLinearImpulse(entityId, new InternalCalls.vector2f(impulse.x, impulse.y), new InternalCalls.vector2f(point.x, point.y), wake);
+    }
+    static rigidbody2DComponentGetLinearVelocity(entityId, linearVelocity) {
+        let vec2 = Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentGetLinearVelocity(entityId, new InternalCalls.vector2f(linearVelocity.x, linearVelocity.y));
+        return new Vector3(vec2.x, vec2.y);
+    }
+    static rigidbody2DComponentGetType(entityId) {
+        let type = Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentGetType(entityId);
+        return new BodyType(type);
+    }
+    static rigidbody2DComponentSetType(entityId, bodyType) {
+        let type = Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentSetType(entityId, bodyType);
+        return new BodyType(type);
     }
     static rigidbody2DComponentApplyLinearImpulseToCenter(entityId, impulse, wake) {
         Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentApplyLinearImpulseToCenter(entityId, new InternalCalls.vector2f(impulse.x, impulse.y), wake);
