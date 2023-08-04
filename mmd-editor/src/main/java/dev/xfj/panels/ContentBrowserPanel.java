@@ -1,10 +1,8 @@
 package dev.xfj.panels;
 
-import dev.xfj.engine.core.Log;
 import dev.xfj.engine.imgui.ImGuiStringPayload;
 import dev.xfj.engine.project.Project;
-import dev.xfj.engine.project.ProjectConfig;
-import dev.xfj.engine.renderer.Texture2D;
+import dev.xfj.engine.renderer.texture.Texture2D;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiMouseButton;

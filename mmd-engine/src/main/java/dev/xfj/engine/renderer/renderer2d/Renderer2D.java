@@ -7,6 +7,8 @@ import dev.xfj.engine.renderer.buffer.BufferLayout;
 import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import dev.xfj.engine.renderer.shader.Shader;
+import dev.xfj.engine.renderer.texture.Texture2D;
+import dev.xfj.engine.renderer.texture.TextureSpecification;
 import dev.xfj.engine.scene.components.SpriteRendererComponent;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -95,7 +97,7 @@ public class Renderer2D {
         }
 
         try {
-            data.whiteTexture = Texture2D.create(1, 1);
+            data.whiteTexture = Texture2D.create(new TextureSpecification());
             int whiteTextureData = 0xffffffff;
             //Using MemoryUtil.memAllocInt(1); does not work for some reason
             ByteBuffer data = ByteBuffer.allocateDirect(Integer.BYTES).order(ByteOrder.nativeOrder());

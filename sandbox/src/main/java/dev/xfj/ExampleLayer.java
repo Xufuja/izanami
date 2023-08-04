@@ -10,6 +10,7 @@ import dev.xfj.engine.renderer.buffer.IndexBuffer;
 import dev.xfj.engine.renderer.buffer.VertexBuffer;
 import dev.xfj.engine.renderer.shader.Shader;
 import dev.xfj.engine.renderer.shader.ShaderLibrary;
+import dev.xfj.engine.renderer.texture.Texture2D;
 import imgui.ImGui;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

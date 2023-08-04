@@ -1,6 +1,6 @@
 package dev.xfj.engine.scene.components;
 
-import dev.xfj.engine.renderer.Texture2D;
+import dev.xfj.engine.renderer.texture.Texture2D;
 import org.joml.Vector4f;
 
 public class SpriteRendererComponent implements Component {

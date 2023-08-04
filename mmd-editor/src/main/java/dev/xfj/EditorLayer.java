@@ -16,6 +16,7 @@ import dev.xfj.engine.renderer.framebuffer.FramebufferTextureSpecification;
 import dev.xfj.engine.renderer.renderer2d.Renderer2D;
 import dev.xfj.engine.renderer.renderer2d.Statistics;
 import dev.xfj.engine.renderer.shader.Shader;
+import dev.xfj.engine.renderer.texture.Texture2D;
 import dev.xfj.engine.scene.Entity;
 import dev.xfj.engine.scene.Scene;
 import dev.xfj.engine.scene.SceneSerializer;

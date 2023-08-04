@@ -1,8 +1,8 @@
-package dev.xfj.engine.renderer;
+package dev.xfj.engine.renderer.texture;
 
 import java.nio.ByteBuffer;
-
 public interface Texture {
+    TextureSpecification getSpecification();
     int getWidth();
 
     int getHeight();

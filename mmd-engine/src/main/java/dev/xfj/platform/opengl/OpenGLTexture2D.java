@@ -1,8 +1,9 @@
 package dev.xfj.platform.opengl;
 
 import dev.xfj.engine.core.Log;
-import dev.xfj.engine.renderer.Texture;
-import dev.xfj.engine.renderer.Texture2D;
+import dev.xfj.engine.renderer.texture.Texture;
+import dev.xfj.engine.renderer.texture.Texture2D;
+import dev.xfj.engine.renderer.texture.TextureSpecification;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL45;
 import org.lwjgl.stb.STBImage;
@@ -15,6 +16,7 @@ import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 
 public class OpenGLTexture2D extends Texture2D {
+    private final TextureSpecification specification;
     private final Path path;
     private final int width;
     private final int height;
@@ -23,13 +25,32 @@ public class OpenGLTexture2D extends Texture2D {
     private final int dataFormat;
     private boolean isLoaded;
 
-    public OpenGLTexture2D(int width, int height) {
-        this.path = null;
-        this.width = width;
-        this.height = height;
+    public static int imageFormatToGLDataFormat(TextureSpecification.ImageFormat format) {
+        return switch (format) {
+            case RGB8 -> GL45.GL_RGB;
+            case RGBA8 -> GL45.GL_RGBA;
+            //Some sort of exception
+            default -> 0;
+        };
+    }
 
-        this.internalFormat = GL_RGBA8;
-        this.dataFormat = GL_RGBA;
+    public static int imageFormatToGLInternalFormat(TextureSpecification.ImageFormat format) {
+        return switch (format) {
+            case RGB8 -> GL45.GL_RGB8;
+            case RGBA8 -> GL45.GL_RGBA8;
+            //Some sort of exception
+            default -> 0;
+        };
+    }
+
+    public OpenGLTexture2D(TextureSpecification specification) {
+        this.path = null;
+        this.specification = specification;
+        this.width = this.specification.width;
+        this.height = this.specification.height;
+
+        this.internalFormat = imageFormatToGLInternalFormat(specification.format);
+        this.dataFormat = imageFormatToGLDataFormat(specification.format);
 
         this.rendererId = GL45.glCreateTextures(GL45.GL_TEXTURE_2D);
         GL45.glTextureStorage2D(this.rendererId, 1, this.internalFormat, this.width, this.height);
@@ -44,6 +65,7 @@ public class OpenGLTexture2D extends Texture2D {
     }
 
     public OpenGLTexture2D(Path path) {
+        this.specification = null;
         this.path = path;
 
         IntBuffer width = BufferUtils.createIntBuffer(1);
@@ -95,6 +117,10 @@ public class OpenGLTexture2D extends Texture2D {
         }
     }
 
+    @Override
+    public TextureSpecification getSpecification() {
+        return this.specification;
+    }
 
     @Override
     public int getWidth() {

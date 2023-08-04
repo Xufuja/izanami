@@ -5,7 +5,7 @@ import com.google.protobuf.util.JsonFormat;
 import dev.xfj.engine.core.Log;
 import dev.xfj.engine.core.UUID;
 import dev.xfj.engine.project.Project;
-import dev.xfj.engine.renderer.Texture2D;
+import dev.xfj.engine.renderer.texture.Texture2D;
 import dev.xfj.engine.scene.components.*;
 import dev.xfj.engine.scripting.ScriptClass;
 import dev.xfj.engine.scripting.ScriptEngine;
