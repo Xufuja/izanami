@@ -38,6 +38,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 public class EditorLayer extends Layer {
+    public static Font font;
     private static float rotation = 0.0f;
     private static boolean opt_fullscreen_persistant = true;
     private static int dockspace_flags = ImGuiDockNodeFlags.None;
@@ -88,6 +89,8 @@ public class EditorLayer extends Layer {
     public EditorLayer() {
         super("Sample 2D");
         this.cameraController = new OrthographicCameraController(1280.0f / 720.0f, true);
+        this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
+        font = new Font("assets/fonts/opensans/OpenSans-Regular.ttf");
         this.viewportFocused = false;
         this.viewportHovered = false;
         this.viewportSize = new Vector2f(0.0f, 0.0f);
@@ -306,9 +309,13 @@ public class EditorLayer extends Layer {
         ImGui.end();
 
         ImGui.begin("Settings");
+
         if (ImGui.checkbox("Show Physics Colliders", showPhysicsColliders)) {
             showPhysicsColliders = !showPhysicsColliders;
         }
+
+        ImGui.image(font.getAtlasTexture().getRendererId(), 512, 512, 0, 1, 1, 0);
+
         ImGui.end();
 
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
