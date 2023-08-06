@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class QuadVertex implements Vertex {
+public final class QuadVertex implements Vertex {
     public Vector3f position;
     public Vector4f color;
     public Vector2f texCoord;

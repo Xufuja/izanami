@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class LineVertex implements Vertex {
+public final class LineVertex implements Vertex {
     public Vector3f position;
     public Vector4f color;
     public int entityId;

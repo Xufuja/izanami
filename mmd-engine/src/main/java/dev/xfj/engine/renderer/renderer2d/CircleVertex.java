@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class CircleVertex implements Vertex{
+public final class CircleVertex implements Vertex{
     public Vector3f worldPosition;
     public Vector3f localPosition;
     public Vector4f color;

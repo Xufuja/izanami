@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public interface Vertex {
+public sealed interface Vertex permits QuadVertex, CircleVertex, LineVertex, TextVertex {
     ByteBuffer getAsBuffer();
 
     default ByteBuffer getAsBuffer(Object object) {
