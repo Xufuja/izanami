@@ -8,20 +8,16 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class QuadVertex implements Vertex {
+public class TextVertex implements Vertex {
     public Vector3f position;
     public Vector4f color;
     public Vector2f texCoord;
-    public float texIndex;
-    public float tilingFactor;
     public int entityId;
 
-    public void setQuadVertex(Vector3f position, Vector4f color, Vector2f texCoord, float texIndex, float tilingFactor, int entityId) {
+    public void setTextVertex(Vector3f position, Vector4f color, Vector2f texCoord, int entityId) {
         this.position = position;
         this.color = color;
         this.texCoord = texCoord;
-        this.texIndex = texIndex;
-        this.tilingFactor = tilingFactor;
         this.entityId = entityId;
     }
 
@@ -31,14 +27,14 @@ public class QuadVertex implements Vertex {
     }
 
     public static int getFloatArrayCount() {
-        return Vertex.getFloatArrayCount(QuadVertex.class);
+        return Vertex.getFloatArrayCount(TextVertex.class);
     }
 
     public static int getIntArrayCount() {
-        return Vertex.getIntArrayCount(QuadVertex.class);
+        return Vertex.getIntArrayCount(TextVertex.class);
     }
 
     public static int getVertexSize() {
-        return Vertex.getVertexSize(QuadVertex.class);
+        return Vertex.getVertexSize(TextVertex.class);
     }
 }

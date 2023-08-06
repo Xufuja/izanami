@@ -28,6 +28,10 @@ public class Renderer2DData {
     public VertexBuffer lineVertexBuffer;
     public Shader lineShader;
 
+    public VertexArray textVertexArray;
+    public VertexBuffer textVertexBuffer;
+    public Shader textShader;
+
     public int quadIndexCount = 0;
     public List<QuadVertex> quadVertexBufferBase;
     public int quadVertexBufferPtr;
@@ -40,10 +44,16 @@ public class Renderer2DData {
     public List<LineVertex> lineVertexBufferBase;
     public int lineVertexBufferPtr;
 
+    public int textVertexCount = 0;
+    public List<TextVertex> textVertexBufferBase;
+    public int textVertexBufferPtr;
+
     public float lineWidth = 2.0f;
 
     public Texture2D[] textureSlots = new Texture2D[maxTextureSlots];
     public int textureSlotIndex = 1;
+
+    public Texture2D fontAtlasTexture;
 
     public Vector4f[] quadVertexPositions = new Vector4f[4];
 

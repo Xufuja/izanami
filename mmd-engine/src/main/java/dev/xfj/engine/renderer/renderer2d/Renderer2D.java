@@ -96,6 +96,23 @@ public class Renderer2D {
             data.lineVertexBufferBase.add(new LineVertex());
         }
 
+        data.textVertexArray = VertexArray.create();
+
+        data.textVertexBuffer = VertexBuffer.create(Renderer2DData.maxVertices * TextVertex.getVertexSize());
+        data.textVertexBuffer.setLayout(new BufferLayout(
+                new BufferElement(BufferElement.ShaderDataType.Float3, "a_Position"),
+                new BufferElement(BufferElement.ShaderDataType.Float4, "a_Color"),
+                new BufferElement(BufferElement.ShaderDataType.Float2, "a_TexCoord"),
+                new BufferElement(BufferElement.ShaderDataType.Int, "a_EntityID")));
+
+        data.textVertexArray.addVertexBuffer(data.textVertexBuffer);
+        data.textVertexArray.setIndexBuffer(quadIB);
+        data.textVertexBufferBase = new ArrayList<>();
+
+        while (data.textVertexBufferBase.size() < Renderer2DData.maxIndices) {
+            data.textVertexBufferBase.add(new TextVertex());
+        }
+
         try {
             data.whiteTexture = Texture2D.create(new TextureSpecification());
             int whiteTextureData = 0xffffffff;
@@ -113,6 +130,7 @@ public class Renderer2D {
             Renderer2D.data.quadShader = Shader.create(Path.of("assets/shaders/Renderer2D_Quad.glsl"));
             Renderer2D.data.circleShader = Shader.create(Path.of("assets/shaders/Renderer2D_Circle.glsl"));
             Renderer2D.data.lineShader = Shader.create(Path.of("assets/shaders/Renderer2D_Line.glsl"));
+            Renderer2D.data.textShader = Shader.create(Path.of("assets/shaders/Renderer2D_Text.glsl"));
 
             Renderer2D.data.textureSlots[0] = Renderer2D.data.whiteTexture;
 
@@ -170,6 +188,9 @@ public class Renderer2D {
         data.lineVertexCount = 0;
         data.lineVertexBufferPtr = 0;
 
+        data.textVertexCount = 0;
+        data.textVertexBufferPtr = 0;
+
         data.textureSlotIndex = 1;
     }
 
@@ -218,6 +239,22 @@ public class Renderer2D {
             Renderer2D.data.lineShader.bind();
             RenderCommand.setLineWidth(data.lineWidth);
             RenderCommand.drawLines(data.lineVertexArray, data.lineVertexCount);
+            data.stats.drawCalls++;
+        }
+
+        if (data.textVertexCount > 0) {
+            ArrayList<ByteBuffer> textVertexBuffers = new ArrayList<>();
+
+            for (int i = 0; i < data.textVertexBufferPtr; i++) {
+                textVertexBuffers.add(data.textVertexBufferBase.get(i).getAsBuffer());
+            }
+
+            data.textVertexBuffer.setData(textVertexBuffers, TextVertex.getFloatArrayCount(), TextVertex.getIntArrayCount());
+
+            data.fontAtlasTexture.bind(0);
+
+            Renderer2D.data.textShader.bind();
+            RenderCommand.drawIndexed(data.textVertexArray, data.textVertexCount);
             data.stats.drawCalls++;
         }
     }
@@ -443,6 +480,10 @@ public class Renderer2D {
         } else {
             drawQuad(transform, src.color, entityId);
         }
+    }
+
+    public static void drawString(String string, Font font, Matrix4f transform, Vector4f color) {
+        //No way to replicate font->GetMSDFData()
     }
 
     public static float getLineWidth() {

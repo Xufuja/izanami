@@ -90,7 +90,7 @@ public class EditorLayer extends Layer {
         super("Sample 2D");
         this.cameraController = new OrthographicCameraController(1280.0f / 720.0f, true);
         this.squareColor = new Vector4f(0.2f, 0.3f, 0.8f, 1.0f);
-        font = new Font("assets/fonts/opensans/OpenSans-Regular.ttf");
+        font = Font.getDefault();
         this.viewportFocused = false;
         this.viewportHovered = false;
         this.viewportSize = new Vector2f(0.0f, 0.0f);

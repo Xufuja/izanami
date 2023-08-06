@@ -5,6 +5,7 @@ import dev.xfj.engine.renderer.texture.Texture2D;
 import java.nio.file.Path;
 
 public class Font {
+    private static Font defaultFont;
     private final Texture2D atlasTexture;
 
     public static Texture2D createAndCacheAtlas(String fontName) {
@@ -23,5 +24,13 @@ public class Font {
 
     public Texture2D getAtlasTexture() {
         return atlasTexture;
+    }
+
+    public static Font getDefault() {
+        if (defaultFont == null) {
+            defaultFont = new Font("assets/fonts/opensans/OpenSans-Regular.ttf");
+        }
+
+        return defaultFont;
     }
 }
