@@ -417,13 +417,7 @@ public class Scene {
     }
 
     protected <T extends Component> void onComponentAdded(Entity entity, T component) {
-        if (component instanceof CameraComponent) {
-            ((CameraComponent) component).camera.setViewportSize(viewportWidth, viewportHeight);
-        } else if (component instanceof ScriptComponent) {
-            ScriptEngine.addToScriptFieldMap(entity);
-        }
-        //Use below when feature is no longer preview, or LWJGL no longer crashes with a preview JDK
-        /*switch (component) {
+        switch (component) {
             case TransformComponent tfc -> {
             }
             case CameraComponent cc ->
@@ -449,7 +443,7 @@ public class Scene {
             case CircleCollider2DComponent cc2dc -> {
             }
             default -> Log.error("Invalid component type");
-        }*/
+        }
     }
 
     public boolean isRunning() {
