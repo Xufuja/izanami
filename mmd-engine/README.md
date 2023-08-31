@@ -1,7 +1,0 @@
-# MMD Editor
-
-## Description
-
-[//]: "TODO"
-
----
