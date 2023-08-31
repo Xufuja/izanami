@@ -11,7 +11,7 @@ public class Sandbox extends Application {
     public static Application createApplication(ApplicationCommandLineArgs args) {
         ApplicationSpecification spec = new ApplicationSpecification();
         spec.name = "Sandbox";
-        spec.workingDirectory = new File(System.getProperty("user.dir")).getParentFile().toPath().resolve("mmd-editor").toString();
+        spec.workingDirectory = new File(System.getProperty("user.dir")).getParentFile().toPath().resolve("izanami-editor").toString();
         spec.commandLineArgs = args;
         return new Sandbox(spec);
     }

@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.xfj</groupId>
-    <artifactId>mmd-tools</artifactId>
+    <artifactId>izanami</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>mmd-engine</module>
-        <module>mmd-editor</module>
+        <module>izanami-engine</module>
+        <module>izanami-editor</module>
         <module>sandbox</module>
     </modules>
 

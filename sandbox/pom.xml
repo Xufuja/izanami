@@ -10,7 +10,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mmd-engine</artifactId>
+            <artifactId>izanami-engine</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

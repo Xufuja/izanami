@@ -61,7 +61,7 @@ public class Log {
         consoleAppender.start();
 
         FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
-        fileAppender.setFile("mmd.log");
+        fileAppender.setFile("izanami.log");
         fileAppender.setEncoder(patternLayoutEncoder);
         fileAppender.setContext(loggerContext);
         fileAppender.start();
