@@ -1,7 +1,7 @@
 {
-  "name": "mmd-script-core",
+  "name": "izanami-script-core",
   "version": "1.0.0",
-  "module": "../mmd-editor/src/main/resources/scripts/mmd-script-core.mjs",
+  "module": "../izanami-editor/src/main/resources/scripts/izanami-script-core.mjs",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",

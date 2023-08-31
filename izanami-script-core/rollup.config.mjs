@@ -4,7 +4,7 @@ export default [
 	{
 		input: 'src/main.mjs',
 		output: {
-			name: 'mmd-script-core',
+			name: 'izanami-script-core',
 			file: pkg.module,
 			format: 'esm'
 		}

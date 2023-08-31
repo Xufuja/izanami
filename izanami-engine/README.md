@@ -1,4 +1,4 @@
-# MMD Editor
+# Izanami Editor
 
 ## Description
 

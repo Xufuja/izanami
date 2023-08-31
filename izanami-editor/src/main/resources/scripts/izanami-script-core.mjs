@@ -40,6 +40,12 @@ class Vector3 {
     }
 }
 
+const BodyType = {
+    Space: 0,
+    Apostrophe: 1,
+    Comma: 2
+};
+
 class InternalCalls {
     static packageName = "dev.xfj.engine";
     static vector2f = Java.type("org.joml.Vector2f");
@@ -67,6 +73,18 @@ class InternalCalls {
     }
     static rigidbody2DComponentApplyLinearImpulse(entityId, impulse, point, wake) {
         Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentApplyLinearImpulse(entityId, new InternalCalls.vector2f(impulse.x, impulse.y), new InternalCalls.vector2f(point.x, point.y), wake);
+    }
+    static rigidbody2DComponentGetLinearVelocity(entityId, linearVelocity) {
+        let vec2 = Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentGetLinearVelocity(entityId, new InternalCalls.vector2f(linearVelocity.x, linearVelocity.y));
+        return new Vector3(vec2.x, vec2.y);
+    }
+    static rigidbody2DComponentGetType(entityId) {
+        let type = Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentGetType(entityId);
+        return new BodyType(type);
+    }
+    static rigidbody2DComponentSetType(entityId, bodyType) {
+        let type = Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentSetType(entityId, bodyType);
+        return new BodyType(type);
     }
     static rigidbody2DComponentApplyLinearImpulseToCenter(entityId, impulse, wake) {
         Java.type(`${InternalCalls.packageName}.scripting.ScriptGlue`).rigidbody2DComponentApplyLinearImpulseToCenter(entityId, new InternalCalls.vector2f(impulse.x, impulse.y), wake);
@@ -216,7 +234,7 @@ const KeyCode = {
     Menu: 348
 };
 
-class Vector2 {
+let Vector2$1 = class Vector2 {
     #float = Java.type('java.lang.Float');
     #x;
     #y;
@@ -231,7 +249,12 @@ class Vector2 {
     add(other) {
         return new Vector2(this.#x + other.x, this.#y + other.y);
     }
-
+    lengthSquared() {
+        return this.#x * this.#x + this.#y * this.#y;
+    }
+    length() {
+        return Math.sqrt(lengthSquared());
+    }
     get x() {
         return new this.#float(this.#x);
     }
@@ -246,7 +269,7 @@ class Vector2 {
     }
     static zero() {
     }
-}
+};
 
 class Component {
     #entity;
@@ -277,8 +300,20 @@ class TransformComponent extends Component {
 }
 
 class Rigidbody2DComponent extends Component {
+    #type
+
     constructor(entity) {
         super(entity);
+    }
+    linearVelocity() {
+        return InternalCalls.rigidbody2DComponentGetType(super.entity.id, Vector2.zero()); 
+    }
+    get type() {
+        this.#type = InternalCalls.rigidbody2DComponentGetType(super.entity.id);
+        return this.#type;
+    }
+    set type(value) {
+        this.#type = InternalCalls.rigidbody2DComponentSetType(super.entity.id, value);
     }
     applyLinearImpulse(impulse, worldPosition, wake) {
         InternalCalls.rigidbody2DComponentApplyLinearImpulse(super.entity.id, impulse, worldPosition, wake);
@@ -330,4 +365,4 @@ class Entity {
     }
 }
 
-export { Component, Entity, Input, InternalCalls, KeyCode, Rigidbody2DComponent, TransformComponent, Vector2, Vector3 };
+export { Component, Entity, Input, InternalCalls, KeyCode, Rigidbody2DComponent, TransformComponent, Vector2$1 as Vector2, Vector3 };

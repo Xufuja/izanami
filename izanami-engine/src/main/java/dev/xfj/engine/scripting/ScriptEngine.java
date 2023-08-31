@@ -121,7 +121,7 @@ public class ScriptEngine {
 
         initPolyglot();
 
-        boolean status = loadAssembly(Path.of("scripts/mmd-script-core.mjs"));
+        boolean status = loadAssembly(Path.of("scripts/izanami-script-core.mjs"));
 
         if (!status) {
             Log.error("[ScriptEngine] Could not load ScriptCore assembly.");
@@ -171,7 +171,7 @@ public class ScriptEngine {
     public static boolean loadAssembly(Path filePath) {
         try {
             data.coreAssemblyFilepath = filePath;
-            data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "mmd-script-core.mjs")
+            data.coreAssembly = Source.newBuilder("js", loadJavaScriptAssembly(filePath, true), "izanami-script-core.mjs")
                     .mimeType("application/javascript+module")
                     .build();
             return true;

@@ -1,4 +1,4 @@
-# MMD Tools
+# Izanami Tools
 
 ## Description
 
@@ -10,18 +10,18 @@ MRs performed by other contributors will be handled before the next video, if an
 
 ## Submodules
 
-* mmd-engine is the equivalent of the "Hazel" project
-* mmd-editor is the equivalent of the "Hazel Editor" project
+* izanami-engine is the equivalent of the "Hazel" project
+* izanami-editor is the equivalent of the "Hazel Editor" project
 * sandbox is the equivalent of the "Sandbox" project
 
 ## Set-up
 
 * Java 17 required
-* `git clone --recursive https://github.com/Xufuja/mmd-tools.git`
+* `git clone --recursive https://github.com/Xufuja/izanami-tools.git`
     * If not recursively cloned, perform `git submodule update --init --recursive`
-* Run `protoc --proto_path=protobuf --java_out=src/generated protobuf/*.proto` from the mmd-engine directory
-* To update `mmd-script-core.mjs`, run `npm run build` from the mmd-script-core directory
-To update `sandbox.mjs`, run `npm run build` from the mmd-editor\sandbox-project\assets\scripts directory
+* Run `protoc --proto_path=protobuf --java_out=src/generated protobuf/*.proto` from the izanami-engine directory
+* To update `izanami-script-core.mjs`, run `npm run build` from the izanami-script-core directory
+To update `sandbox.mjs`, run `npm run build` from the izanami-editor\sandbox-project\assets\scripts directory
 
 ## Libraries
 
@@ -33,14 +33,14 @@ To update `sandbox.mjs`, run `npm run build` from the mmd-editor\sandbox-project
 
 ## Scripting
 
-There is no Mono available for Java so replaced it with GraalVM JS as the scripting engine. To make the workflow as similar as possible, the MMD-ScriptCore project is set-up to create `mmd-script-core.mjs` instead of the DLL, same for `sandbox.mjs`
+There is no Mono available for Java so replaced it with GraalVM JS as the scripting engine. To make the workflow as similar as possible, the izanami-script-core project is set-up to create `izanami-script-core.mjs` instead of the DLL, same for `sandbox.mjs`
 
 ## Skipped
 
 There are a few parts that I have not been able to implement for various reasons:
 
 * Single entry point
-    * Both mmd-editor and sandbox have their own main functions
+    * Both izanami-editor and sandbox have their own main functions
 * Macros
     * They have mostly been made into methods, or just ignored
 * Templates
