@@ -38,7 +38,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>xfj.dev.Main</mainClass>
+                            <mainClass>dev.xfj.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
