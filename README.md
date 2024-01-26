@@ -20,8 +20,11 @@ MRs performed by other contributors will be handled before the next video, if an
 * `git clone --recursive https://github.com/Xufuja/izanami.git`
     * If not recursively cloned, perform `git submodule update --init --recursive`
 * Run `protoc --proto_path=protobuf --java_out=src/generated protobuf/*.proto` from the izanami-engine directory
+  * Version [22.5](https://github.com/protocolbuffers/protobuf/releases/tag/v22.5) was used during implementation
 * To update `izanami-script-core.mjs`, run `npm run build` from the izanami-script-core directory
-To update `sandbox.mjs`, run `npm run build` from the izanami-editor\sandbox-project\assets\scripts directory
+* To update `sandbox.mjs`, run `npm run build` from the izanami-editor\sandbox-project\assets\scripts directory
+* Set the working directory to `$PROJECT_DIR$\izanami-editor\` to ensure assets are properly loaded
+* A project can be opened via CLI by passing the mproj path as argument, e.g. `$PROJECT_DIR$\izanami-editor\sandbox-project\Sandbox.mproj`
 
 ## Libraries
 
