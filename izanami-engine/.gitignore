@@ -79,5 +79,3 @@ fabric.properties
 
 *.log
 *.ini
-
-src/generated/*
