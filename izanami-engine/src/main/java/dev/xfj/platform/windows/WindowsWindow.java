@@ -15,6 +15,7 @@ import dev.xfj.engine.events.mouse.MouseButtonReleasedEvent;
 import dev.xfj.engine.events.mouse.MouseMovedEvent;
 import dev.xfj.engine.events.mouse.MouseScrolledEvent;
 import dev.xfj.engine.renderer.GraphicsContext;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.*;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -52,8 +53,24 @@ public class WindowsWindow implements Window {
                 });
             }
         }
+
+        PointerBuffer monitors = glfwGetMonitors();
+        GLFWVidMode videoMode = glfwGetVideoMode(monitors.get(0));
+
+        int[] monitorX = new int[1];
+        int[] monitorY = new int[1];
+        glfwGetMonitorPos(monitors.get(0), monitorX, monitorY);
+
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
         window = glfwCreateWindow(windowProps.width, windowProps.height, windowProps.title, NULL, NULL);
         ++glfwWindowCount;
+
+        glfwDefaultWindowHints();
+
+        glfwSetWindowPos(window, monitorX[0] + (videoMode.width() - windowProps.width) / 2, monitorY[0] + (videoMode.height() - windowProps.height) / 2);
+        glfwShowWindow(window);
+
         context = GraphicsContext.create(window);
         context.init();
         //glfwSetWindowUserPointer(window, windowData);
