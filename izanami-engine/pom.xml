@@ -16,9 +16,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lwjgl.version>3.3.1</lwjgl.version>
+        <lwjgl.version>3.3.4</lwjgl.version>
         <joml.version>1.10.5</joml.version>
-        <imgui-java.version>1.86.9</imgui-java.version>
+        <imgui-java.version>1.86.12</imgui-java.version>
         <graalvm.version>22.2.0</graalvm.version>
     </properties>
 
@@ -84,7 +84,7 @@
         </dependency>
         <dependency>
             <groupId>io.github.spair</groupId>
-            <artifactId>imgui-java-natives-windows-ft</artifactId>
+            <artifactId>imgui-java-natives-windows</artifactId>
             <version>${imgui-java.version}</version>
         </dependency>
         <dependency>
