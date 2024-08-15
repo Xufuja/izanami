@@ -130,7 +130,7 @@ public class Renderer2D {
             Renderer2D.data.quadShader = Shader.create(Path.of("assets/shaders/Renderer2D_Quad.glsl"));
             Renderer2D.data.circleShader = Shader.create(Path.of("assets/shaders/Renderer2D_Circle.glsl"));
             Renderer2D.data.lineShader = Shader.create(Path.of("assets/shaders/Renderer2D_Line.glsl"));
-            Renderer2D.data.textShader = Shader.create(Path.of("assets/shaders/Renderer2D_Text.glsl"));
+            //Renderer2D.data.textShader = Shader.create(Path.of("assets/shaders/Renderer2D_Text.glsl"));
 
             Renderer2D.data.textureSlots[0] = Renderer2D.data.whiteTexture;
 
@@ -242,7 +242,7 @@ public class Renderer2D {
             data.stats.drawCalls++;
         }
 
-        if (data.textVertexCount > 0) {
+        /*if (data.textVertexCount > 0) {
             ArrayList<ByteBuffer> textVertexBuffers = new ArrayList<>();
 
             for (int i = 0; i < data.textVertexBufferPtr; i++) {
@@ -256,7 +256,7 @@ public class Renderer2D {
             Renderer2D.data.textShader.bind();
             RenderCommand.drawIndexed(data.textVertexArray, data.textVertexCount);
             data.stats.drawCalls++;
-        }
+        }*/
     }
 
     private static void nextBatch() {
